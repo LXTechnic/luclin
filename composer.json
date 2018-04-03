@@ -1,7 +1,8 @@
 {
     "name": "lxtech/luclin",
     "description": "luclin package for laravel",
-    "type": "library,framework",
+    "keywords": ["framework", "laravel", "luclin"],
+    "type": "framework",
     "license": "MIT",
     "authors": [
         {
