@@ -39,7 +39,7 @@ class Update extends Command
      */
     public function handle()
     {
-        dd(Yaml::parse(file_get_content(base_path('lumod.yml'))));
+        dd(Yaml::parse(file_get_contents(base_path('lumod.yml'))));
         $this->info('done.');
     }
 

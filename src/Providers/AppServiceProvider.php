@@ -37,7 +37,8 @@ class AppServiceProvider extends ServiceProvider
 
         Loader::instance('operator')->register('Luclin\\Protocol\\Operators');
 
-        Command::register('Luclin\\Commands', luc('path', 'src', 'Commands'));
+        $this->app->runningInConsole()
+            && Command::register('Luclin\\Commands', luc('path', 'src', 'Commands'));
     }
 
     /**
