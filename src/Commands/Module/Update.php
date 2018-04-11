@@ -2,6 +2,7 @@
 
 namespace Luclin\Commands\Module;
 
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
 use File;
 
@@ -38,6 +39,7 @@ class Update extends Command
      */
     public function handle()
     {
+        dd(Yaml::parse(file_get_content(base_path('lumod.yml'))));
         $this->info('done.');
     }
 

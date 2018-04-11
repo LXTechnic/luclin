@@ -17,6 +17,7 @@
         "illuminate/database": "^5.6",
         "illuminate/support": "^5.6",
         "illuminate/support": "^5.6",
+        "symfony/yaml": "^4.0",
         "firebase/php-jwt": "^5.0"
     },
     "autoload": {
