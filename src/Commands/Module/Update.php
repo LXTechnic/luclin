@@ -3,7 +3,7 @@
 namespace Luclin\Commands\Module;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
+use File;
 
 class Update extends Command
 {
