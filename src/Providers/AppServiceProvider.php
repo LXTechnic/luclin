@@ -9,6 +9,9 @@ use Luclin\Protocol\{
     Operators,
     Request
 };
+use Luclin\Support\{
+    Command
+};
 
 use Illuminate\Support\{
     Facades\Redis,
@@ -33,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Loader::instance('operator')->register('Luclin\\Protocol\\Operators');
+
+        Command::register('Luclin\\Commands', luc('path', 'src', 'Commands'));
     }
 
     /**
@@ -42,7 +47,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->bindPaths();
+
         $this->app->bind(Contracts\Uri\FragmentPlug::class, Uri\Plugs\FragmentSlice::class);
+    }
+
+    protected function bindPaths()
+    {
+        foreach ([
+            'luclin.path' => $root = dirname(dirname(__DIR__)),
+        ] as $abstract => $instance) {
+            $this->app->instance($abstract, $instance);
+        }
     }
 
 }
