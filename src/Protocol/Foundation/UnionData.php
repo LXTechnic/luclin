@@ -30,12 +30,12 @@ class UnionData
             foreach ($this->conf as $alias => [$class, $masterField, $slaveField]) {
                 if (is_array($row[$slaveField])) {
                     foreach ($row[$slaveField] as $unionId) {
-                        $index[$masterField][$alias][$unionId] = $class
+                        $index[$masterField][$alias][$unionId][] = $class
                             ? (new $class)->fill($row) : $row;
                     }
                     continue;
                 }
-                $index[$masterField][$alias][$row[$slaveField]] = $class
+                $index[$masterField][$alias][$row[$slaveField]][] = $class
                     ? (new $class)->fill($row) : $row;
             }
         }
@@ -51,11 +51,11 @@ class UnionData
                     if (is_array($row[$masterField])) {
                         foreach ($row[$masterField] as $value) {
                             isset($slaves[$value])
-                                && $row->addUnion($slaves[$value], $alias);
+                                && $row->addUnion($alias, ...$slaves[$value]);
                         }
                     } else {
                         isset($slaves[$row[$masterField]])
-                            && $row->addUnion($slaves[$row[$masterField]], $alias);
+                            && $row->addUnion($alias, ...$slaves[$row[$masterField]]);
                     }
                 }
             }

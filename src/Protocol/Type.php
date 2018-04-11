@@ -51,8 +51,10 @@ abstract class Type extends Struct implements DomainInterface
         return static::$_type;
     }
 
-    public function addUnion($data, string $alias): self {
-        $this->addContract('union', $data, $alias);
+    public function addUnion(string $alias, ...$dataList): self {
+        foreach ($dataList as $data) {
+            $this->addContract('union', $data, $alias);
+        }
         return $this;
     }
 

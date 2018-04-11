@@ -43,8 +43,12 @@ class Lists extends Collection implements DomainInterface
         }
 
         $slaveClass = get_class($slave[0]);
-        // TODO: 这里要不要转数组还要再看看
-        !is_array($slave) && $slave = $slave->toArray();
+        if (!is_array($slave)) {
+            if ($slave instanceof MetaInterface) {
+                $slave->confirm();
+            }
+            $slave = $slave->toArray();
+        }
 
         $data = new Foundation\UnionData($this,
              $alias ? [$alias => [$class, $masterField, $slaveField]]
