@@ -10,7 +10,7 @@ class Command
     public static function register(string $prefix, ...$directories): void {
         $commands = [];
         foreach ($directories as $directory) {
-            foreach (File::allFiles() as $info) {
+            foreach (File::allFiles($directory) as $info) {
                 if (strtolower($info->getExtension()) != 'php') {
                     continue;
                 }
