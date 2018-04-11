@@ -7,15 +7,17 @@ use File;
 
 class Command
 {
-    public static function register(string $prefix, ...$directories): void {
-        $commands = [];
-        foreach ($directories as $directory) {
-            foreach (File::allFiles($directory) as $info) {
-                if (strtolower($info->getExtension()) != 'php') {
-                    continue;
-                }
-                $commands[] = "$prefix\\".$info->getBasename('.php');
+    public static function register(string $prefix, string $directory): void {
+        $directory  = realpath($directory);
+        $rootLength = strlen($directory);
+        $commands   = [];
+        foreach (File::allFiles($directory) as $info) {
+            if (strtolower($info->getExtension()) != 'php') {
+                continue;
             }
+            $filename   = $info->getPathname();
+            $commands[] = "$prefix".
+                str_replace(DIRECTORY_SEPARATOR, '\\', substr($filename, $rootLength, -4));
         }
         Artisan::starting(function ($artisan) use ($commands) {
             $artisan->resolveCommands($commands);
