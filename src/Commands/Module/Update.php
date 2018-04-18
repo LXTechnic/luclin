@@ -39,6 +39,9 @@ class Update extends Command
      */
     public function handle()
     {
+        // if (!file_exists()) {
+
+        // }
         dd(Yaml::parse(file_get_contents(base_path('lumod.yml'))));
         $this->info('done.');
     }

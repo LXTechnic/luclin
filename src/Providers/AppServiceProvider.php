@@ -3,6 +3,7 @@
 namespace Luclin\Providers;
 
 use Luclin\Loader;
+use Luclin\Support;
 use Luclin\Contracts;
 use Luclin\Uri;
 use Luclin\Protocol\{
@@ -15,6 +16,7 @@ use Luclin\Support\{
 
 use Illuminate\Support\{
     Facades\Redis,
+    Facades\Queue,
     ServiceProvider
 };
 
@@ -29,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Queue::before(function (JobProcessing $event) {
+            Support\CacheLoader::cleanAll();
+        });
         $this->app->resolving(function ($object, $app) {
             if ($object instanceof Request) {
                 $object->confirm();
@@ -50,7 +55,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->bindPaths();
 
-        $this->app->bind(Contracts\Uri\FragmentPlug::class, Uri\Plugs\FragmentSlice::class);
+        $this->app->bind(Contracts\Uri\FragmentPlug::class,
+            Uri\Plugs\FragmentSlice::class);
     }
 
     protected function bindPaths()

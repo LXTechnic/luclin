@@ -12,4 +12,8 @@ trait SingletonTrait
         }
         return static::$_instances[static::class];
     }
+
+    public static function getAllInstances(): array {
+        return static::$_instances;
+    }
 }

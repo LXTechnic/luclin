@@ -57,13 +57,13 @@ class Lists extends Collection implements DomainInterface
         return $this;
     }
 
-    public function unionCall(string $alias, $func): self {
+    public function unionCall(string $alias, $func, ...$params): self {
         foreach ($this as $row) {
             foreach ($row->getUnion($alias) as $union) {
                 if (is_callable($func)) {
-                    $func($row, $union);
+                    $func($row, $union, ...$params);
                 } else {
-                    $union->$func($row);
+                    $union->$func($row, ...$params);
                 }
             }
         }
