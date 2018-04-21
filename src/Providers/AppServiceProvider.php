@@ -19,6 +19,7 @@ use Illuminate\Support\{
     Facades\Queue,
     ServiceProvider
 };
+use Illuminate\Database\Eloquent;
 
 use Log;
 
@@ -40,9 +41,11 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        $this->declareMacros();
+
         Loader::instance('operator')->register('Luclin\\Protocol\\Operators');
 
-        $this->app->runningInConsole()
+        $this->app->runningInConsole() && function_exists('luc')
             && Command::register('Luclin\\Commands', luc('path', 'src', 'Commands'));
     }
 
@@ -66,6 +69,27 @@ class AppServiceProvider extends ServiceProvider
         ] as $abstract => $instance) {
             $this->app->instance($abstract, $instance);
         }
+    }
+
+    protected function declareMacros() {
+        Eloquent\Collection::macro('pluckCustom',
+            function(string $field, callable $func, ...$arguments)
+        {
+            $result = [];
+            foreach ($this as $item) {
+                $plucked = $func($item->$field, ...$arguments);
+                if (!$plucked) {
+                    continue;
+                }
+
+                if (is_array($plucked)) {
+                    array_push($result, ...$plucked);
+                } else {
+                    $result[] = $plucked;
+                }
+            }
+            return $result;
+        });
     }
 
 }

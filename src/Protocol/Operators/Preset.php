@@ -75,7 +75,8 @@ class Preset extends Collection
             if ($position === null) {
                 continue;
             }
-            array_key_exists($key, $slice) && $this->_arguments[$position] = $slice[$key];
+            $slice[$key] !== null && array_key_exists($key, $slice)
+                && $this->_arguments[$position] = $slice[$key];
         }
         return $this;
     }

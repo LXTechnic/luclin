@@ -40,6 +40,10 @@ trait StructTrait
         return [];
     }
 
+    protected static function _virtuals(): array {
+        return [];
+    }
+
     /**
      * 获取基础数据结构
      * @return array
@@ -83,7 +87,17 @@ trait StructTrait
      */
     public function get($key, $default = null) {
         $value = parent::get($key);
-        return $value !== null ? $value : ((static::defaults(true)[$key] ?? $default));
+        return $value !== null ? $value
+            : ((static::defaults(true)[$key]
+                ?? ($this->callVirtualProperty($key) ?: $default)));
+    }
+
+    protected function callVirtualProperty(string $key) {
+        $virtuals = static::_virtuals();
+        if (!isset($virtuals[$key])) {
+            return null;
+        }
+        return $virtuals[$key]->call($this);
     }
 
     /**

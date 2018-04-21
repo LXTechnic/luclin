@@ -43,6 +43,7 @@ class Lists extends Collection implements DomainInterface
         }
 
         $slaveClass = get_class($slave[0]);
+
         if (!is_array($slave)) {
             if ($slave instanceof MetaInterface) {
                 $slave->confirm();

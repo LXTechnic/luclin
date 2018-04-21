@@ -26,36 +26,37 @@ class UnionData
     private function process(array $slave): void {
         // 先构建索引
         $index = [];
-        foreach ($slave as $row) {
+        foreach ($slave as $rowSlave) {
             foreach ($this->conf as $alias => [$class, $masterField, $slaveField]) {
-                if (is_array($row[$slaveField])) {
-                    foreach ($row[$slaveField] as $unionId) {
+                if (is_array($rowSlave[$slaveField])) {
+                    foreach ($rowSlave[$slaveField] as $unionId) {
                         $index[$masterField][$alias][$unionId][] = $class
-                            ? (new $class)->fill($row) : $row;
+                            ? (new $class)->fill($rowSlave) : $rowSlave;
                     }
                     continue;
                 }
-                $index[$masterField][$alias][$row[$slaveField]][] = $class
-                    ? (new $class)->fill($row) : $row;
+                $index[$masterField][$alias][$rowSlave[$slaveField]][] = $class
+                    ? (new $class)->fill($rowSlave) : $rowSlave;
             }
         }
 
         // 然后并入
-        foreach ($this->lists as $row) {
+        foreach ($this->lists as $rowMaster) {
             foreach ($index as $masterField => $aliases) {
                 foreach ($aliases as $alias => $slaves) {
                     // 加入 master 数组字段支持
-                    if (!$row[$masterField]) {
+                    if (!$rowMaster->$masterField) {
                         continue;
                     }
-                    if (is_array($row[$masterField])) {
-                        foreach ($row[$masterField] as $value) {
+                    if (is_array($rowMaster->$masterField)) {
+                        foreach ($rowMaster->$masterField as $value) {
                             isset($slaves[$value])
-                                && $row->addUnion($alias, ...$slaves[$value]);
+                                && $rowMaster->addUnion($alias, ...$slaves[$value]);
                         }
                     } else {
-                        isset($slaves[$row[$masterField]])
-                            && $row->addUnion($alias, ...$slaves[$row[$masterField]]);
+                        isset($slaves[$rowMaster->$masterField])
+                            && $rowMaster->addUnion($alias,
+                                ...$slaves[$rowMaster->$masterField]);
                     }
                 }
             }
