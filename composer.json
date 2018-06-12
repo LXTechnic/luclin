@@ -11,13 +11,14 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "illuminate/console": "^5.6",
         "illuminate/contracts": "^5.6",
         "illuminate/database": "^5.6",
         "illuminate/support": "^5.6",
-        "illuminate/support": "^5.6",
+        "php-amqplib/php-amqplib": "^2.7",
         "symfony/yaml": "^4.0",
+        "picqer/php-barcode-generator": "^0.2",
         "firebase/php-jwt": "^5.0"
     },
     "autoload": {
@@ -25,12 +26,13 @@
             "Luclin\\": "src/"
         },
         "files": [
-            "helpers.php"
+            "src/luc.php"
         ]
     },
     "extra": {
         "laravel": {
             "providers": [
+                "Luclin\\Providers\\AuthServiceProvider",
                 "Luclin\\Providers\\AppServiceProvider"
             ]
         }

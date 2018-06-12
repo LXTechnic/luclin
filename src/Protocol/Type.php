@@ -18,12 +18,19 @@ abstract class Type extends Struct implements DomainInterface
 
     protected static $_union = [];
 
+    protected $_raw = null;
+
     public function __construct($data = null) {
         $data && $this->fill($data);
         $this->setContract('type', static::$_type);
     }
 
+    public function raw() {
+        return $this->_raw;
+    }
+
     public function fill($data): MetaInterface {
+        is_object($data) && $this->_raw = $data;
         if (is_object($data) && method_exists($data, 'toArray')) {
             $data = $data->toArray();
         }

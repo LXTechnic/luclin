@@ -30,10 +30,11 @@ class Preset extends Collection
         return $this->_name;
     }
 
-    public function makeMapping(string $alias, string $pattern): Preset\Mapping {
-        $mapping = new Preset\Mapping($pattern, $this);
-        $this->_mappings[$alias] = $mapping;
-        return $mapping;
+    public function setMapping(string $name,
+        string $pattern, ?callable $maker = null): self
+    {
+        $this->_mappings[$name] = [$pattern, $maker];
+        return $this;
     }
 
     public function currentMapping(): Preset\Mapping {
@@ -82,19 +83,29 @@ class Preset extends Collection
     }
 
     public function __toString(): string {
-        return "$this->_name,".implode(',', $this->_arguments);
+        $argumentPosition = 0;
+        $arguments = [];
+        foreach ($this->_arguments as $pos => $value) {
+            if ($argumentPosition < $pos) {
+                for ($i = $argumentPosition; $i < $pos; $i++) {
+                    $arguments[$i] = null;
+                }
+            }
+            $arguments[$pos]    = $value;
+            $argumentPosition   = $pos + 1;
+        }
+        return "$this->_name,".implode(',', $arguments);
     }
 
     private function getMapping(string $name): Preset\Mapping {
         if (!isset($this->_mappings[$name])) {
             throw new \UnexpectedValueException("Preset $this->_name is not defined.");
         }
-        if (is_array($this->_mappings[$name])) {
-            $conf    = $this->_mappings[$name];
-            $mapping = $this
-                ->makeMapping($name, $conf[0])
-                    ->setDefaults(...$conf[1])
-                    ->setSlicePosition(...$conf[2]);
+        if (!($this->_mappings[$name] instanceof Preset\Mapping)) {
+            [$pattern, $maker]  = $this->_mappings[$name];
+            $mapping = new Preset\Mapping($pattern);
+            $maker && $maker($mapping);
+            $this->_mappings[$name] = $mapping;
 
         }
         return $this->_mappings[$name];

@@ -12,7 +12,9 @@ class Lists extends Collection implements DomainInterface
 
     protected $unionConf;
 
-    public function __construct(string $class, $master, array $unionConf) {
+    public function __construct(string $class,
+        iterable $master, array $unionConf)
+    {
         foreach ($master as $row) {
             $instance   = (new $class())->fill($row);
             $this[] = $instance;
@@ -40,16 +42,16 @@ class Lists extends Collection implements DomainInterface
     {
         if (!$slave || !isset($slave[0])) {
             return $this;
-        }
+        }   
 
         $slaveClass = get_class($slave[0]);
 
-        if (!is_array($slave)) {
-            if ($slave instanceof MetaInterface) {
-                $slave->confirm();
-            }
-            $slave = $slave->toArray();
-        }
+        // if (!is_array($slave)) {
+        //     if ($slave instanceof MetaInterface) {
+        //         $slave->confirm();
+        //     }
+        //     $slave = $slave->toArray();
+        // }
 
         $data = new Foundation\UnionData($this,
              $alias ? [$alias => [$class, $masterField, $slaveField]]

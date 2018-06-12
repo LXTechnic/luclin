@@ -19,11 +19,11 @@ class UnionData
         $this->conf  = $conf;
     }
 
-    public function __invoke(array $slave): void {
+    public function __invoke(iterable $slave): void {
         $this->process($slave);
     }
 
-    private function process(array $slave): void {
+    private function process(iterable $slave): void {
         // 先构建索引
         $index = [];
         foreach ($slave as $rowSlave) {

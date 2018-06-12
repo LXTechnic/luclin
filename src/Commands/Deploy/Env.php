@@ -1,26 +1,26 @@
 <?php
 
-namespace Luclin\Commands\Module;
+namespace Luclin\Commands\Deploy;
 
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
 use File;
 
-class Update extends Command
+class Env extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:update';
+    protected $signature = 'lu:deploy.env {env}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '更新并安装模块';
+    protected $description = '设置当前运行环境';
 
     /**
      * Create a new command instance.

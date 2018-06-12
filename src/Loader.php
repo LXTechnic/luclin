@@ -10,6 +10,8 @@ class Loader
 {
     use Foundation\SingletonNamedTrait;
 
+    protected static $sings = [];
+
     protected $prefix = 0;
 
     protected $cache = [];
@@ -68,8 +70,24 @@ class Loader
     }
 
     public function make(string $name, ...$arguments) {
-        [$class, $builder] = $this->get($name);
+        [$class, $builder] = $this->get($name) ?: [null, null];
+        if (!$class) {
+            return null;
+        }
+
         return is_callable($builder)
             ? $builder($class, ...$arguments) : (new $class(...$arguments));
+    }
+
+    public function sing(string $name, ...$arguments) {
+        [$class, $builder] = $this->get($name) ?: [null, null];
+        if (!$class) {
+            return null;
+        }
+
+        if (is_callable($builder)) {
+            return static::$signs[$class] ?? (static::$signs[$class] = $builder($class, ...$arguments));
+        }
+        return $class::instance(...$arguments);
     }
 }

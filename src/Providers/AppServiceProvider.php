@@ -20,11 +20,22 @@ use Illuminate\Support\{
     ServiceProvider
 };
 use Illuminate\Database\Eloquent;
+use Illuminate\Queue\{
+    Events\JobProcessed,
+    Events\JobProcessing,
+    Events\JobFailed
+};
 
 use Log;
 
-class AppServiceProvider extends ServiceProvider
+class AppServiceProvider extends \Luclin\ServiceProvider
 {
+    protected static $moduleName = 'luclin';
+
+    protected $loaders = [
+        'operator'  => 'Luclin\\Protocol\\Operators',
+    ];
+
     /**
      * Boorstrap the service provider.
      *
@@ -32,46 +43,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Queue::before(function (JobProcessing $event) {
-            Support\CacheLoader::cleanAll();
-        });
+        parent::boot();
+
+        $this->registerRoutes();
+        $this->registerMigrations();
+        $this->registerTranslations();
+        $this->registerViews();
+        $this->registerCommands();
+        // 注册多态关联模型映射id
+        $this->registerMorphMap();
+
+        $this->publishAssets();
+
+        $this->registerResolving();
+        $this->declareMacros();
+        $this->registerQueueJobEvent();
+    }
+
+    private function registerResolving(): void {
         $this->app->resolving(function ($object, $app) {
             if ($object instanceof Request) {
                 $object->confirm();
             }
         });
-
-        $this->declareMacros();
-
-        Loader::instance('operator')->register('Luclin\\Protocol\\Operators');
-
-        $this->app->runningInConsole() && function_exists('luc')
-            && Command::register('Luclin\\Commands', luc('path', 'src', 'Commands'));
     }
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->bindPaths();
-
-        $this->app->bind(Contracts\Uri\FragmentPlug::class,
-            Uri\Plugs\FragmentSlice::class);
-    }
-
-    protected function bindPaths()
-    {
-        foreach ([
-            'luclin.path' => $root = dirname(dirname(__DIR__)),
-        ] as $abstract => $instance) {
-            $this->app->instance($abstract, $instance);
-        }
-    }
-
-    protected function declareMacros() {
+    private function declareMacros(): void {
         Eloquent\Collection::macro('pluckCustom',
             function(string $field, callable $func, ...$arguments)
         {
@@ -90,6 +87,85 @@ class AppServiceProvider extends ServiceProvider
             }
             return $result;
         });
+    }
+
+    private function registerQueueJobEvent(): void {
+        Queue::before(function (JobProcessing $event) {
+            Support\CacheLoader::cleanAll();
+        });
+    }
+
+    private function registerRoutes(): void {
+        // $this->loadRoutesFrom($this->module()->path('routes.php'));
+    }
+
+    private function registerMigrations(): void {
+        $this->loadRoutesFrom($this->module()->path('database', 'migrations'));
+    }
+
+    private function registerTranslations(): void {
+        $this->loadTranslationsFrom($this->module()->path('resources', 'lang'),
+            static::$moduleName);
+    }
+
+    private function registerViews(): void {
+        $this->loadViewsFrom($this->module()->path('resources', 'views'),
+            static::$moduleName);
+    }
+
+    private function registerCommands(): void {
+        if ($this->app->runningInConsole()) {
+            $this->registerCommandsByPath('Luclin\\Commands',
+                $this->module()->path('src', 'Commands'));
+        }
+    }
+
+    private function registerMorphMap(): void
+    {
+        // Relation::morphMap([
+        //     'posts'     => 'App\Post',
+        //     'videos'    => 'App\Video',
+        // ]);
+    }
+
+    private function publishAssets(): void {
+        $this->publishes([
+            $this->module()->path('assets')
+                => public_path('vender/'.static::$moduleName),
+        ], 'public');
+    }
+
+    public function register()
+    {
+
+        $this->app->bind(Contracts\Uri\FragmentPlug::class,
+            Uri\Plugs\FragmentSlice::class);
+
+        $this->initModule();
+        $this->importConfig();
+        $this->bindSingletions();
+    }
+
+    private function initModule(): void {
+        $module = $this->makeModule(__DIR__.'/../..');
+
+        // $module->setPathMapping([
+        //     'tmp'   => '/tmp',
+        // ]);
+    }
+
+    private function importConfig(): void {
+        $this->mergeConfigFrom($this->module()->path('config', 'module.php'),
+            static::$moduleName);
+
+        $this->mergeConfigFrom($this->module()->path('config', 'aborts.php'),
+            'aborts');
+    }
+
+    protected function bindSingletions(): void {
+        // $this->app->singleton(static::$moduleName.':services.pass', function () {
+        //     return new Pass();
+        // });
     }
 
 }
