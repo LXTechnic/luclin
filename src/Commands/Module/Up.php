@@ -49,8 +49,8 @@ class Up extends Command
         $this->call('package:discover');
         $this->call('vendor:publish');
         $this->call('vendor:publish', [
-            'tag'   => 'public',
-            'force' => true,
+            '--tag'     => 'public',
+            '--force'   => true,
         ]);
 
         $this->info('done.');
