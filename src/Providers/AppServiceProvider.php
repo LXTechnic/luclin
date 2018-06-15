@@ -100,7 +100,7 @@ class AppServiceProvider extends \Luclin\ServiceProvider
     }
 
     private function registerMigrations(): void {
-        $this->loadRoutesFrom($this->module()->path('database', 'migrations'));
+        $this->loadMigrationsFrom($this->module()->path('database', 'migrations'));
     }
 
     private function registerTranslations(): void {

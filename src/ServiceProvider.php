@@ -19,8 +19,6 @@ abstract class ServiceProvider extends LaravelServiceProvider
 
     public function boot()
     {
-        parent::boot();
-
         foreach ($this->loaders as $name => $space) {
             Loader::instance($name)->register($space);
         }
