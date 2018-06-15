@@ -5,7 +5,7 @@ namespace Luclin;
 
 /**
  */
-abstract class Module
+class Module
 {
     protected $name;
     protected $root;
