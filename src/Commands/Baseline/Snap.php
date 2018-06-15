@@ -13,7 +13,7 @@ class Snap extends Command
      *
      * @var string
      */
-    protected $signature = 'lu:baseline.snap {name}';
+    protected $signature = 'luc:baseline.snap {name}';
 
     /**
      * The console command description.
@@ -42,7 +42,7 @@ class Snap extends Command
         // if (!file_exists()) {
 
         // }
-        dd(Yaml::parse(file_get_contents(base_path('lumod.yml'))));
+        dd(Yaml::parse(file_get_contents(base_path('.baseline.yml'))));
         $this->info('done.');
     }
 

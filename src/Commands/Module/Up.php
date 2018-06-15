@@ -13,7 +13,7 @@ class Up extends Command
      *
      * @var string
      */
-    protected $signature = 'lu:module.up';
+    protected $signature = 'luc:module.up';
 
     /**
      * The console command description.

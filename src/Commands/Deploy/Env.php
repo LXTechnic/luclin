@@ -13,7 +13,7 @@ class Env extends Command
      *
      * @var string
      */
-    protected $signature = 'lu:deploy.env {env}';
+    protected $signature = 'luc:deploy.env {env}';
 
     /**
      * The console command description.
