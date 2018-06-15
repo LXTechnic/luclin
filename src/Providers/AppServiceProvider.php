@@ -137,13 +137,12 @@ class AppServiceProvider extends \Luclin\ServiceProvider
 
     public function register()
     {
-
-        $this->app->bind(Contracts\Uri\FragmentPlug::class,
-            Uri\Plugs\FragmentSlice::class);
-
         $this->initModule();
         $this->importConfig();
         $this->bindSingletions();
+
+        $this->app->bind(Contracts\Uri\FragmentPlug::class,
+            Uri\Plugs\FragmentSlice::class);
     }
 
     private function initModule(): void {

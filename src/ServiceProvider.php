@@ -31,11 +31,11 @@ abstract class ServiceProvider extends LaravelServiceProvider
     }
 
     protected function makeModule(string $root): Module {
-        if (!($module = $this->app->get($this->getModuleKey()))) {
+        if (!$this->app->has($this->getModuleKey())) {
             $module = new Module(static::$moduleName, $root);
             $this->app->instance($this->getModuleKey(), $module);
         }
-        return $module;
+        return $this->app->get($this->getModuleKey());
     }
 
     protected function module(): ?Module {
