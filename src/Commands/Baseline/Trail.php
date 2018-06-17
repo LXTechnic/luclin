@@ -42,7 +42,7 @@ class Trail extends Command
         // if (!file_exists()) {
 
         // }
-        dd(Yaml::parse(file_get_contents(base_path('lumod.yml'))));
+        dd(Yaml::parse(file_get_contents(base_path('.baseline.yml'))));
         $this->info('done.');
     }
 

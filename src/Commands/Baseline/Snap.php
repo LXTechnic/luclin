@@ -2,6 +2,8 @@
 
 namespace Luclin\Commands\Baseline;
 
+use Luclin\Support\Baseline;
+
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
 use File;
@@ -39,10 +41,23 @@ class Snap extends Command
      */
     public function handle()
     {
-        // if (!file_exists()) {
+        $topConfFile = base_path('.baseline.yml');
+        try {
+            if (file_exists($topConfFile)) {
+                $topConf = Yaml::parse(file_get_contents($topConfFile));
+            } else {
+                $topConf = [];
+            }
+        } catch (\Throwable $exc) {
+            throw $exc;
+        }
 
-        // }
-        dd(Yaml::parse(file_get_contents(base_path('.baseline.yml'))));
+        $baseline = new Baseline($topConf);
+        foreach ($baseline->applySnap($this->argument('name'))
+            as [$dir, $url, $tag])
+        {
+            $baseline->checkout($dir, $url, $tag);
+        }
         $this->info('done.');
     }
 
