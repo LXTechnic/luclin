@@ -68,11 +68,6 @@ class Up extends Command
         exec('composer update');
 
         $this->call('package:discover');
-        // $this->call('vendor:publish', [
-        //     '--tag'     => 'public',
-        //     '--force'   => true,
-        // ]);
-
         $this->info('done.');
     }
 
