@@ -68,14 +68,15 @@ class Up extends Command
         file_put_contents(base_path('composer.json'), $newComposerConf);
 
         foreach ($requires as $packageName) {
-            exec("composer require $packageName");
+            exec("composer require $packageName", $output);
         }
-
-        $this->call('package:discover');
-        $this->call('vendor:publish', [
-            '--tag'     => 'public',
-            '--force'   => true,
-        ]);
+        if ($output) foreach ($output as $line) {
+            $this->info($line);
+        }
+        exec("php artisan vendor:publish --tag public --force", $output);
+        if ($output) foreach ($output as $line) {
+            $this->info($line);
+        }
 
         $this->info('done.');
     }
