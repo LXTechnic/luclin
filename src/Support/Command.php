@@ -9,6 +9,9 @@ class Command
 {
     public static function register(string $prefix, string $directory): void {
         $directory  = realpath($directory);
+        if (!$directory) {
+            return;
+        }
         $rootLength = strlen($directory);
         $commands   = [];
         foreach (File::allFiles($directory) as $info) {
