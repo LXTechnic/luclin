@@ -19,7 +19,6 @@
         "php-amqplib/php-amqplib": "^2.7",
         "symfony/yaml": "^4.0",
         "picqer/php-barcode-generator": "^0.2",
-        "composer/composer": "^1.6",
         "firebase/php-jwt": "^5.0"
     },
     "autoload": {

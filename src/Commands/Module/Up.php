@@ -2,10 +2,7 @@
 
 namespace Luclin\Commands\Module;
 
-use Composer\Json\{
-    JsonFormatter,
-    JsonFile
-};
+use Luclin\Support\Composer\Fork\JsonFormatter;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
 use File;
@@ -62,25 +59,19 @@ class Up extends Command
                     'type'  => 'path',
                     'url'   => $modulePath,
                 ];
+                $baseComposerConf['require'][$composerConf['name']] = '*';
             }
         }
-        $newComposerConf = JsonFormatter::format($baseComposerConf,
-            JsonFile::JSON_UNESCAPED_UNICODE,
-            JsonFile::JSON_UNESCAPED_SLASHES);
-        dd($newComposerConf);
-        // if (!file_exists()) {
-
-        // }
-        dd(Yaml::parse(file_get_contents(base_path('lumod.yml'))));
+        $newComposerConf = JsonFormatter::format(json_encode($baseComposerConf));
+        file_put_contents(base_path('composer.json'), $newComposerConf);
 
         exec('composer update');
 
         $this->call('package:discover');
-        $this->call('vendor:publish');
-        $this->call('vendor:publish', [
-            '--tag'     => 'public',
-            '--force'   => true,
-        ]);
+        // $this->call('vendor:publish', [
+        //     '--tag'     => 'public',
+        //     '--force'   => true,
+        // ]);
 
         $this->info('done.');
     }
