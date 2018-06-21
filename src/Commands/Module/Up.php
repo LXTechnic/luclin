@@ -47,6 +47,7 @@ class Up extends Command
         $baseComposerConf = json_decode($baseComposerConf, true);
 
         $directories = $this->argument('directories') ?: [base_path('modules')];
+        $requires    = [];
         foreach ($directories as $dir) {
             foreach (File::allFiles($dir) as $file) {
                 if ($file->getBasename() != 'composer.json') {
@@ -60,12 +61,15 @@ class Up extends Command
                     'url'   => $modulePath,
                 ];
                 $baseComposerConf['require'][$composerConf['name']] = '*';
+                $requires[] = $composerConf['name'];
             }
         }
         $newComposerConf = JsonFormatter::format(json_encode($baseComposerConf));
         file_put_contents(base_path('composer.json'), $newComposerConf);
 
-        exec('composer update');
+        foreach ($requires as $packageName) {
+            exec("composer require $packageName");
+        }
 
         $this->call('package:discover');
         $this->call('vendor:publish', [
