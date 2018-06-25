@@ -39,11 +39,18 @@ class Env extends Command
      */
     public function handle()
     {
-        // if (!file_exists()) {
+        $env = $this->argument('env');
 
-        // }
-        // dd(Yaml::parse(file_get_contents(base_path('lumod.yml'))));
-        $this->info('done.');
+        $root   = base_path();
+        $path   = $root.\DIRECTORY_SEPARATOR.'.environments'.
+            \DIRECTORY_SEPARATOR."$env.conf";
+        $target = $root.\DIRECTORY_SEPARATOR.".env";
+        File::delete($target);
+        File::copy($path, $target);
+
+        // TODO: 回头再实现整合多modules中的env
+
+        $this->info("set env to [$env]");
     }
 
 }
