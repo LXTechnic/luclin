@@ -67,10 +67,7 @@ class Up extends Command
         $newComposerConf = JsonFormatter::format(json_encode($baseComposerConf));
         file_put_contents(base_path('composer.json'), $newComposerConf);
 
-        foreach ($requires as $packageName) {
-            $ouput = [];
-            exec("composer require $packageName", $output);
-        }
+        exec("composer update ".implode(' ', $requires), $output);
         if ($output) foreach ($output as $line) {
             $this->info($line);
         }
