@@ -49,4 +49,21 @@ class Baseline
         $cmd = "git -C $dir checkout $tag";
         exec($cmd);
     }
+
+    public function renew(string $dir, string $url, string $branch) {
+        $baseDir = dirname($dir);
+        if (!file_exists($baseDir)) {
+            mkdir($baseDir, 0755, true);
+        }
+        if (!file_exists($dir)) {
+            $cmd = "git clone $url $dir";
+            exec($cmd);
+            $cmd = "git -C $dir checkout $branch";
+            exec($cmd);
+        }
+        $cmd = "git -C $dir fetch --all";
+        exec($cmd);
+        $cmd = "git -C $dir reset --hard origin/$branch";
+        exec($cmd);
+    }
 }

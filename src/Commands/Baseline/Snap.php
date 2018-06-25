@@ -15,7 +15,7 @@ class Snap extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:baseline.snap {name}';
+    protected $signature = 'luc:baseline.snap {name} {--renew}';
 
     /**
      * The console command description.
@@ -54,9 +54,13 @@ class Snap extends Command
 
         $baseline = new Baseline($topConf);
         foreach ($baseline->applySnap($this->argument('name'))
-            as [$dir, $url, $tag])
+            as [$dir, $url, $flag])
         {
-            $baseline->checkout($dir, $url, $tag);
+            if ($this->option('renew')) {
+                $baseline->renew($dir, $url, $flag);
+            } else {
+                $baseline->checkout($dir, $url, $flag);
+            }
         }
         $this->info('done.');
     }
