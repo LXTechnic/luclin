@@ -35,6 +35,10 @@ class Request extends Struct
         return $this->raw;
     }
 
+    public function __call(string $name, array $arguments) {
+        return $this->raw->$name(...$arguments);
+    }
+
     public function confirm(): MetaInterface {
         $validator = Validator::make($this->toArray(), static::_validate(),
             ...static::_hints());

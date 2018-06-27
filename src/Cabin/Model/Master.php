@@ -2,7 +2,9 @@
 
 namespace Luclin\Cabin\Model;
 
-class Master
+use Luclin\Foundation;
+
+class Master extends Foundation\Model
 {
 
 }

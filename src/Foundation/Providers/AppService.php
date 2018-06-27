@@ -1,8 +1,9 @@
 <?php
 
-namespace Luclin;
+namespace Luclin\Foundation\Providers;
 
 use Luclin\Loader;
+use Luclin\Module;
 use Luclin\Support\{
     Command
 };
@@ -11,7 +12,7 @@ use Illuminate\Support\{
     ServiceProvider
 };
 
-abstract class AppServiceProvider extends ServiceProvider
+abstract class AppService extends ServiceProvider
 {
     protected static $moduleName = 'unamed';
 

@@ -4,6 +4,7 @@ namespace Luclin\Providers;
 
 use Luclin\Support;
 use Luclin\Contracts;
+use Luclin\Foundation\Providers;
 use Luclin\Uri;
 use Luclin\Protocol\{
     Request
@@ -25,7 +26,7 @@ use Illuminate\Queue\{
 
 use Log;
 
-class AppServiceProvider extends \Luclin\AppServiceProvider
+class AppServiceProvider extends Providers\AppService
 {
     protected static $moduleName = 'luclin';
 
