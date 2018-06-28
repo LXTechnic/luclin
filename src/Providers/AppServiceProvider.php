@@ -7,6 +7,7 @@ use Luclin\Contracts;
 use Luclin\Foundation\Providers;
 use Luclin\Uri;
 use Luclin\Protocol\{
+    XHeaders,
     Request
 };
 
@@ -83,8 +84,17 @@ class AppServiceProvider extends Providers\AppService
     {
         parent::register();
 
+        $this->registerSingleton();
+
         $this->app->bind(Contracts\Uri\FragmentPlug::class,
             Uri\Plugs\FragmentSlice::class);
+    }
+
+    protected function registerSingleton() {
+
+        $this->app->singleton('luclin.xheaders', function ($app) {
+            return new XHeaders();
+        });
     }
 
     protected function initModule(): void {

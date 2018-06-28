@@ -23,23 +23,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        // $this->app->auth->extend('apiguard', function ($app) {
-        //     return $app->make(ApiGuard::class);
-        // });
     }
 
     public function register() {
-        // $this->app->bind('tspack:token', function () {
-        //     $token = new \Luclin\Support\JwtToken(
-        //         config('tspack.env.jwtSecret'), function(): string {
-        //             return Str::random(16);
-        //         }, config('tspack.env.jwtTTL'));
-        //     return $token->setUserLoader(function(array $payload): ?Models\User {
-        //         // 暂时不做token数据库校验
-        //         // $token = Models\Token::findByToken($this->payload['jti'], $this->payload['sub']);
-        //         return Models\User::f($payload['sub']);
-        //     });
-        // });
     }
 }

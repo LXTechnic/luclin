@@ -9,8 +9,9 @@ return function() {
             $this->module()->path('database', 'migrations'),
         ],
         'config'        => [
-            $this->module()->path('config', 'module.php') => static::$moduleName,
-            $this->module()->path('config', 'aborts.php') => 'aborts',
+            $this->module()->path('config', 'protocol.php') => 'protocol',
+            $this->module()->path('config', 'module.php')   => static::$moduleName,
+            $this->module()->path('config', 'aborts.php')   => 'aborts',
         ],
         'lang'          => [
             $this->module()->path('resources', 'lang') => static::$moduleName,

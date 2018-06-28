@@ -9,6 +9,7 @@ use Luclin\MetaInterface;
 use Validator;
 use Illuminate\Http\Request as LaravelRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use Luclin\Foundation\Http\Middleware\XHeaders;
 
 class Request extends Struct
     implements \Luclin\MetaInterface
@@ -29,6 +30,10 @@ class Request extends Struct
 
     protected static function _hints(): array {
         return [[], []];
+    }
+
+    public function xheader(): XHeaders {
+        return \luc\ins('xheaders');
     }
 
     public function raw(): LaravelRequest {
