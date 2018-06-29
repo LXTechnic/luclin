@@ -8,8 +8,10 @@ use Luclin\Uri;
 class Response extends Container
 {
 
-    public static function ok() {
-        return response(['ok' => 1]);
+    public static function ok(...$arguments) {
+        $data = ['ok' => 1];
+        $arguments && $data['extra'] = $arguments;
+        return response($data);
     }
 
     public static function msg(string $key, array $aliases = [],

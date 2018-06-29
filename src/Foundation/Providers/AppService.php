@@ -114,7 +114,7 @@ abstract class AppService extends ServiceProvider
     protected function importConfig(): void {
         if (isset($this->modulePaths['config']))
             foreach ($this->modulePaths['config'] as $path => $name)
-                $this->mergeConfigFrom($path, $name);
+                $this->importConfigFrom($path, $name);
     }
 
     protected function bindSingletions(): void {
@@ -142,5 +142,11 @@ abstract class AppService extends ServiceProvider
     protected function registerCommandsByPath(string $space, string $path): self {
         Command::register($space, $path);
         return $this;
+    }
+
+    protected function importConfigFrom(string $path, $key): void {
+        $config = $this->app->config->get($key, []);
+
+        $this->app->config->set($key, array_merge($config, require $path));
     }
 }

@@ -22,6 +22,10 @@ trait AuthTrait
         return $this;
     }
 
+    public function id() {
+        return $this->getAuthIdentifier();
+    }
+
     /**
      * Get the name of the unique identifier for the user.
      *

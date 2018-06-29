@@ -40,7 +40,10 @@ class Request extends Struct
         return $this->raw;
     }
 
-    public function __call(string $name, array $arguments) {
+    public function __call($name, $arguments) {
+        if (static::hasMacro($name)) {
+            return parent::__call($name, $arguments);
+        }
         return $this->raw->$name(...$arguments);
     }
 

@@ -24,7 +24,7 @@ use Illuminate\Queue\{
     Events\JobProcessing,
     Events\JobFailed
 };
-
+use Auth;
 use Log;
 
 class AppServiceProvider extends Providers\AppService
@@ -46,10 +46,8 @@ class AppServiceProvider extends Providers\AppService
     }
 
     protected function registerResolving(): void {
-        $this->app->resolving(function ($object, $app) {
-            if ($object instanceof Request) {
-                $object->confirm();
-            }
+        $this->app->resolving(Request::class, function ($request, $app) {
+            $request->confirm();
         });
     }
 
@@ -83,6 +81,10 @@ class AppServiceProvider extends Providers\AppService
     public function register()
     {
         parent::register();
+
+        $this->app->bind('Luclin\Contracts\Auth', function($app) {
+            return Auth::authenticate();
+        });
 
         $this->registerSingleton();
 

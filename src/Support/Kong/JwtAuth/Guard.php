@@ -7,12 +7,13 @@ use Luclin\Foundation\Auth\Guest;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard as GuardContract;
+use Illuminate\Auth\{
+    AuthenticationException
+};
 
 class Guard implements GuardContract
 {
     private $auth = null;
-
-    private $authMaked = false;
 
     private $authMaker;
 
@@ -22,15 +23,17 @@ class Guard implements GuardContract
 
     private $defaultId;
     private $defaultName;
+    private $allowAnonymous;
 
     public function __construct(callable $authMaker, Request $request,
-        $defaultId = null, string $defaultName = null)
+        $defaultId = null, string $defaultName = null, bool $allowAnonymous = false)
     {
         $this->authMaker    = $authMaker;
         $this->request      = $request;
 
-        $this->defaultId    = $defaultId;
-        $this->defaultName  = $defaultName;
+        $this->defaultId        = $defaultId;
+        $this->defaultName      = $defaultName;
+        $this->allowAnonymous   = $allowAnonymous;
     }
 
     public function consumer(): array {
@@ -49,13 +52,25 @@ class Guard implements GuardContract
         return $this->consumer;
     }
 
+    public function authenticate()
+    {
+        if (($user = $this->user())
+            && !($user instanceof Guest))
+        {
+            return $user;
+        }
+
+        throw new AuthenticationException;
+    }
+
     /**
      * Determine if the current user is authenticated.
      *
      * @return bool
      */
     public function check(): bool {
-        return $this->consumer()['id'] && !$this->consumer()['anonymous'];
+        return $this->consumer()['id']
+            && (!$this->consumer()['anonymous'] || $this->allowAnonymous);
     }
 
     /**
@@ -73,10 +88,9 @@ class Guard implements GuardContract
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function user() {
-        if (!$this->auth && $this->authMaked) {
+        if ($this->auth) {
             return $this->auth;
         }
-        $this->authMaked = true;
 
         $authMaker  = $this->authMaker;
         $this->auth = $authMaker($this->consumer())
