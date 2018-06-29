@@ -2,7 +2,7 @@
 
 namespace luc;
 
-use Luclin\Crash;
+use Luclin\Abort;
 use Luclin\Module;
 
 use App;
@@ -30,18 +30,27 @@ function ins(string $name, ...$extra) {
     return $instance;
 }
 
-function raise($error, array $extra = [], \Throwable $previous = null): Crash {
+function raise($error, array $extra = [], \Throwable $previous = null): Abort
+{
+    $level = 'error';
     if (is_string($error)) {
-        if (!($conf = config("errors.$error"))) {
+        if (!($conf = config("aborts.$error")) && !is_array($conf)) {
             throw new \UnexpectedValueException("Raise error config is not found.");
         }
-        $msg = isset($conf['msg'])
-            ? \luc\padding($conf['msg'], $extra)
-                : \luc\__(str_replace('.', '::', $error), $extra);
+        $num = $conf['num'] ?? $conf;
+        if (isset($conf['msg'])) {
+            $msg = \luc\padding($conf['msg'], $extra);
+        } else {
+            $pos = strpos($error, '.');
+            $msg = \luc\__(substr_replace($error, '::aborts', $pos, 0), $extra);;
+        }
         $exc = $conf['exc'] ?? \LogicException::class;
-        $error = new $exc($msg, $error, $previous);
+        $error = new $exc($msg, $num, $previous);
+
+        isset($conf['lvl']) && $level = $conf['lvl'];
     }
-    $crash = new Crash($error, $extra);
+    $abort = new Abort($error, $extra, $level);
+    return $abort;
 }
 
 function fs(): Filesystem {

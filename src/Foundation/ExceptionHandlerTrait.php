@@ -2,8 +2,12 @@
 
 namespace Luclin\Foundation;
 
+use Luclin\Abort;
+
 use Illuminate\Auth\AuthenticationException;
-use \Illuminate\Http\Response;
+use Illuminate\Http\Response;
+use Log;
+use Psr\Log\LoggerInterface;
 
 trait ExceptionHandlerTrait
 {
@@ -16,10 +20,45 @@ trait ExceptionHandlerTrait
                     : redirect()->guest(route('login'));
     }
 
+    protected function reportAbort(Abort $abort): void {
+        if ($this->shouldntReport($abort)) {
+            return;
+        }
+
+        if (method_exists($abort->getPrevious(), 'report')) {
+            $abort->getPrevious()->report();
+            return;
+        }
+
+        try {
+            $logger = $this->container->make(LoggerInterface::class);
+        } catch (\Exception $exc) {
+            // TODO: 暂未妥善处理
+            throw $abort;
+        }
+
+        $level = $abort->level();
+        $logger->$level(
+            $abort->getMessage(),
+            array_merge($this->context(), ...$abort()
+        ));
+
+    }
+
     protected function renderException($request, \Throwable $exception): ?Response
     {
         try {
-        } catch (\Throwable $exc) {
+            if ($exception instanceof Abort) {
+                [$exc, $extra] = $exception();
+                dd($exception->toArray(), $exception->class());
+            } else {
+                return null;
+            }
+        } catch (\Error $exc) {
+            // TODO: 这里记录方案要完善
+            Log::error($exc->getMessage(), $exc->getTrace());
+            return response(['msg' => $exc->getMessage()], 500);;
+        } catch (\Exception $exc) {
             // 若在处理渲染报错时出错，记录错词日志并将错误交由框架处理
             $this->report($exc);
             return null;

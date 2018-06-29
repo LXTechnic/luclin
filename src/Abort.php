@@ -4,15 +4,22 @@ namespace Luclin;
 
 use Illuminate\Contracts\Support as Contracts;
 
-class Crash extends \Exception
+class Abort extends \Exception
     implements \JsonSerializable, Contracts\Arrayable, Contracts\Jsonable
 {
     protected $extra;
 
-    public function __construct(\Throwable $exc, array $extra = []) {
-        parent::__construct($e->getMessage(), $e->getCode(), $e);
+    protected $level;
+
+    protected $httpCode = 500;
+
+    public function __construct(\Throwable $exc, array $extra = [],
+        string $level = 'error')
+    {
+        parent::__construct($exc->getMessage(), $exc->getCode(), $exc);
 
         $this->extra = $extra;
+        $this->level = $level;
     }
 
     public function __invoke() {
@@ -26,13 +33,27 @@ class Crash extends \Exception
         return $this->toJson();
     }
 
+    public function setHttpStatus($code): self {
+        $this->httpCode = $code;
+        return $this;
+    }
+
+    public function httpStatus(): array {
+        return [$this->httpCode];
+    }
+
+    public function level(): string {
+        return $this->level;
+    }
+
     public function toArray(): array {
         $exc    = $this->getPrevious();
         $result = [
-            'message'   => $exc->message(),
+            'message'   => $exc->getMessage(),
             'code'      => $exc->getCode(),
             'file'      => $exc->getFile(),
             'line'      => $exc->getLine(),
+            'level'     => $this->level,
             'extra'     => $this->extra,
         ];
         return $result;
@@ -42,8 +63,8 @@ class Crash extends \Exception
         return $this->toArray();
     }
 
-    public function toJson(): string {
-        return json_encode($this);
+    public function toJson($options = 0): string {
+        return json_encode($this, $options);
     }
 
     public function class(): string {
