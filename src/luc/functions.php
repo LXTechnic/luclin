@@ -2,6 +2,7 @@
 
 namespace luc;
 
+use Luclin\Crash;
 use Luclin\Module;
 
 use App;
@@ -29,14 +30,25 @@ function ins(string $name, ...$extra) {
     return $instance;
 }
 
-function raise() {
-
+function raise($error, array $extra = [], \Throwable $previous = null): Crash {
+    if (is_string($error)) {
+        if (!($conf = config("errors.$error"))) {
+            throw new \UnexpectedValueException("Raise error config is not found.");
+        }
+        $msg = isset($conf['msg'])
+            ? \luc\padding($conf['msg'], $extra)
+                : \luc\__(str_replace('.', '::', $error), $extra);
+        $exc = $conf['exc'] ?? \LogicException::class;
+        $error = new $exc($msg, $error, $previous);
+    }
+    $crash = new Crash($error, $extra);
 }
 
 function fs(): Filesystem {
     return new Filesystem();
 }
 
+// TODO: 对数组获取的兼容？
 function __(string $key, array $replace = [],
     ?string $locale = null): ?string
 {

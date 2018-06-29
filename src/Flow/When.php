@@ -35,7 +35,7 @@ class When implements Contracts\Tickable
         if (is_callable($way)) {
             $way($flow);
         } elseif ($way instanceof \Throwable) {
-            $flow->abort($way);
+            $flow->raise($way);
         }
         return $flow;
     }

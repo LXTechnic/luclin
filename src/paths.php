@@ -11,7 +11,8 @@ return function() {
         'config'        => [
             $this->module()->path('config', 'protocol.php') => 'protocol',
             $this->module()->path('config', 'module.php')   => static::$moduleName,
-            $this->module()->path('config', 'aborts.php')   => 'aborts',
+            $this->module()->path('config', 'errors.php')
+                => 'errors.'.static::$moduleName,
         ],
         'lang'          => [
             $this->module()->path('resources', 'lang') => static::$moduleName,

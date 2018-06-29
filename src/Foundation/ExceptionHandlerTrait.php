@@ -3,6 +3,7 @@
 namespace Luclin\Foundation;
 
 use Illuminate\Auth\AuthenticationException;
+use \Illuminate\Http\Response;
 
 trait ExceptionHandlerTrait
 {
@@ -15,8 +16,14 @@ trait ExceptionHandlerTrait
                     : redirect()->guest(route('login'));
     }
 
-    protected function renderException()
+    protected function renderException($request, \Throwable $exception): ?Response
     {
+        try {
+        } catch (\Throwable $exc) {
+            // 若在处理渲染报错时出错，记录错词日志并将错误交由框架处理
+            $this->report($exc);
+            return null;
+        }
         // 如果是abort，取出原本的数据
         if ($exception instanceof Abort) {
             $info       = $exception->all();
@@ -67,6 +74,6 @@ trait ExceptionHandlerTrait
         } catch (\Throwable $e) {
             // do nothing..
         }
-
+        return null;
     }
 }

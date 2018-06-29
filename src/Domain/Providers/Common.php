@@ -15,7 +15,7 @@ class Common extends \Luclin\Domain\Provider
 
     public function doNothing(): void {}
 
-    public function abort(\Throwable $e = null): void {
+    public function raise(\Throwable $e = null): void {
         throw $e ?: $this->_catch;
     }
 
