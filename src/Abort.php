@@ -7,11 +7,28 @@ use Illuminate\Contracts\Support as Contracts;
 class Abort extends \Exception
     implements \JsonSerializable, Contracts\Arrayable, Contracts\Jsonable
 {
+    const LEVEL_CODE_MAPPING = [
+        'notice'    => 200,
+        'warning'   => 403,
+        'error'     => 400,
+        'critical'  => 500,
+    ];
+
+    const LEVEL_NOTICE_MAPPING = [
+        'notice'    => true,
+        'warning'   => true,
+        'error'     => false,
+        'critical'  => false,
+    ];
+
     protected $extra;
 
     protected $level;
 
-    protected $httpCode = 500;
+    protected $httpCode;
+    protected $httpHeaders = [];
+
+    public $noticeOnly = false;
 
     public function __construct(\Throwable $exc, array $extra = [],
         string $level = 'error')
@@ -20,6 +37,9 @@ class Abort extends \Exception
 
         $this->extra = $extra;
         $this->level = $level;
+
+        $this->httpCode     = self::LEVEL_CODE_MAPPING[$this->level];
+        $this->noticeOnly   = self::LEVEL_NOTICE_MAPPING[$this->level];
     }
 
     public function __invoke() {
@@ -33,13 +53,18 @@ class Abort extends \Exception
         return $this->toJson();
     }
 
-    public function setHttpStatus($code): self {
+    public function setHttpCode($code): self {
         $this->httpCode = $code;
         return $this;
     }
 
+    public function setHttpHeaders(array $headers): self {
+        $this->httpHeaders = $headers;
+        return $this;
+    }
+
     public function httpStatus(): array {
-        return [$this->httpCode];
+        return [$this->httpCode, $this->httpHeaders];
     }
 
     public function level(): string {

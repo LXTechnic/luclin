@@ -10,3 +10,4 @@ require LUC_PATH.'helper.php';
 require LUC_PATH.'req.php';
 require LUC_PATH.'conf.php';
 require LUC_PATH.'idgen.php';
+require LUC_PATH.'protocol.php';

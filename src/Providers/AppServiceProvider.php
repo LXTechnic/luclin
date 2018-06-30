@@ -82,6 +82,7 @@ class AppServiceProvider extends Providers\AppService
     {
         parent::register();
 
+        // 实现控制器方法参数控制是否需要登录
         $this->app->bind('Luclin\Contracts\Auth', function($app) {
             return Auth::authenticate();
         });

@@ -9,8 +9,12 @@ use App;
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\Filesystem;
 
-function env($change = null): string {
-    return App::environment($change);
+function env(...$match): bool {
+    return App::environment($match);
+}
+
+function debug(): bool {
+    return config('app.debug');
 }
 
 function mod(string $name, string $prefix = 'lumod:'): Module {
