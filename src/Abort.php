@@ -31,7 +31,7 @@ class Abort extends \Exception
     public $noticeOnly = false;
 
     public function __construct(\Throwable $exc, array $extra = [],
-        string $level = 'error')
+        string $level = 'warning')
     {
         parent::__construct($exc->getMessage(), $exc->getCode(), $exc);
 

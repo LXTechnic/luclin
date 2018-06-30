@@ -36,7 +36,7 @@ function ins(string $name, ...$extra) {
 
 function raise($error, array $extra = [], \Throwable $previous = null): Abort
 {
-    $level = 'error';
+    $params = [];
     if (is_string($error)) {
         if (!($conf = config("aborts.$error")) && !is_array($conf)) {
             throw new \UnexpectedValueException("Raise error config is not found.");
@@ -51,9 +51,14 @@ function raise($error, array $extra = [], \Throwable $previous = null): Abort
         $exc = $conf['exc'] ?? \LogicException::class;
         $error = new $exc($msg, $num, $previous);
 
-        isset($conf['lvl']) && $level = $conf['lvl'];
+        $params[] = $error;
+        $params[] = $extra;
+        isset($conf['lvl']) && $params[] = $conf['lvl'];
+    } else {
+        $params[] = $error;
+        $params[] = $extra;
     }
-    $abort = new Abort($error, $extra, $level);
+    $abort = new Abort(...$params);
     return $abort;
 }
 

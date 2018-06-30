@@ -66,8 +66,7 @@ trait ExceptionHandlerTrait
             } else {
                 $abort = $exception;
             }
-            $response = \luc\protocol::abort($abort);
-            return $response->send(...$abort->httpStatus());
+            return \luc\protocol::abort($abort)->send(...$abort->httpStatus());
         } catch (\Error $exc) {
             // TODO: 这里记录方案要完善
             Log::error($exc->getMessage(), $exc->getTrace());
