@@ -6,7 +6,7 @@ use Luclin\MetaInterface;
 use Luclin\Meta\Collection;
 use Luclin\Uri;
 
-class Lists extends Collection implements DomainInterface
+class Lists extends Collection implements FieldInterface
 {
     use Foundation\DecorableTrait;
 
@@ -42,7 +42,7 @@ class Lists extends Collection implements DomainInterface
     {
         if (!$slave || !isset($slave[0])) {
             return $this;
-        }   
+        }
 
         $slaveClass = get_class($slave[0]);
 
@@ -60,13 +60,13 @@ class Lists extends Collection implements DomainInterface
         return $this;
     }
 
-    public function unionCall(string $alias, $func, ...$params): self {
+    public function unionCall(string $alias, $fun, ...$params): self {
         foreach ($this as $row) {
             foreach ($row->getUnion($alias) as $union) {
-                if (is_callable($func)) {
-                    $func($row, $union, ...$params);
+                if (is_callable($fun)) {
+                    $fun($row, $union, ...$params);
                 } else {
-                    $union->$func($row, ...$params);
+                    $union->$fun($row, ...$params);
                 }
             }
         }

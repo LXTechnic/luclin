@@ -4,6 +4,7 @@ namespace luc;
 
 use Luclin\Abort;
 use Luclin\Module;
+use Luclin\Flow;
 
 use App;
 use Illuminate\Support\Arr;
@@ -32,6 +33,13 @@ function ins(string $name, ...$extra) {
         }
     }
     return $instance;
+}
+
+function flow($body): Flow {
+    if (is_callable($body)) {
+        return new Flow($body);
+    }
+    return Flow::instance($body);
 }
 
 function raise($error, array $extra = [], \Throwable $previous = null): Abort

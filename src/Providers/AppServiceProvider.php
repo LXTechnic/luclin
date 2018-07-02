@@ -53,11 +53,11 @@ class AppServiceProvider extends Providers\AppService
 
     protected function declareMacros(): void {
         Eloquent\Collection::macro('pluckCustom',
-            function(string $field, callable $func, ...$arguments)
+            function(string $field, callable $fun, ...$arguments)
         {
             $result = [];
             foreach ($this as $item) {
-                $plucked = $func($item->$field, ...$arguments);
+                $plucked = $fun($item->$field, ...$arguments);
                 if (!$plucked) {
                     continue;
                 }

@@ -5,7 +5,7 @@ namespace Luclin\Protocol;
 use Luclin\MetaInterface;
 use Luclin\Meta\Struct;
 
-abstract class Type extends Struct implements DomainInterface
+abstract class Type extends Struct implements FieldInterface
 {
     use Foundation\ContrableTrait,
         Foundation\DecorableTrait;

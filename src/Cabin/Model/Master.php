@@ -39,8 +39,8 @@ class Master extends FoundationModel
      */
     public static function getByIds(...$ids): Collection {
         if (isset($ids[0]) && is_callable($ids[0])) {
-            $func   = array_shift($ids);
-            $query  = $func(self::whereIn(static::getIdField(), $ids));
+            $fun   = array_shift($ids);
+            $query  = $fun(self::whereIn(static::getIdField(), $ids));
         } else {
             $query  = self::whereIn(static::getIdField(), $ids);
         }

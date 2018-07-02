@@ -14,13 +14,13 @@ class CacheLoader
 
     public static function __callStatic(string $name, array $arguments)
     {
-        [$key, $func] = $arguments;
-        return static::instance($name)->get($key, $func);
+        [$key, $fun] = $arguments;
+        return static::instance($name)->get($key, $fun);
     }
 
-    public function get(string $key, callable $func) {
+    public function get(string $key, callable $fun) {
         if (!isset($this->cache[$key])) {
-            $this->cache[$key] = $func();
+            $this->cache[$key] = $fun();
         }
         return $this->cache[$key];
     }

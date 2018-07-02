@@ -72,9 +72,9 @@ trait StructTrait
         return isset(static::$_deprecated[$key]);
     }
 
-    public function includeDeprecated(callable $func) {
+    public function includeDeprecated(callable $fun) {
         static::$_includeDeprecated = true;
-        $result = $func($this);
+        $result = $fun($this);
         static::$_includeDeprecated = false;
         return $result;
     }

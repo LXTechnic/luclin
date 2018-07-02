@@ -2,6 +2,6 @@
 
 namespace Luclin\Protocol;
 
-interface DomainInterface
+interface FieldInterface
 {
 }

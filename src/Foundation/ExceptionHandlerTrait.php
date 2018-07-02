@@ -19,10 +19,10 @@ trait ExceptionHandlerTrait
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        // return response()->json(['message' => $exception->getMessage()], 401);
-        return $request->expectsJson()
-                    ? response()->json(['message' => $exception->getMessage()], 401)
-                    : redirect()->guest(route('login'));
+        return ($request->expectsJson()
+            || !$this->container->routes->getByName('login'))
+                ? response()->json(['message' => $exception->getMessage()], 401)
+                : redirect()->guest(route('login'));
     }
 
     protected function reportAbort(Abort $abort): void {

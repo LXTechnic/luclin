@@ -12,16 +12,16 @@ class Container extends Collection {
 
     public function __set($name, $value) {
         parent::__set($name, $value);
-        $value instanceof DomainInterface && $this->applyDecorators($name, $value);
+        $value instanceof FieldInterface && $this->applyDecorators($name, $value);
     }
 
     public function offsetSet($offset, $value) {
         parent::offsetSet($offset, $value);
-        $value instanceof DomainInterface && $this->applyDecorators($offset, $value);
+        $value instanceof FieldInterface && $this->applyDecorators($offset, $value);
     }
 
     public function applyDecorators(string $name,
-        DomainInterface $domain = null)
+        FieldInterface $domain = null)
     {
         $decorators = $domain ?
             $domain->getDecorators() : $this->get($name)->getDecorators();
