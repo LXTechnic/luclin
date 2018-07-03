@@ -3,8 +3,7 @@
 namespace Luclin\Cabin\Model;
 
 use Luclin\Foundation\{
-    Model as FoundationModel,
-    RolableTrait
+    Model as FoundationModel
 };
 use Luclin\Cabin;
 use Luclin\Cabin\Foundation;
@@ -16,9 +15,48 @@ use DB;
 
 class Master extends FoundationModel
 {
-    use RolableTrait;
+    protected static function migrateUpPrimary(Blueprint $table,
+        bool $isBig = false): void
+    {
+        $isBig ? $table->bigIncrements('id') : $table->increments('id');
 
-    public function getId() {
+    }
+
+    protected static function migrateDownPrimary(Blueprint $table): void
+    {
+        $table->dropColumn('id');
+    }
+
+    public function renewId(): self {
+        [$conn, $table] = static::connection();
+        $sql    = "SELECT nextval('{$table}_id_seq')";
+        $newId  = $conn->select($sql)[0]->nextval;
+        $this->setId($newId);
+        return $this;
+    }
+
+    public static function resetSequence(int $val, string $seqName = null) {
+        [$conn, $table] = static::connection();
+        !$seqName && $seqName = "{$table}_id_seq";
+        $sql = "ALTER SEQUENCE $seqName RESTART WITH $val";
+        return $conn->statement($sql);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    protected static $connectionInfo = null;
+
+    public function id() {
         $key = is_array($this->primaryKey) ? static::getIdField() : $this->primaryKey;
         return $this->{$key};
     }
@@ -92,24 +130,33 @@ class Master extends FoundationModel
 
     protected function afterConfirm() {}
 
-    public function getSchema(): string {
-        $connection = $this->getConnection()->getName();
-        return config("database.connections.$connection.schema");
+    public static function connectionInfo(): array {
+        if (!static::$connectionInfo) {
+            $model  = new static();
+            $connection = $model->getConnectionNaself();
+            $schema = config("database.connections.$connection.schema");
+            $table  = $model->getTable();
+            static::$connectionInfo = [$connection, $table, $schema];
+        }
+        return static::$connectionInfo;
     }
 
-    public static function getTablenameWithSchema(): string {
-        $model = new static();
-        return $model->getSchema().'.'.$model->getTable();
+    public static function connection(): array {
+        [$connection, $table, $schema] = static::connectionInfo();
+        return [
+            static::resolveConnection($connection),
+            $schema ? "$schema.$table" : $table,
+        ];
     }
 
-    public function own(): Builder {
+    public function self(): Builder {
         $query = $this->newQuery();
 
         if (!$this->exists) {
-            throw new \RuntimeException("model is not exists, could not call method own().");
+            throw new \RuntimeException("model is not exists, could not call method self().");
         }
 
-        $key = $this->getKeyName();
+        $key = $this->getKeyNaself();
         if (is_array($key)) {
             foreach ($key as $pk) {
                 $query->where($pk, $this->$pk);
@@ -118,7 +165,7 @@ class Master extends FoundationModel
         }
 
         return $query->where(
-            $this->getKeyName(), $this->getKey()
+            $this->getKeyNaself(), $this->getKey()
         );
     }
 
@@ -137,15 +184,17 @@ class Master extends FoundationModel
     }
 
     public function updateJson(string $field, array $path, string $value) {
-        // return $this->own()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));
+        // return $this->self()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));
 
-        $sql = "UPDATE ".static::getTablenameWithSchema()." SET $field = jsonb_set($field, '{".implode(',', $path)."}', '$value') WHERE ".$this->getKeyName()." = ".$this->getKey();
-        return DB::update($sql);
+        [$conn, $table] = static::connection();
+
+        $sql = "UPDATE $table SET $field = jsonb_set($field, '{".implode(',', $path)."}', '$value') WHERE ".$this->getKeyNaself()." = ".$this->getKey();
+        return $conn->update($sql);
     }
 
     public function incrementMore(array $values, array $update = [])
     {
-        $query   = $this->own()->toBase();
+        $query   = $this->self()->toBase();
         $grammar = $query->getGrammar();
         foreach ($values as $field => $value) {
             $update[$field] = DB::Raw($grammar->wrap($field)." + $value");

@@ -53,8 +53,9 @@ class Migration extends Command
         }
 
         $params = [
-            'name'      => $name,
-            '--path'    => $path,
+            'name'          => $name,
+            '--path'        => $path,
+            '--realpath'    => true,
         ];
         $create && $params['--create']  = $create;
         $table  && $params['--table']   = $table;
