@@ -7,6 +7,16 @@ use Log;
 
 class JwtToken
 {
+    const MAPPING = [
+        'auth'          => 'sub',
+        'from'          => 'iss',
+        'createdAt'     => 'iat',
+        'expireTime'    => 'exp',
+        'activedAt'     => 'nbf',
+        'id'            => 'jti',
+        'extra'         => 'ext',
+    ];
+
     private $payload = [
         'sub'   => 0,
         'iss'   => '',
@@ -17,92 +27,46 @@ class JwtToken
         'ext'   => [],
     ];
 
-    private $duration;
-    private $secret;
-    private $idGenerator;
-    private $userLoader = null;
+    private $header = [];
 
-    public function __construct(string $secret, callable $generator, int $duration) {
-        $this->secret       = $secret;
-        $this->idGenerator  = $generator;
-        $this->duration     = $duration;
+    public function __construct(array $payload = null) {
+        $payload && $this->payload = $payload;
     }
 
-    public function setUserLoader(callable $loader): self {
-        $this->userLoader = $loader;
-        return $this;
+    public function head(array $header = null): array {
+        $header && $this->header = $header;
+        return $header;
     }
 
-    public function setExtra(array $extra): self {
-        $this->payload['ext'] = $extra;
-        return $this;
+    public function make(string $secret, int $duration = 3600,
+        $alg = 'HS256', $keyId = null): string
+    {
+        !$this->createdAt   && $this->createdAt     = now()->timestamp;
+        !$this->activedAt   && $this->activedAt     = $this->createdAt - 10;
+        !$this->expireTime  && $this->expireTime    = $this->createdAt + $duration;
+
+        return JWT::encode($this->payload, $secret, $alg, $keyId, $this->header);
     }
 
-    public function setAuth($auth): self {
-        $this->payload['sub'] = $auth;
-        return $this;
-    }
-
-    public function setFrom(string $url): self {
-        $this->payload['iss'] = $url;
-        return $this;
-    }
-
-    public function setCreatedAt(int $time): self {
-        $this->payload['iat'] = $time;
-        return $this;
-    }
-
-    public function setExpireTime(int $time): self {
-        $this->payload['exp'] = $time;
-        return $this;
-    }
-
-    public function setActivedAt(int $time): self {
-        $this->payload['nbf'] = $time;
-        return $this;
-    }
-
-    public function make(): array {
-        !$this->payload['iat'] && $this->payload['iat'] = time() - 10;
-        !$this->payload['exp'] && $this->payload['exp'] = $this->payload['iat'] + $this->duration;
-        !$this->payload['nbf'] && $this->payload['nbf'] = $this->payload['iat'];
-
-        $generator = $this->idGenerator;
-        $this->payload['jti'] = $generator();
-
-        // Log::info('make jwt token', $this->payload);
-
-        return [$this->payload['jti'], JWT::encode($this->payload, $this->secret), $this->payload];
-    }
-
-    public function extra() {
-        return $this->payload['ext'] ?? null;
-    }
-
-    public function getExpireTime(): int {
-        return $this->payload['exp'];
-    }
-
-    public function parse(string $token): ?self {
+    public static function parse(string $data, string $secret,
+        array $allowedAlgs = ['HS256']): ?self
+    {
         try {
-            $this->payload = (array)JWT::decode($token, $this->secret, ['HS256']);
-            // Log::info('parse jwt token', $this->payload);
+            $token = new self((array)JWT::decode($data, $secret, $allowedAlgs));
         } catch (\Throwable $e) {
             return null;
         }
-        return $this;
+        return $token;
     }
 
-    public function user() {
-        if ($this->userLoader) {
-            $loader = $this->userLoader;
-            return $loader($this->payload);
-        }
-        return $this->payload['sub'];
+    public function __get($name) {
+        isset(self::MAPPING[$name]) && $name = self::MAPPING[$name];
+        return $this->payload[$name];
     }
 
-    public function validate(array $credentials = []) {
-
+    public function __set($name, $value) {
+        isset(self::MAPPING[$name]) && $name = self::MAPPING[$name];
+        return $this->payload[$name] = $value;
     }
+
 }

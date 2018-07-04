@@ -12,18 +12,22 @@ class idgen
      * @param integer $length 最大值为16，超出后可能会出现浮点记数的报错
      * @return string
      */
-    public static function sorted36(int $length = 10): string {
-        return (new Support\IdGenerator())
-            ->randByLength($length)
-            ->orderable()
+    public static function sorted36(int $length = 10, int $multiple = 2): string {
+        $gen = new Support\IdGenerator();
+        for ($i = 0; $i < $multiple; $i++) {
+            $gen->randByLength($length);
+        }
+        return $gen->orderable()
             ->gmpStrval(36)
             ->get();
     }
 
-    public static function sorted62(int $length = 10): string {
-        return (new Support\IdGenerator())
-            ->randByLength($length)
-            ->orderable()
+    public static function sorted62(int $length = 10, int $multiple = 2): string {
+        $gen = new Support\IdGenerator();
+        for ($i = 0; $i < $multiple; $i++) {
+            $gen->randByLength($length);
+        }
+        return $gen->orderable()
             ->gmpStrval(62)
             ->get();
     }

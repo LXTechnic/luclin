@@ -18,16 +18,21 @@ class Flow
         return self::instance($name, $this->body);
     }
 
-    public function __invoke($domain, iterable $context, ...$arguments) {
+    public function __invoke($domain, ...$arguments) {
         if ($domain) {
             $domains = is_array($domain) ? $domain : [$domain];
         } else {
             $domains = [];
         }
-
         $domains[]  = Foundation\Domains\Common::class;
-        !($context instanceof Flow\Context)
-            && ($context = (new Flow\Context)->fill($context));
+
+        if (isset($arguments[0]) && is_iterable($arguments[0])) {
+            $context = array_shift($arguments);
+            !($context instanceof Flow\Context)
+                && ($context = (new Flow\Context())->fill($context));
+        } else {
+            $context = new Flow\Context();
+        }
         $sandbox    = new Flow\Sandbox($domains, $context);
         $body = $this->body;
         return [$body->call($sandbox, ...$arguments), $context];

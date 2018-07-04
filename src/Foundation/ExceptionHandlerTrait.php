@@ -17,6 +17,12 @@ use Psr\Log\LoggerInterface;
 trait ExceptionHandlerTrait
 {
 
+    protected function dontReport(): array {
+        return [
+            \InvalidArgumentException::class,
+        ];
+    }
+
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         return ($request->expectsJson()
@@ -25,14 +31,22 @@ trait ExceptionHandlerTrait
                 : redirect()->guest(route('login'));
     }
 
-    protected function reportAbort(Abort $abort): void {
+    protected function reportAbort(\Throwable $abort): bool {
+        if (in_array(get_class($abort), $this->dontReport())) {
+            return true;
+        }
+
+        if (!($abort instanceof Abort)) {
+            return false;
+        }
+
         if ($this->shouldntReport($abort)) {
-            return;
+            return true;
         }
 
         if (method_exists($abort->getPrevious(), 'report')) {
             $abort->getPrevious()->report();
-            return;
+            return true;
         }
 
         try {
@@ -52,19 +66,30 @@ trait ExceptionHandlerTrait
                 array_merge($this->context(), $extra, ['exception' => $exc]
             ));
         }
+        return true;
     }
 
     protected function renderException($request, \Throwable $exception): ?Response
     {
         try {
             if (!($exception instanceof Abort)) {
-                if (\luc\debug()) {
+                if ($exception instanceof \InvalidArgumentException) {
+                    $abort = new Abort($exception);
+                } elseif (\luc\debug()) {
                     return null;
+                } else {
+                    // 在非debug模式下会将其他报错转义为一个默认报错
+                    $abort = \luc\raise('luclin.server_error', [], $exception);
                 }
-                // 在非debug模式下会将其他报错转义为一个默认报错
-                $abort = \luc\raise('luclin.server_error', [], $exception);
             } else {
-                $abort = $exception;
+                // 非调试模式下致命错误将被转换为默认报错
+                if ($exception->level() == 'critical'
+                    && !\luc\debug())
+                {
+                    $abort = \luc\raise('luclin.server_error', [], $exception);
+                } else {
+                    $abort = $exception;
+                }
             }
             return \luc\protocol::abort($abort)->send(...$abort->httpStatus());
         } catch (\Error $exc) {

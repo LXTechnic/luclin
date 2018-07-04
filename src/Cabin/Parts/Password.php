@@ -19,4 +19,18 @@ trait Password
     {
         $table->dropColumn('password');
     }
+
+    protected function getPasswordSecret(): string {
+        return config('app.key');
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password']
+            = password_hash($this->getPasswordSecret().$value, \PASSWORD_BCRYPT);
+    }
+
+    public function verifyPassword(string $value): bool {
+        return password_verify($this->getPasswordSecret().$value, $this->password);
+    }
 }

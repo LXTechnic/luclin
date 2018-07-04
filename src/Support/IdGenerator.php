@@ -15,8 +15,8 @@ class IdGenerator {
      */
     private $algo;
 
-    private $raw;
-    private $data;
+    private $raw    = '';
+    private $data   = '';
 
     public function __construct(string $algo = 'tiger128,3') {
         $this->algo = $algo;
@@ -52,7 +52,7 @@ class IdGenerator {
     }
 
     public function rand(int $min, int $max): self {
-        $this->data = mt_rand($min, $max);
+        $this->data .= mt_rand($min, $max);
         return $this;
     }
 

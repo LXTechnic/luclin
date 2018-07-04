@@ -11,7 +11,7 @@ class Migrate extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:migrate {action} {--module=} {--path=database/migrations}';
+    protected $signature = 'luc:migrate {action} {--db=} {--module=} {--path=database/migrations}';
 
     /**
      * The console command description.
@@ -21,8 +21,9 @@ class Migrate extends Command
     protected $description = '数据结构迁移';
 
     private $mapping = [
-        'up'    => 'migrate',
-        'down'  => 'migrate:rollback',
+        'up'        => 'migrate',
+        'down'      => 'migrate:rollback',
+        'refresh'   => 'migrate:refresh',
     ];
 
     /**
@@ -46,13 +47,15 @@ class Migrate extends Command
             'action'    => $action,
         ] = $this->arguments();
         @[
+            'db'        => $database,
             'module'    => $module,
             'path'      => $path,
         ] = $this->options();
 
         $action = $this->mapping[$action];
         $params = [];
-        $module && $path && $params['--path'] = \luc\mod($module)->path($path);
+        $database   && $params['--database'] = $database;
+        $module     && $path && $params['--path'] = \luc\mod($module)->path($path);
         $this->call($action, $params);
     }
 
