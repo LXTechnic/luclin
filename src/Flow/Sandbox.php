@@ -5,15 +5,22 @@ namespace Luclin\Flow;
 class Sandbox
 {
     private $_context;
-    private $_domains   = [];
-    private $_providers = [];
+    private $_domains       = [];
+    private $_domainAlias   = [];
+    private $_providers     = [];
 
     private $_roles = [];
 
     public function __construct(array $domains, Context $context) {
-        foreach ($domains as $domain) {
+        foreach ($domains as $key => $domain) {
             $domain = new $domain();
+            if (isset($this->_domains[$domain->id()])) {
+                throw new \RuntimeException("Domain id ".$domain->id()." conflict.");
+            }
             $this->_domains[$domain->id()] = $domain;
+            if (!is_numeric($key)) {
+                $this->_domainAlias[$key] = $domain->id();
+            }
         }
         $this->_context = $context;
     }
@@ -37,6 +44,8 @@ class Sandbox
                 $this->loadRole($key);
             }
             return $this->_roles[$key] ?: $this->_context[$key];
+        } elseif (isset($this->_domainAlias[$key])) {
+            return $this->_domains[$this->_domainAlias[$key]];
         } elseif (isset($this->_domains[$key])) {
             return $this->_domains[$key];
         } else {

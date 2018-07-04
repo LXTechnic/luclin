@@ -73,8 +73,11 @@ trait ExceptionHandlerTrait
     {
         try {
             if (!($exception instanceof Abort)) {
+                // TODO: 这里的逻辑之后优化
                 if ($exception instanceof \InvalidArgumentException) {
                     $abort = new Abort($exception);
+                } elseif ($exception instanceof AuthenticationException) {
+                    return null;
                 } elseif (\luc\debug()) {
                     return null;
                 } else {

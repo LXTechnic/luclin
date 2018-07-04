@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 interface Auth extends Authenticatable
 {
-    public function model();
+    public function __invoke();
 
     public function id();
 

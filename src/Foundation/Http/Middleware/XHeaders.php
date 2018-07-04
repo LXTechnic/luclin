@@ -52,6 +52,8 @@ class XHeaders
                     ? $values : $values[0];
             }
         }
+
+        $xheaders->confirm();
         return $next($request);
     }
 

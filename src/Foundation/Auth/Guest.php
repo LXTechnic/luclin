@@ -19,7 +19,7 @@ class Guest extends Meta\Struct implements Authenticatable
         ];
     }
 
-    public function model() {
+    public function __invoke() {
         return null;
     }
 }

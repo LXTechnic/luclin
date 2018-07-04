@@ -49,7 +49,9 @@ class Migration extends Command
 
         $path = \luc\mod($module)->path($path);
         if (!file_exists($path)) {
-            throw new \Exception("Migations directory [$path] is not exists.");
+            if (!mkdir($path, 0755, true)) {
+                throw new \Exception("Migations directory [$path] is not exists.");
+            }
         }
 
         $params = [

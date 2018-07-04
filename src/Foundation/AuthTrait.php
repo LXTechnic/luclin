@@ -4,8 +4,6 @@ namespace Luclin\Foundation;
 
 trait AuthTrait
 {
-    abstract public function model();
-
     protected $_authExtra = [];
 
     public function getAuthExtra($key = null) {
