@@ -9,7 +9,8 @@ return function() {
             $this->module()->path('database', 'migrations'),
         ],
         'config'        => [
-            $this->module()->path('config', 'protocol.php') => 'protocol',
+            $this->module()->path('config', 'protocol', 'xheaders.php')
+                => 'protocol.xheaders',
             $this->module()->path('config', 'module.php')   => static::$moduleName,
             $this->module()->path('config', 'aborts.php')
                 => 'aborts.'.static::$moduleName,
