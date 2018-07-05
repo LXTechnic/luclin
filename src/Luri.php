@@ -2,10 +2,7 @@
 
 namespace Luclin;
 
-/**
- * 为精简模式下的uri进行适配
- */
-class Uri
+class Luri
 {
     const DEFAULT_RENDER = [
         'scheme',

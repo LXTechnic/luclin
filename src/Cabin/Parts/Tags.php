@@ -2,19 +2,17 @@
 
 namespace Luclin\Cabin\Parts;
 
-use Lianxue\Tspack\Services;
-
 use Illuminate\Database\Schema\Blueprint;
-use DB;
 
 /**
  * @property array $tags
  */
 trait Tags
 {
+    abstract protected function createTag();
+
     public function setTagsAttribute($value) {
         $this->attributes['tags'] = $this->arrayFieldEncode($value);
-        Services\Tag::createByUser(...$this->tags);
     }
 
     public function getTagsAttribute() {
@@ -23,8 +21,8 @@ trait Tags
 
     protected static function migrateUpTags(?Blueprint $table): void
     {
-        $table  = static::getTablenameWithSchema();
-        DB::statement("ALTER TABLE $table ADD COLUMN tags character varying(50)[];");
+        [$conn, $table] = static::connection();
+        $conn->statement("ALTER TABLE $table ADD COLUMN tags character varying(50)[];");
     }
 
     protected static function migrateDownTags(?Blueprint $table): void

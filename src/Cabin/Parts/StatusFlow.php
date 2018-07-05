@@ -2,11 +2,6 @@
 
 namespace Luclin\Cabin\Parts;
 
-use Lianxue\Tspack\Support\{
-    Helper as helper
-};
-use Lianxue\Tspack\Combi\AbortFacade as abort;
-
 use Illuminate\Database\Schema\Blueprint;
 use DB;
 
@@ -16,6 +11,8 @@ use DB;
  */
 trait StatusFlow
 {
+    abstract protected function getStatusFlow(): array;
+
     protected static function migrateUpStatusFlow(Blueprint $table): void
     {
         $table->smallInteger('status')->default(static::getDefaultStatus());
@@ -63,8 +60,7 @@ trait StatusFlow
     }
 
     protected function raiseStatusFlowError($currentStatus, $nextStatus) {
-        throw abort::logic(...helper::aborts(609013));
+        throw \luc\raise('luclin.status_flow_error');
     }
 
-    abstract protected function getStatusFlow(): array;
 }

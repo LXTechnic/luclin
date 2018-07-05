@@ -12,4 +12,9 @@ return [
         // 'msg'    => '参数错误', // 允许直接填写报错信息
         'exc'       => \InvalidArgumentException::class, // 不设默认LogicException
     ],
+    'status_flow_error'   => [
+        'num'       => 4350,
+        // 'msg'    => '参数错误', // 允许直接填写报错信息
+        'exc'       => \InvalidArgumentException::class, // 不设默认LogicException
+    ],
 ];

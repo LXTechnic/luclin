@@ -12,8 +12,8 @@ trait HasTarget
 {
     protected static function migrateUpHasTarget(Blueprint $table): void
     {
-        $table->smallInteger('target_type')->nullable();
-        $table->bigInteger('target_id')->nullable();
+        $table->string('target_type', 50)->nullable();
+        $table->string('target_id', 250)->nullable();
     }
 
     protected static function migrateDownHasTarget(Blueprint $table): void

@@ -2,8 +2,6 @@
 
 namespace Luclin\Cabin\Parts;
 
-use Lianxue\Foundation\Resource;
-
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -12,10 +10,12 @@ use Illuminate\Database\Schema\Blueprint;
  */
 trait HasMaster
 {
+    abstract public function getMaster();
+
     protected static function migrateUpHasMaster(Blueprint $table): void
     {
-        $table->smallInteger('master_type')->nullable();
-        $table->string('master_id', 50)->nullable();
+        $table->string('master_type', 50)->nullable();
+        $table->string('master_id', 250)->nullable();
     }
 
     protected static function migrateDownHasMaster(Blueprint $table): void
@@ -24,12 +24,9 @@ trait HasMaster
         $table->dropColumn('master_id');
     }
 
-    public function setMaster(object $master) {
-        $this->master_type  = Resource::getTypeByInstance($master);
-        $this->master_id    = $master->getId();
-    }
-
-    public function getMaster(): object {
-        return Resource::get($this->master_type, $this->master_id);
+    public function setMaster($type, $id): self {
+        $this->master_type  = $type;
+        $this->master_id    = $id;
+        return $this;
     }
 }

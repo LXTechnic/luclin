@@ -5,6 +5,7 @@ namespace luc;
 use Luclin\Abort;
 use Luclin\Module;
 use Luclin\Flow;
+use Luclin\Luri;
 
 use App;
 use Illuminate\Support\Arr;
@@ -20,6 +21,10 @@ function debug(): bool {
 
 function mod(string $name, string $prefix = 'lumod:'): Module {
     return app("$prefix$name");
+}
+
+function uri(string $url): Luri {
+
 }
 
 function ins(string $name, ...$extra) {
