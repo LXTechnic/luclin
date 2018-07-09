@@ -4,8 +4,7 @@ namespace Luclin\Cabin\Foundation\Seekers;
 
 class Start
 {
-    public function __invoke() {
-        dump('start');
+    public function __invoke($id) {
         return 123;
     }
 }

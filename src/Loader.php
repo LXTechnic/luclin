@@ -46,7 +46,6 @@ class Loader
             $class  = strtr(ucwords($name, $slash), $slash, '\\');
             foreach ($this->registers as $namespace => $builder) {
                 $fullName = "$namespace\\$class";
-                dump($fullName, class_exists($fullName));
                 if (class_exists($fullName)) {
                     $this->cache[$name] = [$fullName, $builder];
                     break;

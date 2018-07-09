@@ -66,11 +66,11 @@ class Luri
             if ($result instanceof Contracts\Router) {
                 $router = $result;
             } else {
-                if ($path) {
-                    $root = array_shift($path);
-                    return $result->$root($path, $this->query());
+                if (is_callable($result)) {
+                    return $result($path, $this->query());
                 }
-                return $result($path, $this->query());
+                $root = array_shift($path);
+                return $result->$root($path, $this->query());
             }
         }
         return null;

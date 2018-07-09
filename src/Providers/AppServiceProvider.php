@@ -51,7 +51,7 @@ class AppServiceProvider extends Providers\AppService
 
         // Loader::instance('luri:query')->register(Routers\Query::class);
         Loader::instance('luri:seek')
-            ->register('Lucin\\Cabin\\Foundation\\Seekers');
+            ->register('Luclin\\Cabin\\Foundation\\Seekers');
         // Loader::instance('luri:preset')->register(Routers\Preset::class);
         Luri::registerScheme('luc', LuclinScheme::instance());
     }
