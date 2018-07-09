@@ -4,8 +4,13 @@ namespace Luclin\Providers;
 
 use Luclin\Support;
 use Luclin\Contracts;
-use Luclin\Foundation\Providers;
-use Luclin\Uri;
+use Luclin\Loader;
+use Luclin\Luri;
+use Luclin\Routers;
+use Luclin\Foundation\{
+    Providers,
+    LuclinScheme
+};
 use Luclin\Protocol\{
     XHeaders,
     Request
@@ -43,6 +48,12 @@ class AppServiceProvider extends Providers\AppService
     public function boot()
     {
         parent::boot();
+
+        // Loader::instance('luri:query')->register(Routers\Query::class);
+        Loader::instance('luri:seek')
+            ->register('Lucin\\Cabin\\Foundation\\Seekers');
+        // Loader::instance('luri:preset')->register(Routers\Preset::class);
+        Luri::registerScheme('luc', LuclinScheme::instance());
     }
 
     protected function registerResolving(): void {
@@ -88,9 +99,6 @@ class AppServiceProvider extends Providers\AppService
         });
 
         $this->registerSingleton();
-
-        $this->app->bind(Contracts\Uri\FragmentPlug::class,
-            Uri\Plugs\FragmentSlice::class);
     }
 
     protected function registerSingleton() {

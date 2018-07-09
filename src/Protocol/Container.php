@@ -3,7 +3,6 @@
 namespace Luclin\Protocol;
 
 use Luclin\Meta\Collection;
-use Luclin\Uri;
 use Luclin\Support\Recursive;
 
 class Container extends Collection {

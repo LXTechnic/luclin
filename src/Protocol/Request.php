@@ -3,7 +3,6 @@
 namespace Luclin\Protocol;
 
 use Luclin\Meta\Struct;
-use Luclin\Uri;
 use Luclin\MetaInterface;
 
 use Validator;
@@ -22,6 +21,10 @@ class Request extends Struct
         $this->raw = $raw;
 
         $this->fill($raw->toArray());
+    }
+
+    protected static function _nullable(): ?array {
+        return null;
     }
 
     protected static function _validate(): array {

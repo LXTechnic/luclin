@@ -2,13 +2,11 @@
 
 namespace Luclin\Cabin\Model;
 
-use Luclin\Foundation\{
-    Model as FoundationModel
-};
+use Luclin\Cabin\Foundation\Model;
 
 use Illuminate\Database\Schema\Blueprint;
 
-class Master extends FoundationModel
+class Master extends Model
 {
     protected static function migrateUpPrimary(Blueprint $table,
         bool $isBig = false): void

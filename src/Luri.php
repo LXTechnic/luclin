@@ -4,131 +4,91 @@ namespace Luclin;
 
 class Luri
 {
-    const DEFAULT_RENDER = [
-        'scheme',
-        'root',
-        'path',
-        'query',
-        'fragment',
-    ];
-
-    protected $defaultScheme = 'custom';
+    private static $registerSchemes = [];
 
     private $scheme;
-
-    private $root;
     private $path;
     private $query;
-    private $fragment;
 
-    public function __construct(string $uri, string $root = null)
+    public function __construct(string $scheme, string $path, array $query)
     {
-        $uri = $this->fixHttpAlias($uri);
-
-        $parsed = parse_url($uri);
-        $this->scheme   = $parsed['scheme'] ?? $this->defaultScheme;
-        $this->path     = $parsed['path']   ?? '';
-        $this->query    = $parsed['query']  ?? '';
-        $this->fragment = $parsed['fragment']   ?? '';
-        $root && $this->root = $root;
-
-        $this->update();
+        $this->scheme   = $scheme;
+        $this->path     = $path;
+        $this->query    = $query;
     }
 
-    private function fixHttpAlias(string $uri): string {
-        $uri = strtr($uri, ["    " => '#']);
-        $uri = strtr($uri, ["  " => '&']);
-        return $uri;
+    public static function registerScheme(string $name, Luri\Scheme $scheme): void {
+        static::$registerSchemes[$name] = $scheme;
     }
 
-    public function render(...$parts): string {
-        !$parts && $parts = self::DEFAULT_RENDER;
+    public static function createByUrl(string $url): self {
+        $parsed = parse_url(urldecode($url));
+        $query  = static::parseQuery($parsed['query'] ?? null);
+        $luri   = new self($parsed['scheme'], $parsed['path'], $query);
+        return $luri;
+    }
 
-        $data = [];
-        foreach ($parts as $part) {
-            $data[$part] = $this->$part;
+    private static function parseQuery(?string $query): array {
+        if (!$query) {
+            return [];
         }
-        $data = $this->renderData($data);
-
-        $uri = '';
-        isset($data['scheme'])      && $uri  = $data['scheme'].':';
-        isset($data['root'])        && $uri .= $data['root'].'/';
-        isset($data['path'])        && $uri .= $data['path'];
-        isset($data['query'])       && $uri .= '?'.http_build_query($data['query']);
-        isset($data['fragment'])
-            && $data['fragment']    && $uri .= '#'.$data['fragment'];
-        return $uri;
+        parse_str(strtr($query, [
+            '  '    => '&',
+            '++'    => '&',
+        ]), $result);
+        return $result;
     }
 
-    public function update() {
-
-        $this->path = trim($this->path, '/');
-        if (!$this->root) {
-            $pos = strpos($this->path, '/');
-            if ($pos) {
-                $this->root = substr($this->path, 0, $pos);
-                $this->path = substr($this->path, ++$pos);
-            } else {
-                $this->root = $this->path;
-                $this->path = '';
-            }
-        }
-
-        if ($this->query) {
-            parse_str($this->query, $result);
-            $this->query = $result;
-        }
-        !$this->query && $this->query = [];
-
-        $this->afterUpdate();
-    }
-
-    protected function renderData(array $data): array {
-        return $data;
-    }
-
-    protected function afterUpdate(): void {}
-
-    public function getRoot(): string {
-        return $this->root;
-    }
-
-    public function getPath(): string {
-        return $this->path;
-    }
-
-    public function getQuery(string $name = null, $default = null) {
-        return $name ? ($this->query[$name] ?? $default) : $this->query;
-    }
-
-    public function getFragment() {
-        return $this->fragment;
-    }
-
-    public function setPath($path): self {
-        $this->path = $path;
-        return $this;
-    }
-
-    public function setQuery(string $name, $value): self {
-        $this->query[$name] = $value;
-        return $this;
-    }
-
-    public function setFragment(string $value): self {
-        $this->fragment = $value;
-        return $this;
-    }
-
-    public function fragment(): Contracts\Uri\FragmentPlug {
-        $fragment = app(Contracts\Uri\FragmentPlug::class, [
-            'value'     => $this->getFragment(),
-            'parent'    => $this,
-        ]);
-        return $fragment;
+    public function render($quote = false): string {
+        $url = "$this->scheme:$this->path";
+        $this->query && $url .= '?'.http_build_query($this->query);
+        return $quote ? strtr($url, ['&' => '++']) : $url;
     }
 
     public function __toString(): string {
         return $this->render();
+    }
+
+    public function resolve() {
+
+        // $offset = 0;
+        // while ($pos = strpos($this->path, '/', $offset)) {
+        //     yield substr($this->path, $offset, $pos - $offset)
+        //         => [substr($this->path, $pos + 1), $this->query()];
+        //     $offset = $pos + 1;
+        // }
+        // yield substr($this->path, $offset) => [null, $this->query()];
+
+        $router = $this->scheme();
+        $path   = explode('/', $this->path);
+        while ($root = array_shift($path)) {
+            $result = $router->$root($path, $this->query());
+            if ($result instanceof Contracts\Router) {
+                $router = $result;
+            } else {
+                if ($path) {
+                    $root = array_shift($path);
+                    return $result->$root($path, $this->query());
+                }
+                return $result($path, $this->query());
+            }
+        }
+        return null;
+    }
+
+    public function scheme(): Luri\Scheme {
+        return static::$registerSchemes[$this->scheme];
+    }
+
+    public function query(): array {
+        return $this->query;
+    }
+
+    public function __get(string $name) {
+        return $this->query[$name] ?? null;
+    }
+
+    public function __set(string $name, $value): void {
+        $this->query[$name] = $value;
     }
 }

@@ -71,13 +71,6 @@ trait CollectionTrait
     }
 
     /**
-     * @return array
-     */
-    public function all(): array {
-        return $this->items;
-    }
-
-    /**
      *
      * @param int|string $key
      * @return bool

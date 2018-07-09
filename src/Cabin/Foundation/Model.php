@@ -1,6 +1,6 @@
 <?php
 
-namespace Luclin\Foundation;
+namespace Luclin\Cabin\Foundation;
 
 use Luclin\Contracts;
 use Luclin\Cabin;
@@ -66,6 +66,26 @@ abstract class Model extends EloquentModel implements Contracts\Model
     // public static function fofWithTrashed($id) {
     //     return Cabin::load(static::class, $id, true, true);
     // }
+
+    public static function query($pattern = null)
+    {
+        if ($pattern) {
+            if (is_string($pattern)) {
+
+            } else {
+                $query = (new static)->newQuery();
+                if (is_array($pattern)) {
+                    foreach ($pattern as $pat) {
+                        $pat($query);
+                    }
+                } else {
+                    $pattern($query);
+                }
+                return $query;
+            }
+        }
+        return (new static)->newQuery();
+    }
 
     public static function contains(string $field, ...$values): Builder {
         return self::query()

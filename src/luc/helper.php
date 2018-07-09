@@ -4,6 +4,8 @@ namespace luc;
 
 use Luclin\Support\Recursive;
 
+use Nette\Neon\Neon;
+
 class helper
 {
     public static $addons = [];
@@ -12,6 +14,10 @@ class helper
     {
         $method = self::$addons[$name];
         return $method(...$arguments);
+    }
+
+    public static function ndecode(string $data) {
+        return Neon::decode($data);
     }
 
     public static function toArray(iterable $iterable,

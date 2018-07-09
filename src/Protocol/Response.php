@@ -3,7 +3,6 @@
 namespace Luclin\Protocol;
 
 use Luclin\Meta\Collection;
-use Luclin\Uri;
 
 class Response extends Container
 {

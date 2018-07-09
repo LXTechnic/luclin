@@ -19,11 +19,36 @@ trait OperableTrait
             if ($value === null) {
                 return null;
             }
-            $operator = Loader::instance('operator')->make($name, $value, ...$arguments);
+            $operator = Loader::instance('operator')
+                ->make($name, $value, ...$arguments);
             $this->setOperator($operator, $name);
         }
 
         return $this->_operators[$name];
+    }
+
+    public function getOperators(string $key = null): array {
+        $result = [];
+        if ($key) {
+            $collection = data_get($this->all(), $key);
+            if ($collection) foreach ($collection as $key => $value) {
+                if ($key[0] != '$') {
+                    continue;
+                }
+                $name = substr($key, 1);
+                $result[$name] = Loader::instance('operator')->make($name, $value);
+            }
+            return $result;
+        }
+
+        foreach ($this as $key => $value) {
+            if ($key[0] != '$') {
+                continue;
+            }
+            $name = substr($key, 1);
+            $result[$name] = $this->getOperator($name);
+        }
+        return $result;
     }
 
     public function setOperator(Contracts\Operator $operator, string $name = null): self {

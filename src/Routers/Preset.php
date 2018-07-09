@@ -1,16 +1,18 @@
 <?php
 
-namespace Luclin\Protocol\Operators;
+namespace Luclin\Routers;
 
 use Luclin\Meta\Collection;
 use Luclin\Contracts;
-use Luclin\Protocol\Operator;
+use Luclin\Loader;
+use Luclin\Luri;
 use Luclin\Protocol\Foundation;
 
 class Preset extends Collection
-    implements \Luclin\MetaInterface, Contracts\Operator
+    implements \Luclin\MetaInterface, Contracts\Router
 {
-    use Foundation\OperableTrait;
+    use Foundation\OperableTrait,
+        Luri\RouterTrait;
 
     protected $_name;
 

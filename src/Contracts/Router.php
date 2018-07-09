@@ -2,6 +2,7 @@
 
 namespace Luclin\Contracts;
 
-interface Operator
+interface Router
 {
+
 }

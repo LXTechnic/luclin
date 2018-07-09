@@ -46,7 +46,7 @@ trait ChangeLogTrait {
     public function getChanges(): array {
 
         // 如果数据全部为空，或者整体更新
-        $data = $this->all();
+        $data = $this->iterate()->toArray();
         if (!$data || $this->_isAllChanged) {
             return [null, null, $data];
         }
@@ -68,7 +68,7 @@ trait ChangeLogTrait {
     }
 
     public function getOriginalData(): array {
-        return $this->_originalData + $this->all();
+        return $this->_originalData + $this->iterate()->toArray();
     }
 
     public function releaseOriginalData(): MetaInterface {

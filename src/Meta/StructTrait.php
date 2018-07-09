@@ -36,7 +36,7 @@ trait StructTrait
         return [];
     }
 
-    protected static function _nullable(): array {
+    protected static function _nullable(): ?array {
         return [];
     }
 
@@ -112,19 +112,6 @@ trait StructTrait
     }
 
     /**
-     * 返回全部属性
-     *
-     * @return array
-     */
-    public function all(): array {
-        $result = [];
-        foreach ($this->iterate() as $key => $value) {
-            $result[$key] = $value;
-        }
-        return $result;
-    }
-
-    /**
      *
      * @return MetaInterface
      * @throws \UnexpectedValueException
@@ -137,7 +124,10 @@ trait StructTrait
             $method = "_confirm_$key";
             if (method_exists($this, $method)) {
                 $value = $this->$method($value);
-            } elseif ($value === null && !isset($nullable[$key])) {
+            } elseif ($value === null
+                && is_array($nullable)
+                && !isset($nullable[$key]))
+            {
                 throw new \UnexpectedValueException(
                     "meta:".static::class." field [$key] could not be empty");
             }
