@@ -28,10 +28,10 @@ class Flow
 
         if (isset($arguments[0]) && is_iterable($arguments[0])) {
             $context = array_shift($arguments);
-            !($context instanceof Flow\Context)
-                && ($context = (new Flow\Context())->fill($context));
+            !($context instanceof Context)
+                && ($context = (new Context())->fill($context));
         } else {
-            $context = new Flow\Context();
+            $context = new Context();
         }
         $sandbox    = new Flow\Sandbox($domains, $context);
         $body = $this->body;

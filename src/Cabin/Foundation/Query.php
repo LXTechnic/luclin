@@ -1,6 +1,6 @@
 <?php
 
-namespace Luclin\Routers;
+namespace Luclin\Cabin\Foundation;
 
 use Luclin\Contracts;
 use Luclin\Loader;

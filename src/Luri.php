@@ -49,7 +49,8 @@ class Luri
         return $this->render();
     }
 
-    public function resolve() {
+    public function resolve(array $context = []) {
+        $context = (new Context())->fill($context);
 
         // $offset = 0;
         // while ($pos = strpos($this->path, '/', $offset)) {
@@ -62,15 +63,14 @@ class Luri
         $router = $this->scheme();
         $path   = explode('/', $this->path);
         while ($root = array_shift($path)) {
-            $result = $router->$root($path, $this->query());
+            $result = $router->$root($path, $this->query(), $context);
+
             if ($result instanceof Contracts\Router) {
                 $router = $result;
+            } elseif ($result instanceof Contracts\Endpoint) {
+                return $result;
             } else {
-                if (is_callable($result)) {
-                    return $result($path, $this->query());
-                }
-                $root = array_shift($path);
-                return $result->$root($path, $this->query());
+                throw new \RuntimeException("Luri path node must be Router or Endpoint, ".get_class($result)." given.");
             }
         }
         return null;

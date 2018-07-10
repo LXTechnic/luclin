@@ -2,16 +2,20 @@
 
 namespace Luclin\Foundation;
 
-use Luclin\Luri\Scheme;
-use Luclin\Routers;
+use Luclin\Contracts\Context;
+use Luclin\Luri\{
+    Scheme,
+    Preset
+};
+use Luclin\Cabin\Foundation as CabinRouter;
 
 class LuclinScheme extends Scheme
 {
-    protected static function _routers(): array {
-        return parent::_routers() + [
-            'preset'    => Routers\Preset::class,
-            'query'     => Routers\Query::class,
-            'seek'      => Routers\Seek::class,
+    protected static function _nexts(): array {
+        return parent::_nexts() + [
+            'preset'    => Preset::class,
+            'query'     => CabinRouter\Query::class,
+            'seek'      => CabinRouter\Seek::class,
         ];
     }
 

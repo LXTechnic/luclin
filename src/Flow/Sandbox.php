@@ -2,6 +2,8 @@
 
 namespace Luclin\Flow;
 
+use Luclin\Context;
+
 class Sandbox
 {
     private $_context;

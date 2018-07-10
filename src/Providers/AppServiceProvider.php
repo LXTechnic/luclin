@@ -37,7 +37,18 @@ class AppServiceProvider extends Providers\AppService
     protected static $moduleName = 'luclin';
 
     protected static $loaders = [
-        'operator'  => 'Luclin\\Protocol\\Operators',
+        'luri:operator'  => [
+            'Luclin\\Protocol\\Operators',
+        ],
+        'luri:seek'  => [
+            'Luclin\\Cabin\\Foundation\\Seekers',
+        ],
+        // 'luri:query'  => [
+        //     'Luclin\\Cabin\\Foundation\\Seekers',
+        // ],
+        // 'luri:preset'  => [
+        //     'Luclin\\Cabin\\Foundation\\Seekers',
+        // ],
     ];
 
     /**
@@ -49,10 +60,6 @@ class AppServiceProvider extends Providers\AppService
     {
         parent::boot();
 
-        // Loader::instance('luri:query')->register(Routers\Query::class);
-        Loader::instance('luri:seek')
-            ->register('Luclin\\Cabin\\Foundation\\Seekers');
-        // Loader::instance('luri:preset')->register(Routers\Preset::class);
         Luri::registerScheme('luc', LuclinScheme::instance());
     }
 

@@ -5,6 +5,7 @@ namespace Luclin\Protocol\Foundation;
 use Luclin\MetaInterface;
 use Luclin\Contracts;
 use Luclin\Meta\Collection;
+use Luclin\Luri;
 use Luclin\Loader;
 use Luclin\Support\Recursive;
 
@@ -13,21 +14,30 @@ trait OperableTrait
 {
     protected $_operators = [];
 
-    public function getOperator(string $name, ...$arguments): ?Contracts\Operator {
+    public function getOperators(string $name, ...$arguments): ?array {
         if (!isset($_operators[$name])) {
             $value = $this->get('$'.$name);
             if ($value === null) {
                 return null;
             }
-            $operator = Loader::instance('operator')
-                ->make($name, $value, ...$arguments);
-            $this->setOperator($operator, $name);
+            if (is_array($value)) {
+                $operators = [];
+                foreach ($value as $v) {
+                    $operators = Loader::instance('luri:operator')
+                        ->make($name, $value, ...$arguments);
+                }
+                $this->setOperators($name, $operators);
+            } else {
+                $operator = Loader::instance('luri:operator')
+                    ->make($name, $value, ...$arguments);
+                $this->setOperators($name, [$operator]);
+            }
         }
 
         return $this->_operators[$name];
     }
 
-    public function getOperators(string $key = null): array {
+    public function getAllOperators(string $key = null): array {
         $result = [];
         if ($key) {
             $collection = data_get($this->all(), $key);
@@ -36,7 +46,7 @@ trait OperableTrait
                     continue;
                 }
                 $name = substr($key, 1);
-                $result[$name] = Loader::instance('operator')->make($name, $value);
+                $result[$name] = Loader::instance('luri:operator')->make($name, $value);
             }
             return $result;
         }
@@ -46,17 +56,13 @@ trait OperableTrait
                 continue;
             }
             $name = substr($key, 1);
-            $result[$name] = $this->getOperator($name);
+            $result[$name] = $this->getOperators($name);
         }
         return $result;
     }
 
-    public function setOperator(Contracts\Operator $operator, string $name = null): self {
-        if (!$name) {
-            $class = get_class($operator);
-            $name  = $class::getName();
-        }
-        $this->_operators[$name] = $operator;
+    public function setOperators(string $name, array $operators): self {
+        $this->_operators[$name] = $operators;
         return $this;
     }
 

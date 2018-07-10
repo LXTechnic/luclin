@@ -3,9 +3,8 @@
 namespace Luclin\Cabin\Foundation\Seekers;
 
 use Luclin\Context;
-use Luclin\Contracts;
 
-class Start implements Contracts\Endpoint
+class Same implements Contracts\Endpoint
 {
     public function __invoke($id, array $params = [], Context $context = null)
     {

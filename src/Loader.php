@@ -67,6 +67,9 @@ class Loader
         if (method_exists($class, 'instance')) {
             return $class::instance(...$arguments);
         }
+        if (method_exists($class, 'new')) {
+            return $class::new(...$arguments);
+        }
         return new $class(...$arguments);
     }
 

@@ -29,8 +29,8 @@ abstract class AppService extends ServiceProvider
      */
     public function boot()
     {
-        foreach (static::$loaders as $name => $space) {
-            Loader::instance($name)->register($space);
+        foreach (static::$loaders as $name => $spaces) {
+            Loader::instance($name)->register(...$spaces);
         }
 
         $this->registerRoutes();

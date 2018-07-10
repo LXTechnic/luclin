@@ -2,11 +2,13 @@
 
 namespace Luclin\Luri;
 
-use Luclin\Luri;
 use Luclin\Contracts;
-use Luclin\Foundation\SingletonTrait;
+use Luclin\Foundation\{
+    SingletonTrait,
+    RouterTrait
+};
 
-abstract class Scheme implements Contracts\Router
+abstract class Scheme
 {
     use SingletonTrait,
         RouterTrait;
