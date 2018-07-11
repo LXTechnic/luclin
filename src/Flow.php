@@ -2,6 +2,8 @@
 
 namespace Luclin;
 
+use Luclin\Flow\Role;
+
 /**
  */
 class Flow
@@ -34,7 +36,8 @@ class Flow
             $context = new Context();
         }
         $sandbox    = new Flow\Sandbox($domains, $context);
-        $body = $this->body;
-        return [$body->call($sandbox, ...$arguments), $context];
+        $body       = $this->body;
+        $result     = $body->call($sandbox, ...$arguments);
+        return [($result instanceof Role) ? $result->raw() : $result, $context];
     }
 }

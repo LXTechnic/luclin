@@ -50,6 +50,16 @@ class Request extends Struct
         return $this->raw->$name(...$arguments);
     }
 
+    public function toArrayWithoutNull(): array {
+        $result = [];
+        foreach (parent::toArray() as $key => $value) {
+            if ($value !== null) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
     public function confirm(): MetaInterface {
         $validator = Validator::make($this->toArray(), static::_validate(),
             ...static::_hints());
