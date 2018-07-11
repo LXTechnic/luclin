@@ -21,8 +21,11 @@ class Luri
         static::$registerSchemes[$name] = $scheme;
     }
 
-    public static function createByUrl(string $url): self {
-        $parsed = parse_url(urldecode($url));
+    public static function createByUrl(string $url): ?self {
+        $parsed = parse_url($url);
+        if (!isset($parsed['scheme'])) {
+            return null;
+        }
         $query  = static::parseQuery($parsed['query'] ?? null);
         $luri   = new self($parsed['scheme'], $parsed['path'], $query);
         return $luri;
@@ -32,25 +35,35 @@ class Luri
         if (!$query) {
             return [];
         }
-        parse_str(strtr($query, [
-            '  '    => '&',
-            '++'    => '&',
-        ]), $result);
+        parse_str(static::unQuote($query), $result);
         return $result;
     }
 
-    public function render($quote = false): string {
-        $url = "$this->scheme:$this->path";
-        $this->query && $url .= '?'.http_build_query($this->query);
-        return $quote ? strtr($url, ['&' => '++']) : $url;
+    public static function quote(string $url): string {
+        return strtr($url, ['&' => '++']);
+    }
+
+    public static function unQuote(string $url): string {
+        return strtr($url, [
+            '  '    => '&',
+            '++'    => '&',
+        ]);
+    }
+
+    public function render(array $query = null, $quote = false): string {
+        $url    = "$this->scheme:$this->path";
+        $query  = $query ? array_merge($this->query, $query) : $this->query;
+        $query  && $url .= '?'.http_build_query($query);
+        return $quote ? static::quote($url) : $url;
     }
 
     public function __toString(): string {
         return $this->render();
     }
 
-    public function resolve(array $context = []) {
+    public function resolve(array $context = []): array {
         $context = (new Context())->fill($context);
+        $context->_luri = $this;
 
         // $offset = 0;
         // while ($pos = strpos($this->path, '/', $offset)) {
@@ -60,24 +73,31 @@ class Luri
         // }
         // yield substr($this->path, $offset) => [null, $this->query()];
 
-        $router = $this->scheme();
+        [$_, $router] = $this->scheme();
         $path   = explode('/', $this->path);
         while ($root = array_shift($path)) {
             $result = $router->$root($path, $this->query(), $context);
+            if (!$result) {
+                throw new \RuntimeException("Luri route [$this->path] fail.");
+            }
 
             if ($result instanceof Contracts\Router) {
                 $router = $result;
             } elseif ($result instanceof Contracts\Endpoint) {
-                return $result;
+                return [$result, $root];
             } else {
                 throw new \RuntimeException("Luri path node must be Router or Endpoint, ".get_class($result)." given.");
             }
         }
-        return null;
+        return [null, null];
     }
 
-    public function scheme(): Luri\Scheme {
-        return static::$registerSchemes[$this->scheme];
+    public function scheme(): array {
+        return [$this->scheme, static::$registerSchemes[$this->scheme]];
+    }
+
+    public function path(): string {
+        return $this->path;
     }
 
     public function query(): array {

@@ -6,7 +6,7 @@ use Luclin\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class Same implements Contracts\Endpoint, Contracts\QueryApplier
+class Cases implements Contracts\Endpoint, Contracts\QueryApplier
 {
     protected $params;
 
@@ -21,10 +21,12 @@ class Same implements Contracts\Endpoint, Contracts\QueryApplier
     }
 
     public function apply(Builder $query, array $settings): void {
-        $mapping = $settings['mapping'] ?? null;
-        foreach ($this->params as $field => $value) {
-            isset($mapping[$field]) && $field = $mapping[$field];
-            $query->where($field, $value);
+        $cases = $settings['cases'] ?? null;
+        if ($cases) foreach ($this->params as $name => $state) {
+            $case = $cases[$name][$state];
+            foreach ($case as [$field, $operator, $value]) {
+                $query->where($field, $operator, $value);
+            }
         }
     }
 }

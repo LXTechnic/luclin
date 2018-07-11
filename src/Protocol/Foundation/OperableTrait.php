@@ -5,8 +5,7 @@ namespace Luclin\Protocol\Foundation;
 use Luclin\MetaInterface;
 use Luclin\Contracts;
 use Luclin\Meta\Collection;
-use Luclin\Luri;
-use Luclin\Loader;
+use Luclin\Protocol\Operator;
 use Luclin\Support\Recursive;
 
 
@@ -18,18 +17,16 @@ trait OperableTrait
         if (!isset($_operators[$name])) {
             $value = $this->get('$'.$name);
             if ($value === null) {
-                return null;
+                throw new \RuntimeException("The operator [$name] not found.");
             }
             if (is_array($value)) {
                 $operators = [];
-                foreach ($value as $v) {
-                    $operators = Loader::instance('luri:operator')
-                        ->make($name, $value, ...$arguments);
+                foreach ($value as $row) {
+                    $operators[] = Operator::make($name, $row, ...$arguments);
                 }
                 $this->setOperators($name, $operators);
             } else {
-                $operator = Loader::instance('luri:operator')
-                    ->make($name, $value, ...$arguments);
+                $operator = Operator::make($name, $value, ...$arguments);
                 $this->setOperators($name, [$operator]);
             }
         }
@@ -46,7 +43,7 @@ trait OperableTrait
                     continue;
                 }
                 $name = substr($key, 1);
-                $result[$name] = Loader::instance('luri:operator')->make($name, $value);
+                $result[$name] = Operator::make($name, $value);
             }
             return $result;
         }

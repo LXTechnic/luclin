@@ -3,16 +3,16 @@
 namespace Luclin\Cabin\Foundation;
 
 use Luclin\Contracts;
+use Luclin\Foundation;
 use Luclin\Loader;
-use Luclin\Luri;
 
-class Seek implements Contracts\Router
+class Seek implements Contracts\Router, Contracts\Operator
 {
+    use Foundation\StatelessRouterTrait;
 
     public function __call(string $name, array $arguments) {
-        // [$path, $query, $context] = $arguments;
-        $seeker = Loader::instance('luri:seek')->make($name);
-        return $seeker;
+        [$path, $query, $context] = $arguments;
+        return Loader::instance('seeker')->make($name, $path, $query, $context);
     }
 
 }

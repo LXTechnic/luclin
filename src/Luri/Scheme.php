@@ -3,13 +3,10 @@
 namespace Luclin\Luri;
 
 use Luclin\Contracts;
-use Luclin\Foundation\{
-    SingletonTrait,
-    RouterTrait
-};
+use Luclin\Foundation;
 
 abstract class Scheme
 {
-    use SingletonTrait,
-        RouterTrait;
+    use Foundation\SingletonTrait,
+        Foundation\RouterTrait;
 }

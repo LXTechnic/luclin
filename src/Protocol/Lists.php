@@ -4,7 +4,7 @@ namespace Luclin\Protocol;
 
 use Luclin\MetaInterface;
 use Luclin\Meta\Collection;
-use Luclin\Uri;
+use Luclin\Luri\Preset;
 
 class Lists extends Collection implements FieldInterface
 {
@@ -73,25 +73,18 @@ class Lists extends Collection implements FieldInterface
         return $this;
     }
 
-    /**
-     * 迁移后要大改，这里应该不接收uri，只接收operator
-     */
-    public function more($handler, $start = null): self {
-        // 拿取下一页第一行vo
-        if ($handler instanceof Uri) {
-            [$limit] = $handler->fragment()->getSlice();
-        } else {
-            [$limit] = $handler->getSlice();
-        }
-
+    public function more(Preset $preset, $start = null,
+        string $takeName = 'take', $startName = 'start'): self
+    {
+        // 判断是否到末尾，并取下一页首条记录
         $count = $this->count();
-        if (!$count || $count <= $limit) {
+        if (!$count || $count <= $preset->$takeName) {
             return $this;
         }
         $row = $this->pop();
 
         // 取 start 有三种模式
-        // 给null或id时默认取getId()
+        // 给null或id时默认取 id()
         // 给字串时取该字串属性
         // 给callback时执行callback
         if (is_string($start) && $start != 'id') {
@@ -99,26 +92,13 @@ class Lists extends Collection implements FieldInterface
         } elseif (is_callable($start)) {
             $start = $start($row);
         } else {
-            $start = $row->getId();
+            $start = $row->id();
         }
 
-        if ($handler instanceof Uri) {
-            $handler->fragment()->setSlice(null, $start)->regress();
-        } else {
-            $handler->setSlice(null, $start);
-        }
-
-        if ($handler instanceof Operators\Preset) {
-            $decorator = [
-                '$preset' => "$handler",
-            ];
-        } else {
-            $decorator = [
-                '$query' => $handler->render('path', 'query', 'fragment'),
-            ];
-        }
-        $this->addDecorator('more', $decorator);
-
+        // 设置分页装饰器
+        $this->addDecorator('more', [
+            '$preset'   => $preset->render([$startName => $start]),
+        ]);
         return $this;
     }
 }

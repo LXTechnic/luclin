@@ -11,7 +11,7 @@ class XHeaders
     protected static $queryPrefix = '__';
 
     protected $prefixes = [];
-    protected $mappings = [];
+    protected $mapping  = [];
 
     protected $arrayable = [];
     protected $queryable = [];
@@ -46,7 +46,7 @@ class XHeaders
                 $limit--;
 
                 $name = substr($name, strlen($prefix)) ?: $prefix;
-                isset($this->mappings[$name]) && $name = $this->mappings[$name];
+                isset($this->mapping[$name]) && $name = $this->mapping[$name];
 
                 $xheaders->$name = (isset($values[1]) && in_array($name, $this->arrayable))
                     ? $values : $values[0];

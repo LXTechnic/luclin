@@ -8,6 +8,8 @@ use Illuminate\Database\Schema\Blueprint;
 
 class Master extends Model
 {
+    use Traits\Query;
+
     protected static function migrateUpPrimary(Blueprint $table,
         bool $isBig = false): void
     {

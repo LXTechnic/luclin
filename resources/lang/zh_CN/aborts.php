@@ -6,4 +6,5 @@ return [
     'param_error'   => '参数错误',
 
     'status_flow_error' => '状态变更异常',
+    'model_type_attr_error' => '不合法的类型属性',
 ];

@@ -4,6 +4,7 @@ namespace Luclin\Providers;
 
 use Luclin\Support;
 use Luclin\Contracts;
+use Luclin\Cabin;
 use Luclin\Loader;
 use Luclin\Luri;
 use Luclin\Routers;
@@ -13,6 +14,7 @@ use Luclin\Foundation\{
 };
 use Luclin\Protocol\{
     XHeaders,
+    Operator,
     Request
 };
 
@@ -37,18 +39,12 @@ class AppServiceProvider extends Providers\AppService
     protected static $moduleName = 'luclin';
 
     protected static $loaders = [
-        'luri:operator'  => [
-            'Luclin\\Protocol\\Operators',
+        'querier'   => [
+            'Luclin\\Cabin\\Foundation\\Queriers',
         ],
-        'luri:seek'  => [
+        'seeker'   => [
             'Luclin\\Cabin\\Foundation\\Seekers',
         ],
-        // 'luri:query'  => [
-        //     'Luclin\\Cabin\\Foundation\\Seekers',
-        // ],
-        // 'luri:preset'  => [
-        //     'Luclin\\Cabin\\Foundation\\Seekers',
-        // ],
     ];
 
     /**
@@ -61,6 +57,10 @@ class AppServiceProvider extends Providers\AppService
         parent::boot();
 
         Luri::registerScheme('luc', LuclinScheme::instance());
+
+        Operator::register('preset',    'luc:preset/');
+        Operator::register('query',     'luc:query/');
+        Operator::register('seek',      'luc:seek/');
     }
 
     protected function registerResolving(): void {

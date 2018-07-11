@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Generated extends Model
 {
+    use Traits\Query;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected static function migrateUpPrimary(Blueprint $table): void
     {
         $table->string('id', 50);

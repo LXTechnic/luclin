@@ -14,18 +14,6 @@ class Loader
 
     protected $registers = [];
 
-    public static function uri($uri) {
-        // if (is_string($uri)) {
-        //     $uri = app(Uri::class, [
-        //         'uri'   => $uri,
-        //     ]);
-        // }
-        // $constructArguments = explode(',', $uri->getQuery()['$construct'] ?? '');
-        // $object = static::instance($uri->getRoot())
-        //     ->make($uri->getPath(), ...$constructArguments);
-        return $object;
-    }
-
     public function register(...$namespaces): self {
         if (is_callable($namespaces[0])) {
             $builder = array_shift($namespaces);

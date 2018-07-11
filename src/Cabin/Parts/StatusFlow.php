@@ -48,7 +48,18 @@ trait StatusFlow
             return in_array($this->status, $statusFlow[$nextStatus]);
         }
 
-        return $statusFlow[$nextStatus];
+        if (is_bool($statusFlow[$nextStatus])) {
+            if ($statusFlow[$nextStatus]) {
+                return true;
+            }
+            if ($this->status === null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return $this->status == $statusFlow[$nextStatus];
     }
 
     protected function raiseStatusFlowNotExist($nextStatus) {

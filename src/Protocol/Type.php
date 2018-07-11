@@ -45,7 +45,7 @@ abstract class Type extends Struct implements FieldInterface
         return parent::fill($data);
     }
 
-    public function getId() {
+    public function id() {
         return $this->getContract('id') ?: 0;
     }
 

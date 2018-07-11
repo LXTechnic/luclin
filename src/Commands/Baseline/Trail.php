@@ -39,10 +39,6 @@ class Trail extends Command
      */
     public function handle()
     {
-        // if (!file_exists()) {
-
-        // }
-        dd(Yaml::parse(file_get_contents(base_path('.baseline.yml'))));
         $this->info('done.');
     }
 
