@@ -23,8 +23,9 @@ function mod(string $name, string $prefix = 'lumod:'): Module {
     return app("$prefix$name");
 }
 
-function uri(string $url): Luri {
-
+function uri(string $url, array $context = []) {
+    $luri = Luri::createByUrl($url);
+    return $luri ? $luri->resolve($context)[0] : null;
 }
 
 function ins(string $name, ...$extra) {

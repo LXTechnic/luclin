@@ -9,8 +9,6 @@ use Illuminate\Database\Schema\Blueprint;
  */
 trait Tags
 {
-    abstract protected function createTag();
-
     public function setTagsAttribute($value) {
         $this->attributes['tags'] = $this->arrayFieldEncode($value);
     }

@@ -53,8 +53,8 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
         $pattern = $this->patterns;
         if ($pattern) foreach ($pattern as $key => $row) {
             $row = \luc\padding($row, $this->vars);
-            if ($luri = Luri::createByUrl($row)) {
-                [$endpoint] = $luri->resolve();
+            $endpoint = \luc\uri($row);
+            if ($endpoint) {
                 $result[$key] = $endpoint;
             } else {
                 parse_str(Luri::unQuote($row), $params);

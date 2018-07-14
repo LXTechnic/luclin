@@ -16,40 +16,39 @@ class XHeaders
     protected $arrayable = [];
     protected $queryable = [];
 
-    public function __construct(Repository $config)
-    {
-        $this->config = $config;
-    }
-
     public function handle(Request $request, Closure $next)
     {
         $xheaders = \luc\ins('xheaders');
+        $headers  = $request->headers->all();
 
         // 先处理queryable的参数
-        foreach ($this->queryable as $name => $alias) {
-            if (!($value = $request->input(static::$queryPrefix."$alias"))) {
+        foreach ($this->queryable as $name => $header) {
+            if (!($value = $request->input(static::$queryPrefix."$name"))) {
                 continue;
             }
-            is_numeric($name) && $name = $alias;
-            $xheaders->$name = $value;
+            // 这里的处理方式不会覆盖原headers中的数据
+            $headers[$header][] = $value;
         }
 
         // 再从头中读取
         foreach ($this->prefixes as $prefix => $limit) {
-            foreach ($request->headers as $name => $values) {
+            foreach ($headers as $header => $values) {
                 if (!$limit) {
                     break;
                 }
-                if (strpos($name, $prefix) !== 0) {
+                if (strpos($header, $prefix) !== 0) {
                     continue;
                 }
                 $limit--;
 
-                $name = substr($name, strlen($prefix)) ?: $prefix;
+                $name = substr($header, strlen($prefix)) ?: $prefix;
                 isset($this->mapping[$name]) && $name = $this->mapping[$name];
 
-                $xheaders->$name = (isset($values[1]) && in_array($name, $this->arrayable))
+                $value = (isset($values[1]) && in_array($name, $this->arrayable))
                     ? $values : $values[0];
+                $xheaders->$name = $value;
+
+                $xheaders->setRaw($header, $value);
             }
         }
 

@@ -14,8 +14,7 @@ class Operator
     }
 
     public static function make($name, $value, ...$arguments): Contracts\Operator {
-        $luri       = Luri::createByUrl(static::$registers[$name].$value);
-        [$operator] = $luri->resolve(...$arguments);
+        $operator = \luc\uri(static::$registers[$name].$value, ...$arguments);
         return $operator;
     }
 }
