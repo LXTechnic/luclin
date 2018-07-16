@@ -4,6 +4,16 @@ namespace Luclin;
 
 abstract class Protocol implements Contracts\Protocol
 {
+    public function response(): Protocol\Response {
+        return new Protocol\Response();
+    }
+
+    public function ok(...$arguments) {
+        $data = ['ok' => 1];
+        $arguments && $data['extra'] = $arguments;
+        return response($data);
+    }
+
     public function abort(Abort $abort,
         ?Protocol\Response $response = null): Protocol\Response
     {
