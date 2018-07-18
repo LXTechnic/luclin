@@ -8,6 +8,7 @@ use Luclin\Cabin\Foundation\{
 };
 
 use Illuminate\Database\Schema\Blueprint;
+
 /**
  *
  * 请在use类中加下以下属性：
@@ -15,7 +16,7 @@ use Illuminate\Database\Schema\Blueprint;
  * protected $primaryKey = ['id', 'master_type'];
  * public $incrementing = false;
  */
-class Slave extends Model
+abstract class Slave extends Model
 {
     use Traits\Query,
         HasCompositePrimaryKeyTrait;
@@ -35,4 +36,20 @@ class Slave extends Model
         }
         return static::found($where);
     }
+
+    public function resolveRouteBinding($id)
+    {
+        $keys   = $this->getRouteKeyName();
+        $where  = [];
+        foreach (explode(',', $id) as $key => $value) {
+            $where[$keys[$key]] = $value;
+        }
+        return static::found($where);
+    }
+
+    public static function findOrFail($id) {
+        return static::find($id);
+    }
+
+    abstract public function master(): ?object;
 }

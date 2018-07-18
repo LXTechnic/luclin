@@ -70,6 +70,17 @@ class AppServiceProvider extends Providers\AppService
     }
 
     protected function declareMacros(): void {
+        Eloquent\Collection::macro('sortWithIds',
+            function(array $ids, string $idField = 'id'): Eloquent\Collection
+        {
+            $result = new static();
+            $keyed  = $this->keyBy($idField);
+            foreach ($ids as $id) {
+                $result[] = $keyed[$id] ?? null;
+            }
+            return $result;
+        });
+
         Eloquent\Collection::macro('pluckCustom',
             function(string $field, callable $fun, ...$arguments)
         {

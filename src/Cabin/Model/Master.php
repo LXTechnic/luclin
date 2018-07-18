@@ -6,7 +6,7 @@ use Luclin\Cabin\Foundation\Model;
 
 use Illuminate\Database\Schema\Blueprint;
 
-class Master extends Model
+abstract class Master extends Model
 {
     use Traits\Query;
 

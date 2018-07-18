@@ -35,7 +35,10 @@ class ToArray
             $filter && $value = $filter($value);
 
             // 过滤器支持跳过
-            ($value !== null || isset($this->nullable[$key])) && $result[$key] = $value;
+            ($value !== null
+                || $this->nullable === null
+                || isset($this->nullable[$key]))
+                    && $result[$key] = $value;
         }
         return $result;
     }

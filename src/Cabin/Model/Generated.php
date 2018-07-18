@@ -7,7 +7,7 @@ use Luclin\Cabin\Foundation\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Eloquent\Builder;
 
-class Generated extends Model
+abstract class Generated extends Model
 {
     use Traits\Query;
 

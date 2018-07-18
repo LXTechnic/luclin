@@ -12,6 +12,8 @@ use Illuminate\Database\Schema\Blueprint;
 
 use DB;
 
+// TODO: 需要在之后加入对find/findMany以及whereKey的支持
+
 abstract class Model extends EloquentModel implements Contracts\Model
 {
 

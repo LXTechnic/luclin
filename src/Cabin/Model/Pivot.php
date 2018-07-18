@@ -2,7 +2,7 @@
 
 namespace Luclin\Cabin\Model;
 
-class Pivot
+abstract class Pivot
 {
 
 }
