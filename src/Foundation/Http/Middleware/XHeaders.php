@@ -18,7 +18,7 @@ class XHeaders
 
     public function handle(Request $request, Closure $next)
     {
-        $xheaders = \luc\ins('xheaders');
+        $xheaders = \luc\xheaders();
         $headers  = $request->headers->all();
 
         // 先处理queryable的参数

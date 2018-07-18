@@ -15,12 +15,13 @@ class Request extends Struct
 {
     use Foundation\OperableTrait;
 
-    protected $raw;
+    protected $raw = null;
 
-    public function __construct(LaravelRequest $raw) {
-        $this->raw = $raw;
-
-        $this->fill($raw->toArray());
+    public function __construct(LaravelRequest $raw = null) {
+        if ($raw) {
+            $this->raw = $raw;
+            $this->fill($raw->toArray());
+        }
     }
 
     protected static function _nullable(): ?array {
@@ -33,10 +34,6 @@ class Request extends Struct
 
     protected static function _hints(): array {
         return [[], []];
-    }
-
-    public function xheader(): XHeaders {
-        return \luc\ins('xheaders');
     }
 
     public function raw(): LaravelRequest {
