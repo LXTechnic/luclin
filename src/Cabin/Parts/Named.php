@@ -10,7 +10,7 @@ use Illuminate\Database\Schema\Blueprint;
 trait Named
 {
     protected static function migrateUpNamed(Blueprint $table,
-        bool $nullable = false): void
+        bool $nullable = true): void
     {
         $f = $table->string('name', 50);
         $nullable && $f->nullable();

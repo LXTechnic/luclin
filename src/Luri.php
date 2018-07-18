@@ -53,6 +53,7 @@ class Luri
     public function render(array $query = null, $quote = false): string {
         $url    = "$this->scheme:$this->path";
         $query  = $query ? array_merge($this->query, $query) : $this->query;
+        $query  && ksort($query);
         $query  && $url .= '?'.http_build_query($query);
         return $quote ? static::quote($url) : $url;
     }

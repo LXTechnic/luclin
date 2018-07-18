@@ -6,10 +6,12 @@ use Luclin\Abort;
 use Luclin\Module;
 use Luclin\Flow;
 use Luclin\Luri;
+use Luclin\Protocol;
 
 use App;
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\Filesystem;
+use Nette\Neon\Neon;
 
 function env(...$match): bool {
     return App::environment($match);
@@ -39,6 +41,10 @@ function ins(string $name, ...$extra) {
         }
     }
     return $instance;
+}
+
+function xheaders(): Protocol\XHeaders {
+    return ins('xheaders');
 }
 
 function flow($body): Flow {
@@ -79,6 +85,29 @@ function raise($error, array $extra = [], \Throwable $previous = null): Abort
 function fs(): Filesystem {
     return new Filesystem();
 }
+
+function ndecode(string $data) {
+    return Neon::decode($data);
+}
+
+function toArray(iterable $iterable,
+    callable $filter = null): array
+{
+    $toArray = new Recursive\ToArray($iterable, $filter);
+    return $toArray();
+}
+
+function timer() {
+    static $start = null;
+    if (!$start) {
+        $start = \PHP_VERSION_ID >= 70300 ? hrtime(true) : microtime(true);
+        return $start;
+    }
+    $elapsed = \PHP_VERSION_ID >= 70300 ? hrtime(true) : microtime(true) - $start;
+    $start   = null;
+    return $elapsed;
+}
+
 
 // TODO: 对数组获取的兼容？
 function __(string $key, array $replace = [],

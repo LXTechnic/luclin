@@ -22,12 +22,6 @@ class Generated extends Model
         $table->index('id_sim');
     }
 
-    protected static function migrateDownPrimary(Blueprint $table): void
-    {
-        $table->dropColumn('id');
-        $table->dropColumn('id_sim');
-    }
-
     protected function idPrefix(): string {
         return 'ac';
     }

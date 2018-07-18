@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent;
 // use Illuminate\Database\Eloquent\{
 //     Relations\Relation as Relation
 // };
-
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\{
     Facades\Queue
 };
@@ -105,7 +105,20 @@ class AppServiceProvider extends Providers\AppService
             return Auth::authenticate();
         });
 
+        $this->registerContextContracts();
         $this->registerSingleton();
+    }
+
+    protected function registerContextContracts() {
+        // inner service 相关约定的注入
+        $this->app->bind('context._auth', function($app) {
+            try {
+                return $app->make('Luclin\Contracts\Auth');
+            } catch (AuthenticationException $exc) {
+                // do nothing..
+            }
+            return null;
+        });
     }
 
     protected function registerSingleton() {

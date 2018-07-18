@@ -24,7 +24,7 @@ class conf
     }
 
     public function __get(string $key) {
-        $path = $this->_alias[$key] ?: $key;
+        $path = $this->_alias[$key] ?? $key;
         $path = $this->_prefix ? "$this->_prefix.$path" : $path;
         return \config($path);
     }

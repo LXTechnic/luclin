@@ -17,11 +17,6 @@ class Master extends Model
 
     }
 
-    protected static function migrateDownPrimary(Blueprint $table): void
-    {
-        $table->dropColumn('id');
-    }
-
     public function renewId(): self {
         [$conn, $table] = static::connection();
         $sql    = "SELECT nextval('{$table}_id_seq')";
@@ -36,17 +31,5 @@ class Master extends Model
         $sql = "ALTER SEQUENCE $seqName RESTART WITH $val";
         return $conn->statement($sql);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

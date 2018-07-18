@@ -31,6 +31,10 @@ class Sandbox
         return $this->_domains[$name];
     }
 
+    protected function context(): Context {
+        return $this->_context;
+    }
+
     public function __call(string $name, array $arguments) {
         foreach ($this->_domains as $domain) {
             if ($domain->hasFun($name)) {
