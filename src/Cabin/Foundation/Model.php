@@ -127,6 +127,11 @@ abstract class Model extends EloquentModel implements Contracts\Model
         ];
     }
 
+    public function getSchema(): string {
+        $connection = $this->getConnectionName();
+        return config("database.connections.$connection.schema");
+    }
+
     public function self(): Builder {
         $query = $this->newQuery();
 
@@ -145,6 +150,28 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $query->where(
             $this->getKeyName(), $this->getKey()
         );
+    }
+
+    public static function countLimit(Builder $query,
+        int $limit, string $field = 'id'): int
+    {
+        [$connection, $table, $schema] = static::connectionInfo();
+        $connection = static::resolveConnection($connection);
+
+        $query->getQuery()->limit   = $limit;
+        $query->getQuery()->orders  = [];
+        $sql = 'SELECT count(*) AS total FROM ('.$query->toSql().') AS a';
+        $result = $connection->select($sql, $query->getBindings());
+        return isset($result[0]) ? $result[0]->total : 0;
+    }
+
+    public static function estimateLiveRows(): int {
+        [$connection, $table, $schema] = static::connectionInfo();
+        $connection = static::resolveConnection($connection);
+
+        $sql = "SELECT n_live_tup::int AS total FROM pg_stat_all_tables WHERE relname = '$table' AND schemaname = '$schema'";
+        $result = $connection->select($sql);
+        return isset($result[0]) ? $result[0]->total : 0;
     }
 
     public function reloadAttributes(...$attributes): self {

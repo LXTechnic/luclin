@@ -5,6 +5,8 @@ namespace Luclin\Cabin\Model\Traits;
 use Luclin\Contracts;
 use Luclin\Luri\Preset;
 
+use Illuminate\Database\Eloquent\Builder;
+
 trait Query
 {
 
@@ -16,7 +18,11 @@ trait Query
      */
     public static function query(...$appliers)
     {
-        $query = (new static)->newQuery();
+        if (isset($appliers[0]) && $appliers[0] instanceof Builder) {
+            $query = array_shift($appliers);
+        } else {
+            $query = (new static)->newQuery();
+        }
         if ($appliers) {
             foreach ($appliers as $applier) {
                 if (is_string($applier)) {

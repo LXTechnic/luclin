@@ -6,7 +6,7 @@ use Luclin\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class Start implements Contracts\Endpoint, Contracts\QueryApplier
+class Start implements Contracts\Endpoint, Contracts\QueryApplier, Contracts\Seeker
 {
     protected $field = 'id';
     protected $direction = 'desc';
@@ -42,13 +42,17 @@ class Start implements Contracts\Endpoint, Contracts\QueryApplier
         return $this;
     }
 
-    public function apply(Builder $query, array $_): void {
+    public function apply(Builder $query, array $settings): void {
+        $mapping = $settings['mapping'] ?? null;
+        $field   = $this->field;
+        isset($mapping[$field]) && $field = $mapping[$field];
+
         if ($this->start) {
             $this->direction == 'desc'
-                ? $query->where($this->field, '<=', $this->start)
-                    : $query->where($this->field, '>=', $this->start);
+                ? $query->where($field, '<=', $this->start)
+                    : $query->where($field, '>=', $this->start);
         }
-        $query->orderBy($this->field, $this->direction);
+        $query->orderBy($field, $this->direction);
         $take = $this->more ? ($this->take + 1) : $this->take;
         $query->take($take);
     }

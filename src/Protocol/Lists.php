@@ -2,6 +2,7 @@
 
 namespace Luclin\Protocol;
 
+use Luclin\Contracts;
 use Luclin\MetaInterface;
 use Luclin\Meta\Collection;
 use Luclin\Luri\Preset;
@@ -73,8 +74,8 @@ class Lists extends Collection implements FieldInterface
         return $this;
     }
 
-    public function more(Preset $preset, $start = null,
-        string $takeName = 'take', $startName = 'start'): self
+    public function seekStart(Preset $preset, $start = null,
+        string $takeName = 'take', string $startName = 'start'): self
     {
         // 判断是否到末尾，并取下一页首条记录
         $count = $this->count();
@@ -96,9 +97,78 @@ class Lists extends Collection implements FieldInterface
         }
 
         // 设置分页装饰器
-        $this->addDecorator('more', [
+        $this->addDecorator('seek', [
+            'type'      => 'start',
             '$preset'   => $preset->render([$startName => $start]),
         ]);
+        return $this;
+    }
+
+    public function seekCounter(Preset $preset, string $pageName = 'page',
+        string $takeName = 'take'): self
+    {
+        // 取模型及类
+        $model  = $this->first()->raw();
+        $class  = get_class($model);
+
+        // 判断有没有query，如果没有的话走估算方案
+        $hasQuery = false;
+        foreach ($parsed = $preset->parse() as $applier) {
+            if (!($applier instanceof Contracts\Seeker)) {
+                $hasQuery = true;
+                break;
+            }
+        }
+        if ($hasQuery) {
+            $query  = $class::query(...$preset->parse());
+            $total  = $class::countLimit($query, 100000);
+        } else {
+            $total  = min(100000, $class::estimateLiveRows());
+        }
+
+        // 计算范围
+        $range  = $preset->range ?: 5;
+        $first  = 1;
+        $last   = intval(ceil($total / $preset->$takeName));
+        $cursor = $preset->$pageName;
+        $middle = ($cursor == $first || $cursor == $last) ? [] : [$cursor];
+        for ($i = 1; $i < $range; $i++) {
+            $page = $cursor - $i;
+            if ($page > $first) {
+                array_unshift($middle, $page);
+            }
+
+            $page = $cursor + $i;
+            if ($page < $last) {
+                $middle[] = $page;
+            }
+        }
+        if ($cursor == $first) {
+            $current = 'first';
+        } elseif ($cursor == $last) {
+            $current = 'last';
+        } else {
+            $current = array_search($cursor, $middle);
+        }
+
+        // 分页数据库成
+        $data = [
+            'type'      => 'counter',
+            'total'     => $total,
+            'pages'     => $last,
+            'current'   => $current,
+            '$preset'   => [
+                'first' => $preset->render([$pageName => $first]),
+            ],
+        ];
+        $first != $last
+            && $data['$preset']['last'] = $preset->render([$pageName => $last]);
+        foreach ($middle as $page) {
+            $data['$preset']['middle'][] = $preset->render([$pageName => $page]);
+        }
+
+        // 设置分页装饰器
+        $this->addDecorator('seek', $data);
         return $this;
     }
 }

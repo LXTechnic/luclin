@@ -11,6 +11,7 @@ use Luclin\Protocol;
 use App;
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Builder;
 use Nette\Neon\Neon;
 
 function env(...$match): bool {
@@ -112,7 +113,6 @@ function timer() {
     return $elapsed;
 }
 
-
 // TODO: 对数组获取的兼容？
 function __(string $key, array $replace = [],
     ?string $locale = null): ?string
@@ -145,7 +145,7 @@ function __(string $key, array $replace = [],
 function padding(string $template, array $vars): ?string {
     // :abc + {{abc}} 相对单纯方案
     $result = preg_replace_callback(
-        '/:([0-9]+)|:([A-Za-z_\@\$\.\-\~\#\&]+[0-9]*)|(\{\{)([A-Za-z0-9_\@\$\.\-\~\#\&]+)(\}\})/',
+        '/:([0-9]+)|:([A-Za-z_\@\$\.\-\~]+[0-9]*)|(\{\{)([A-Za-z0-9_\@\$\.\-\~\#\&]+)(\}\})/',
         function($matches) use ($vars) {
             $key = $matches[4] ?? $matches[2] ?? $matches[1];
             return $vars[$key] ?? $matches[0];
