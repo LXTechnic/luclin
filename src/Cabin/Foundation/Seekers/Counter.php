@@ -40,9 +40,11 @@ class Counter implements Contracts\Endpoint, Contracts\QueryApplier, Contracts\S
     }
 
     public function apply(Builder $query, array $settings): void {
-        $mapping = $settings['mapping'] ?? null;
-        $field   = $this->field;
-        isset($mapping[$field]) && $field = $mapping[$field];
+        $order  = $settings['order'] ?? null;
+        if (!isset($order[$this->field])) {
+            throw new \RuntimeException('Seek field is not allow.');
+        }
+        $field = $order[$this->field];
 
         $skip = min(100000, ($this->page - 1) * $this->take);
         $query

@@ -43,9 +43,11 @@ class Start implements Contracts\Endpoint, Contracts\QueryApplier, Contracts\See
     }
 
     public function apply(Builder $query, array $settings): void {
-        $mapping = $settings['mapping'] ?? null;
-        $field   = $this->field;
-        isset($mapping[$field]) && $field = $mapping[$field];
+        $order  = $settings['order'] ?? null;
+        if (!isset($order[$this->field])) {
+            throw new \RuntimeException('Seek field is not allow.');
+        }
+        $field = $order[$this->field];
 
         if ($this->start) {
             $this->direction == 'desc'
