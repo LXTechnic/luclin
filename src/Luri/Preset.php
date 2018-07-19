@@ -5,6 +5,12 @@ namespace Luclin\Luri;
 use Luclin\Contracts;
 use Luclin\Luri;
 
+/**
+ * 预设机制。
+ *
+ * 在config中，支持patterns和defaults。
+ * 在通过uri初始化时，context支持config，defaults以及vars。
+ */
 class Preset implements Contracts\Endpoint, Contracts\Operator
 {
     protected $name;
@@ -23,7 +29,7 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
     public static function new(array $arguments, array $options,
         Contracts\Context $context): Contracts\Endpoint
     {
-        $preset = new static($arguments[0], $context->presets ?: []);
+        $preset = new static($arguments[0], $context->config ?: []);
         $preset->assign($options);
 
         $context->defaults  && $preset->applyDefaults($context->defaults);
