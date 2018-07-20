@@ -22,9 +22,11 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
 
     public function apply(Builder $query, array $settings): void {
         $cases = $settings['cases'] ?? null;
-        if ($cases) foreach ($this->params as $name => $state) {
+        if ($cases) foreach ($this->params as $name => $params) {
+            @[$state, $assign] = explode(',', $params);
             $case = $cases[$name][$state];
             foreach ($case as [$field, $operator, $value]) {
+                $assign && $value = $assign;
                 $query->where($field, $operator, $value);
             }
         }

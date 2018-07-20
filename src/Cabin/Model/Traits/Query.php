@@ -25,8 +25,10 @@ trait Query
         }
         if ($appliers) {
             foreach ($appliers as $applier) {
-                if (is_string($applier)) {
-                    $applier = new Preset($applier, static::_preset());
+                if (is_array($applier)) {
+                    [$name, $vars] = $applier;
+                    $applier = new Preset($name, static::_preset());
+                    $applier->assign($vars);
                 }
                 if ($applier instanceof Preset) {
                     $parsed = $applier->parse();
