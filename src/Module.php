@@ -8,17 +8,23 @@ namespace Luclin;
 class Module
 {
     protected $name;
+    protected $space;
     protected $root;
 
     protected $mapping = [];
 
-    public function __construct(string $name, string $root) {
-        $this->name = $name;
-        $this->root = realpath($root);
+    public function __construct(string $name, string $space, string $root) {
+        $this->name     = $name;
+        $this->space    = $space;
+        $this->root     = realpath($root);
     }
 
     public function name(): string {
         return $this->name;
+    }
+
+    public function space(): string {
+        return $this->space;
     }
 
     public function setPathMapping(array $mapping, bool $merge = true): self {

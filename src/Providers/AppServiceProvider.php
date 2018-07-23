@@ -36,7 +36,8 @@ use Log;
 
 class AppServiceProvider extends Providers\AppService
 {
-    protected static $moduleName = 'luclin';
+    protected static $moduleName    = 'luclin';
+    protected static $moduleSpace   = 'Luclin';
 
     protected static $loaders = [
         'querier'   => [

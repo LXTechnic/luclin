@@ -20,7 +20,7 @@ trait Tags
     protected static function migrateUpTags(?Blueprint $table): void
     {
         [$conn, $table] = static::connection();
-        $conn->statement("ALTER TABLE $table ADD COLUMN tags character varying(50)[];");
+        $conn->statement("ALTER TABLE $table ADD COLUMN tags character varying(50)[]");
     }
 
     protected static function migrateDownTags(?Blueprint $table): void

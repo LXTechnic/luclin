@@ -109,14 +109,11 @@ abstract class Model extends EloquentModel implements Contracts\Model
     protected function afterConfirm() {}
 
     public static function connectionInfo(): array {
-        if (!static::$connectionInfo) {
-            $model  = new static();
-            $connection = $model->getConnectionName();
-            $schema = config("database.connections.$connection.schema");
-            $table  = $model->getTable();
-            static::$connectionInfo = [$connection, $table, $schema];
-        }
-        return static::$connectionInfo;
+        $model  = new static();
+        $connection = $model->getConnectionName();
+        $schema = config("database.connections.$connection.schema");
+        $table  = $model->getTable();
+        return [$connection, $table, $schema];
     }
 
     public static function connection(): array {

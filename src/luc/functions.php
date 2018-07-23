@@ -48,6 +48,12 @@ function ins(string $name, ...$extra) {
     return $instance;
 }
 
+function str2cls(string $name, string $slash): string {
+    $slash  = " \t\r\n\f\v$slash";
+    $name   = ucwords($name, $slash);
+
+}
+
 function xheaders(): Protocol\XHeaders {
     return ins('xheaders');
 }

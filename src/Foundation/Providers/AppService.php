@@ -11,10 +11,12 @@ use Luclin\Support\{
 use Illuminate\Support\{
     ServiceProvider
 };
+use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 
 abstract class AppService extends ServiceProvider
 {
-    protected static $moduleName = 'unamed';
+    protected static $moduleName;
+    protected static $moduleSpace;
 
     protected static $loaders = [];
 
@@ -38,6 +40,7 @@ abstract class AppService extends ServiceProvider
         $this->registerTranslations();
         $this->registerViews();
         $this->registerCommands();
+        $this->registerFactories();
         // 注册多态关联模型映射id
         $this->registerMorphMap();
 
@@ -87,6 +90,13 @@ abstract class AppService extends ServiceProvider
                 $this->registerCommandsByPath($namespace, $dir);
     }
 
+    protected function registerFactories(): void {
+        $factory = app(EloquentFactory::class);
+        if ($this->app->runningInConsole()) {
+            $factory->load($this->module()->path('database', 'factories'));
+        }
+    }
+
     protected function registerMorphMap(): void
     {
         // Relation::morphMap([
@@ -129,7 +139,7 @@ abstract class AppService extends ServiceProvider
 
     protected function makeModule(string $root): Module {
         if (!$this->app->has($this->getModuleKey())) {
-            $module = new Module(static::$moduleName, $root);
+            $module = new Module(static::$moduleName, static::$moduleSpace, $root);
             $this->app->instance($this->getModuleKey(), $module);
         }
         return $this->app->get($this->getModuleKey());
