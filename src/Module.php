@@ -7,6 +7,8 @@ namespace Luclin;
  */
 class Module
 {
+    protected static $initedLists = [];
+
     protected $name;
     protected $space;
     protected $root;
@@ -17,6 +19,12 @@ class Module
         $this->name     = $name;
         $this->space    = $space;
         $this->root     = realpath($root);
+
+        self::$initedLists[$name] = $this;
+    }
+
+    public static function initedModules(): array {
+        return self::$initedLists;
     }
 
     public function name(): string {

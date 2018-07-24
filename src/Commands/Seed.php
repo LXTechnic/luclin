@@ -2,7 +2,10 @@
 
 namespace Luclin\Commands;
 
+use Luclin\Module;
+
 use Illuminate\Console\Command;
+use File;
 
 class Seed extends Command
 {
@@ -45,11 +48,29 @@ class Seed extends Command
             'force'     => $force,
         ] = $this->options();
 
-        $action = $this->mapping[$action];
-        $params = [];
-        $database   && $params['--database'] = $database;
-        $module     && $path && $params['--path'] = \luc\mod($module)->path($path);
-        $this->call('db:seed', $params);
+        if ($module) {
+            $modules = [$module];
+        } else {
+            $modules = array_keys(Module::initedModules());
+        }
+        foreach ($modules as $module) {
+            $this->info(">> seed by module [$module]");
+            $directory = \luc\mod($module)->path('database', 'seeds');
+            if (file_exists($directory)) foreach (File::allFiles($directory)
+                as $info)
+            {
+                $name = $info->getBasename('.php');
+                if (substr($name, strlen($name) - 6) != 'Seeder') {
+                    continue;
+                }
+                $params = [
+                    '--class'   => "Seeds\\$name",
+                ];
+                $force  && $params['--force'] = $force;
+                $this->call('db:seed', $params);
+            }
+        }
+
     }
 
 }

@@ -25,7 +25,16 @@ abstract class Master extends Model
         return $this;
     }
 
-    public static function resetSequence(int $val, string $seqName = null) {
+    public static function resetSequence(int $val, bool $afterExists = false,
+        string $seqName = null)
+    {
+        if ($afterExists) {
+            $model = static::query()
+                ->orderBy('id', 'desc')
+                ->first();
+            $val = max($model->id() + 1, $val);
+        }
+
         [$conn, $table] = static::connection();
         !$seqName && $seqName = "{$table}_id_seq";
         $sql = "ALTER SEQUENCE $seqName RESTART WITH $val";
