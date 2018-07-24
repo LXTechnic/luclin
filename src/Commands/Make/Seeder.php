@@ -85,6 +85,8 @@ class Seeder extends Command
     private function updateName(string $content,
         string $tmpName, string $name): string
     {
+        $content = str_replace("<?php\n", "<?php\n\nnamespace Seeds;\n", $content);
+
         $content = str_replace($tmpName, "{$name}Seeder", $content);
         return $content;
     }

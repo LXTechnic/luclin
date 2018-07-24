@@ -33,7 +33,7 @@ abstract class Generated extends Model
     }
 
     protected function genPrimaryId(): string {
-        return \luc\idgen::sorted36();
+        return \luc\idgen::sortedUuid();
     }
 
     public function setIdAttribute($value) {

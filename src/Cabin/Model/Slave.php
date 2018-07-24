@@ -11,15 +11,15 @@ use Illuminate\Database\Schema\Blueprint;
 
 /**
  *
- * 请在use类中加下以下属性：
- *
- * protected $primaryKey = ['id', 'master_type'];
- * public $incrementing = false;
  */
 abstract class Slave extends Model
 {
     use Traits\Query,
         HasCompositePrimaryKeyTrait;
+
+    protected $primaryKey = ['id', 'master_type'];
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected static function migrateUpPrimary(Blueprint $table): void
     {

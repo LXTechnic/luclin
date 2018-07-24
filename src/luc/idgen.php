@@ -39,9 +39,9 @@ class idgen
         return gmp_strval($gmp, $toBit);
     }
 
-    public static function sortedUuid(int $bit = 62): string {
+    public static function sortedUuid(int $bit = 36): string {
         return (new Support\IdGenerator())
-            ->orderable(1000)
+            ->orderable()
             ->gmpStrval($bit)
             ->get().
             (new Support\IdGenerator())

@@ -11,7 +11,7 @@ abstract class Master extends Model
     use Traits\Query;
 
     protected static function migrateUpPrimary(Blueprint $table,
-        bool $isBig = false): void
+        bool $isBig = true): void
     {
         $isBig ? $table->bigIncrements('id') : $table->increments('id');
 
