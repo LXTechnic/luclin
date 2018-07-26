@@ -34,7 +34,7 @@ abstract class Slave extends Model
         foreach (explode(',', $id) as $key => $value) {
             $where[$model->primaryKey[$key]] = $value;
         }
-        return static::found($where);
+        return static::firstOrNew($where);
     }
 
     public function resolveRouteBinding($id)
@@ -44,7 +44,7 @@ abstract class Slave extends Model
         foreach (explode(',', $id) as $key => $value) {
             $where[$keys[$key]] = $value;
         }
-        return static::found($where);
+        return static::firstOrNew($where);
     }
 
     public static function findOrFail($id) {

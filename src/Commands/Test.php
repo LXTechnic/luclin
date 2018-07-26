@@ -12,7 +12,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:test {module} {class}';
+    protected $signature = 'luc:test {module?} {class?}';
 
     /**
      * The console command description.
@@ -39,11 +39,27 @@ class Test extends Command
     public function handle()
     {
         // 获取参数
-        [
+        @[
             'module'    => $module,
             'class'     => $class,
         ] = $this->arguments();
-        $class = ucfirst($class);
+        $class && $class = ucfirst($class).'Test';
+
+        if (!$module) {
+            exec("./vendor/bin/phpunit", $result);
+            foreach ($result as $line) {
+                $this->info($line);
+            }
+            return;
+        }
+
+        if (!$class) {
+            exec("./vendor/bin/phpunit ".\luc\mod($module)->path('tests'), $result);
+            foreach ($result as $line) {
+                $this->info($line);
+            }
+            return;
+        }
 
         $conf = file_get_contents(\luc\mod($module)->path('composer.json'));
         foreach (File::allFiles(\luc\mod($module)->path('tests')) as $info) {

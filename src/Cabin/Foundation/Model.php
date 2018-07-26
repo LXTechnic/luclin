@@ -19,6 +19,14 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     protected static $connectionInfo = null;
 
+    public static function find($id, bool $reload = false) {
+        if (is_array($id) || $id instanceof Arrayable) {
+            return static::findMany($id);
+        }
+
+        return static::whereKey($id)->first();
+    }
+
     public function id() {
         $key = is_array($this->primaryKey) ? static::getIdField() : $this->primaryKey;
         return $this->{$key};
@@ -207,15 +215,6 @@ abstract class Model extends EloquentModel implements Contracts\Model
     public function save(array $options = []) {
         $this->confirm();
         return parent::save($options);
-    }
-
-    public static function found($features = [], bool $autoCreate = true): ?self {
-        $exist = self::where($features)->first();
-        if ($exist) {
-            return $exist;
-        }
-
-        return $autoCreate ? (new static())->fill($features) : null;
     }
 
     public static function foundByIds(...$ids): array {

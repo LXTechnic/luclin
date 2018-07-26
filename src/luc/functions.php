@@ -14,6 +14,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
 use Nette\Neon\Neon;
 
+
 function env(...$match): bool {
     return App::environment($match);
 }
@@ -95,6 +96,10 @@ function raise($error, array $extra = [], \Throwable $previous = null): Abort
 
 function fs(): Filesystem {
     return new Filesystem();
+}
+
+function faker(): \Faker\Generator {
+    return \Faker\Factory::create(config('app.faker_locale') ?: config('app.locale'));
 }
 
 function ndecode(string $data) {

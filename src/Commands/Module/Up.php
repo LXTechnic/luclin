@@ -79,6 +79,11 @@ class Up extends Command
         if ($output) foreach ($output as $line) {
             $this->info($line);
         }
+
+        // 自动放出luc
+        if (!File::exists('luc')) {
+            exec("cp ./vendor/bin/luc ./");
+        }
     }
 
     private function prepareTest(string $modulePath): void {
