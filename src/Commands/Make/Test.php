@@ -60,6 +60,20 @@ class Test extends Command
             }
         }
 
+        // 目标文件路径生成
+        $dir    = $category
+            ? (str_replace('\\', DIRECTORY_SEPARATOR, $category).DIRECTORY_SEPARATOR)
+                : '';
+        $dir    = $path.DIRECTORY_SEPARATOR.$dir;
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        $target = "$dir{$name}Test.php";
+        if (File::exists($target)) {
+            $this->info("<skipped> Target file [".basename($target)."] is exists.");
+            return;
+        }
+
         // 生成文件
         $tmpName    = Str::random();
         $params     = [
@@ -77,14 +91,6 @@ class Test extends Command
         file_put_contents($source, $content);
 
         // 移动到模块中
-        $dir    = $category
-            ? (str_replace('\\', DIRECTORY_SEPARATOR, $category).DIRECTORY_SEPARATOR)
-                : '';
-        $dir    = $path.DIRECTORY_SEPARATOR.$dir;
-        if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        $target = "$dir{$name}Test.php";
         File::move($source, $target);
     }
 

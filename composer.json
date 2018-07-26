@@ -29,6 +29,15 @@
             "src/luc.php"
         ]
     },
+    "bin": [
+        "luc"
+    ],
+    "scripts": {
+        "post-autoload-dump": [
+            "cp -f vendor/bin/luc ./",
+            "chmod +x luc"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [
