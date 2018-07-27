@@ -11,8 +11,18 @@ abstract class Generated extends Model
 {
     use Traits\Query;
 
+    protected static $autoGenId = true;
+
     public $incrementing = false;
     protected $keyType = 'string';
+
+    public function __construct(array $attributes = []) {
+        parent::__construct($attributes);
+
+        if (static::$autoGenId) {
+            $this->genId();
+        }
+    }
 
     protected static function migrateUpPrimary(Blueprint $table): void
     {
@@ -71,6 +81,13 @@ abstract class Generated extends Model
         $generator = new $class;
         return $generator->getBarcode($code,
             $generator::TYPE_CODE_128, $size, $height);
+    }
+
+    public function save(array $options = []) {
+        if (!$this->id()) {
+            $this->genId();
+        }
+        return parent::save($options);
     }
 
 }
