@@ -17,7 +17,7 @@ class Up extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:module.up {directories?*}';
+    protected $signature = 'luc:module:up {directories?*}';
 
     /**
      * The console command description.

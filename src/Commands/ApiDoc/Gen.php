@@ -13,7 +13,7 @@ class Gen extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:apidoc.gen';
+    protected $signature = 'luc:apidoc:gen';
 
     /**
      * The console command description.

@@ -15,7 +15,7 @@ class Tests extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:make.tests {module}';
+    protected $signature = 'luc:make:tests {module}';
 
     /**
      * The console command description.

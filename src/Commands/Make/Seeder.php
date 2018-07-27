@@ -15,7 +15,7 @@ class Seeder extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:make.seeder {module} {name}';
+    protected $signature = 'luc:make:seeder {module} {name}';
 
     /**
      * The console command description.

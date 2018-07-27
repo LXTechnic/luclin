@@ -15,7 +15,7 @@ class Snap extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:baseline.snap {name} {--renew}';
+    protected $signature = 'luc:baseline:snap {name} {--renew}';
 
     /**
      * The console command description.

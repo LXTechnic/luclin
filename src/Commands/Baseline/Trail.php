@@ -13,7 +13,7 @@ class Trail extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:baseline.trail {name} {ver?}';
+    protected $signature = 'luc:baseline:trail {name} {ver?}';
 
     /**
      * The console command description.

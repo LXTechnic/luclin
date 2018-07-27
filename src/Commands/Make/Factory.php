@@ -15,7 +15,7 @@ class Factory extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:make.factory {module} {model} {state?}';
+    protected $signature = 'luc:make:factory {module} {model} {state?}';
 
     /**
      * The console command description.

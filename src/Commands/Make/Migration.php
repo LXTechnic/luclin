@@ -11,7 +11,7 @@ class Migration extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:make.migration {module} {name} {--path=database/migrations} {--create=} {--table=}';
+    protected $signature = 'luc:make:migration {module} {name} {--path=database/migrations} {--create=} {--table=}';
 
     /**
      * The console command description.
