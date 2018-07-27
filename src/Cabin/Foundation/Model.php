@@ -188,11 +188,6 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $this;
     }
 
-    public function reload(): self {
-        return $this->fill(self::find($this->id())->toArray())
-            ->syncOriginal();
-    }
-
     public function updateJson(string $field, array $path, string $value) {
         // return $this->self()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));
 

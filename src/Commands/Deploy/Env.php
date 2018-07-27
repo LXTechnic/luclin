@@ -49,16 +49,16 @@ class Env extends Command
         File::copy($source, $target);
 
         // 测试环环境准备
-        $this->prepareEnvTesting($root);
+        $this->prepareEnvTesting($env, $root);
 
         // TODO: 回头再实现整合多modules中的env
 
         $this->info("set env to [$env]");
     }
 
-    private function prepareEnvTesting(string $root): void {
+    private function prepareEnvTesting(string $env, string $root): void {
         $source = $root.\DIRECTORY_SEPARATOR.'.environments'.
-            \DIRECTORY_SEPARATOR."testing.conf";
+            \DIRECTORY_SEPARATOR."testing".\DIRECTORY_SEPARATOR."$env.conf";
         $target = $root.\DIRECTORY_SEPARATOR.".env.testing";
         if (!File::exists($target) && File::exists($source)) {
             File::copy($source, $target);
