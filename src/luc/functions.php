@@ -29,7 +29,9 @@ function mod(string $name, string $prefix = 'lumod:'): Module {
 
 function uri($url, array $context = []) {
     if (is_array($url)) {
-        $luri = new Luri(...$url);
+        $scheme = strstr($url[0], ':', true);
+        $path   = substr($url[0], strlen($scheme) + 1);
+        $luri = new Luri($scheme, $path, $url[1] ?? []);
     } else {
         $luri = Luri::createByUrl($url);
     }

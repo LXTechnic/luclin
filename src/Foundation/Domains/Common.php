@@ -13,14 +13,6 @@ class Common extends Domain
 
     public function doNothing(): void {}
 
-    public function dd(...$arguments): void {
-        dd(...$arguments);
-    }
-
-    public function dump(...$arguments): void {
-        dump(...$arguments);
-    }
-
     public function done($signal = 1) {
         return $signal;
     }

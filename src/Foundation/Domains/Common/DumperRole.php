@@ -6,8 +6,8 @@ use Luclin\Flow\Role;
 
 class DumperRole extends Role
 {
-    public function dump(): void {
-        dump($this->raw());
+    public function du(): void {
+        du($this->raw());
     }
 
 }

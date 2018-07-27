@@ -68,7 +68,7 @@ class Tests extends Command
         }
         $content = file_get_contents($info->getRealPath());
         $class   = $info->getBasename('.php');
-        if (!strpos($content, "\nclass $class ")) {
+        if (!strpos($content, "\nclass $class")) {
             return;
         }
         if (!preg_match('/namespace ([a-zA-Z\\\\]+);/', $content, $matches)) {
@@ -87,7 +87,7 @@ class Tests extends Command
             'name'      => $name,
         ];
         $isUnit && $params['--unit']    = $isUnit;
-        $this->call('luc:make.test', $params);
+        $this->call('luc:make:test', $params);
     }
 
 }
