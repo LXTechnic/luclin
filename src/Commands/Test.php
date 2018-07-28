@@ -63,7 +63,7 @@ class Test extends Command
 
         $conf = file_get_contents(\luc\mod($module)->path('composer.json'));
         foreach (File::allFiles(\luc\mod($module)->path('tests')) as $info) {
-            if ($class != $info->getBasename('.php')) {
+            if (strtolower($class) != strtolower($info->getBasename('.php'))) {
                 continue;
             }
             exec("./vendor/bin/phpunit ".$info->getRealPath(), $result);
