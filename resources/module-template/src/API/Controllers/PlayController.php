@@ -14,7 +14,7 @@ use :MyModule\Domains;
 
 class PlayController extends Controller
 {
-    public function index(Request $request) {
+    public function hello(Request $request) {
         $response = $this->response();
         $response->hello = 'world';
         return $response->send();

@@ -71,6 +71,7 @@ class Module extends Command
             }
         }
 
+        $this->info("Module [$name] is created.");
     }
 
 }
