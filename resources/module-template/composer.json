@@ -1,0 +1,31 @@
+{
+    "name": "my/module",
+    "description": "my module",
+    "authors": [
+    ],
+    "autoload": {
+        "psr-4": {
+            "Seeds\\": "database/seeds/",
+            ":MyModule-ASED\\Tests\\": "tests/",
+            ":MyModule-ASED\\": "src/"
+        }
+    },
+    "extra": {
+        "test": {
+            "feature": [
+                "src/API/Controllers"
+            ],
+            "unit": [
+                "src/Commands",
+                "src/Domains",
+                "src/Models"
+            ]
+        },
+        "laravel": {
+            "providers": [
+                ":MyModule-ASED\\Providers\\AppServiceProvider",
+                ":MyModule-ASED\\Providers\\EventServiceProvider"
+            ]
+        }
+    }
+}
