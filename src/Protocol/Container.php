@@ -5,9 +5,13 @@ namespace Luclin\Protocol;
 use Luclin\Meta\Collection;
 use Luclin\Support\Recursive;
 
-class Container extends Collection {
+class Container extends Collection
+{
     use Foundation\ContrableTrait,
-        Foundation\OperableTrait;
+        Foundation\OperableTrait {
+            Foundation\ContrableTrait::toArray  as contract2array;
+            Foundation\OperableTrait::toArray   as operator2array;
+        }
 
     public function __set($name, $value) {
         parent::__set($name, $value);
@@ -27,5 +31,10 @@ class Container extends Collection {
         $decorators
             && ($toArray = new Recursive\ToArray($decorators))
                 && $this->set("@$name", $toArray());
+    }
+
+    public function toArray(callable $filter = null): array {
+        $result = parent::toArray($filter);
+        return $this->appendOperators2Array($this->appendContracts2Array($result));
     }
 }

@@ -12,7 +12,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:test {module?} {class?}';
+    protected $signature = 'luc:test {module?} {class?} {onlySeq?}';
 
     /**
      * The console command description.
@@ -42,6 +42,7 @@ class Test extends Command
         @[
             'module'    => $module,
             'class'     => $class,
+            'onlySeq'   => $onlySeq,
         ] = $this->arguments();
         $class && $class = ucfirst($class).'Test';
 
@@ -61,11 +62,17 @@ class Test extends Command
             return;
         }
 
-        $conf = file_get_contents(\luc\mod($module)->path('composer.json'));
+        $conf   = file_get_contents(\luc\mod($module)->path('composer.json'));
+        $count  = 0;
         foreach (File::allFiles(\luc\mod($module)->path('tests')) as $info) {
             if (strtolower($class) != strtolower($info->getBasename('.php'))) {
                 continue;
             }
+            $count++;
+            if ($onlySeq && $onlySeq != $count) {
+                continue;
+            }
+
             $result = [];
             exec("./vendor/bin/phpunit ".$info->getRealPath(), $result);
             foreach ($result as $line) {

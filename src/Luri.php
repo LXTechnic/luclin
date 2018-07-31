@@ -21,7 +21,7 @@ class Luri
         static::$registerSchemes[$name] = $scheme;
     }
 
-    public static function createByUrl(string $url): ?self {
+    public static function createByUri(string $url): ?self {
         $parsed = parse_url($url);
         if (!isset($parsed['scheme'])) {
             return null;
@@ -62,6 +62,20 @@ class Luri
         return $this->render();
     }
 
+    public function toArray(): array {
+        return [
+            $this->scheme,
+            $this->root(),
+            $this->path(false),
+            $this->query(),
+        ];
+    }
+
+    public function shortValue(): string {
+        return $this->path(false).
+            ($this->query ? ('?'.http_build_query($this->query)) : '');
+    }
+
     public function resolve(array $context = []): array {
         $context = (new Context())->fill($context);
         $context->_luri = $this;
@@ -97,8 +111,17 @@ class Luri
         return [$this->scheme, static::$registerSchemes[$this->scheme]];
     }
 
-    public function path(): string {
-        return $this->path;
+    public function root(): string {
+        $pos = strpos($this->path, '/');
+        return $pos ? substr($this->path, 0, $pos) : $this->path;
+    }
+
+    public function path(bool $includeRoot = true): string {
+        if ($includeRoot) {
+            return $this->path;
+        }
+        $pos = strpos($this->path, '/');
+        return $pos ? substr($this->path, $pos + 1) : '';
     }
 
     public function query(): array {

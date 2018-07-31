@@ -39,15 +39,19 @@ trait ContrableTrait
 
     public function toArray(callable $filter = null): array {
         $result = parent::toArray($filter);
+        return $this->appendContracts2Array($result);
+    }
+
+    protected function appendContracts2Array(array $arr): array {
         foreach ($this->getContracts() as $name => $data) {
             if (is_array($data) || $data instanceof \Traversable) {
                 $toArray = new Recursive\ToArray($data, $filter);
-                $result["_$name"] = $toArray();
+                $arr["_$name"] = $toArray();
             } else {
-                $result["_$name"] = $data;
+                $arr["_$name"] = $data;
             }
         }
-        return $result;
+        return $arr;
     }
 
     public function confirm(): MetaInterface {
