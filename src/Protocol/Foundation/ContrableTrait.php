@@ -45,7 +45,7 @@ trait ContrableTrait
     protected function appendContracts2Array(array $arr): array {
         foreach ($this->getContracts() as $name => $data) {
             if (is_array($data) || $data instanceof \Traversable) {
-                $toArray = new Recursive\ToArray($data, $filter);
+                $toArray = new Recursive\ToArray($data);
                 $arr["_$name"] = $toArray();
             } else {
                 $arr["_$name"] = $data;

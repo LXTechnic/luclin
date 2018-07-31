@@ -24,6 +24,7 @@ return [
     ],
     'redis_model_not_found'   => [
         'num'       => 4771,
+        'lvl'       => '404',
         'exc'       => ModelNotFoundException::class,
     ],
 ];

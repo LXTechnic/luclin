@@ -8,6 +8,7 @@ class Abort extends \Exception
     implements \JsonSerializable, Contracts\Arrayable, Contracts\Jsonable
 {
     const LEVEL_CODE_MAPPING = [
+        '404'       => 404,
         'notice'    => 200,
         'warning'   => 403,
         'error'     => 400,
@@ -15,6 +16,7 @@ class Abort extends \Exception
     ];
 
     const LEVEL_NOTICE_MAPPING = [
+        '404'       => true,
         'notice'    => true,
         'warning'   => true,
         'error'     => false,
