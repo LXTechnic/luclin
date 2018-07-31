@@ -66,6 +66,7 @@ class Test extends Command
             if (strtolower($class) != strtolower($info->getBasename('.php'))) {
                 continue;
             }
+            $result = [];
             exec("./vendor/bin/phpunit ".$info->getRealPath(), $result);
             foreach ($result as $line) {
                 $this->info($line);

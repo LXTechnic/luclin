@@ -21,6 +21,9 @@
         "picqer/php-barcode-generator": "^0.2",
         "firebase/php-jwt": "^5.0"
     },
+    "suggest": {
+        "ext-msgpack": "Redis model serialize by msgpack, it is compact & faster."
+    },
     "autoload": {
         "psr-4": {
             "Luclin\\": "src/"

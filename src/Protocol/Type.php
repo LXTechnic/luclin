@@ -30,13 +30,21 @@ abstract class Type extends Struct implements FieldInterface
     }
 
     public function fill($data): MetaInterface {
-        is_object($data) && $this->_raw = $data;
+        if (is_object($data)) {
+            $this->_raw = $data;
+            if (method_exists($data, 'id')) {
+                $this->setId($data->id());
+            }
+        }
+
         if (is_object($data) && method_exists($data, 'toArray')) {
             $data = $data->toArray();
         }
 
-        static::$_id && isset($data[static::$_id])
-            && $this->setId($data[static::$_id]);
+        if (!$this->id()) {
+            static::$_id && isset($data[static::$_id])
+                && $this->setId($data[static::$_id]);
+        }
 
         foreach (static::$_mapping as $field => $property) {
             isset($data[$field]) && $data[$property] = $data[$field];

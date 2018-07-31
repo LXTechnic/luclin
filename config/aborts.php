@@ -1,5 +1,7 @@
 <?php
 
+use \Illuminate\Database\Eloquent\ModelNotFoundException;
+
 return [
     'server_error'  => [
         'num'       => 4300,            // 不设置的话需要以号码值作为键值
@@ -19,5 +21,9 @@ return [
     'model_type_attr_error'   => [
         'num'       => 4351,
         'exc'       => \UnexpectedValueException::class,
+    ],
+    'redis_model_not_found'   => [
+        'num'       => 4771,
+        'exc'       => ModelNotFoundException::class,
     ],
 ];
