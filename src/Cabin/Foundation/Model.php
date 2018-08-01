@@ -19,6 +19,12 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     protected static $connectionInfo = null;
 
+    protected $_onFactory = false;
+
+    public function setOnFactoryAttribute($value) {
+        $this->_onFactory = $value;
+    }
+
     public static function find($id, bool $reload = false) {
         if (is_array($id) || $id instanceof Arrayable) {
             return static::findMany($id);

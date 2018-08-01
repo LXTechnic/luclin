@@ -2,6 +2,8 @@
 
 namespace luc;
 
+use Illuminate\Support\Arr;
+
 class assert
 {
     public static function exc($exc): void {
@@ -10,6 +12,14 @@ class assert
         } elseif (isset($exc->exception) && $exc->exception instanceof \Throwable) {
             static::dumpException($exc->exception);
         }
+    }
+
+    public static function arrayHas(array $arr, string $key) {
+        $value = Arr::get($arr, $key);
+        if ($value == null) {
+            throw new \Exception("Assert array key [$key] fail.");
+        }
+        return $value;
     }
 
     protected static function dumpException(\Throwable $exc): void {
