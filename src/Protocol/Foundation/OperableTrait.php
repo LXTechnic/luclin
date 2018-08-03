@@ -15,9 +15,9 @@ trait OperableTrait
     protected $_operators = [];
 
     protected $_operatorOutput = [
-        'uri'   => false,
-        'body'  => true,
-        'value' => false,
+        'uri'       => false,
+        'body'      => true,
+        'operator'  => false,
     ];
 
     public function setOperatorOutputMode(...$modes): self {
@@ -130,7 +130,8 @@ trait OperableTrait
         $result = [];
         $this->_operatorOutput['uri']   && $result['uri']   = $luri->render();
         $this->_operatorOutput['body']  && $result['body']  = $luri->toArray();
-        $this->_operatorOutput['value'] && $result['value'] = $luri->shortValue();
+        $this->_operatorOutput['operator']
+            && $result['operator'] = $luri->toOperator();
         return $result;
     }
 
@@ -139,7 +140,8 @@ trait OperableTrait
         $result = [];
         $this->_operatorOutput['uri']   && $result['uri']   = $luri->render();
         $this->_operatorOutput['body']  && $result['body']  = $luri->toArray();
-        $this->_operatorOutput['value'] && $result['value'] = $luri->shortValue();
+        $this->_operatorOutput['operator']
+            && $result['operator'] = $luri->toOperator();
         return $result;
     }
 

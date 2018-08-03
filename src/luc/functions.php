@@ -7,6 +7,7 @@ use Luclin\Module;
 use Luclin\Flow;
 use Luclin\Luri;
 use Luclin\Protocol;
+use Luclin\Support;
 
 use App;
 use Illuminate\Support\Arr;
@@ -94,6 +95,10 @@ function raise($error, array $extra = [], \Throwable $previous = null): Abort
     }
     $abort = new Abort(...$params);
     return $abort;
+}
+
+function pipe($handle): Support\Pipe {
+    return new Support\Pipe($handle);
 }
 
 function fs(): Filesystem {

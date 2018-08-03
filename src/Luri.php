@@ -71,9 +71,10 @@ class Luri
         ];
     }
 
-    public function shortValue(): string {
-        return $this->path(false).
+    public function toOperator($onlyValue = true): string {
+        $value = $this->path(false).
             ($this->query ? ('?'.http_build_query($this->query)) : '');
+        return $onlyValue ? $value : ('$'.$this-root()."=$value");
     }
 
     public function resolve(array $context = []): array {
