@@ -108,7 +108,11 @@ class Lists extends Collection implements FieldInterface
         string $takeName = 'take'): self
     {
         // 取模型及类
-        $model  = $this->first()->raw();
+        $model  = $this->first();
+        if (!$model) {
+            return $this;
+        }
+        $model  = $model->raw();
         $class  = get_class($model);
 
         // 判断有没有query，如果没有的话走估算方案
