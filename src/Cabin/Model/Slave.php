@@ -28,7 +28,7 @@ abstract class Slave extends Model
         $table->primary(['id', 'master_type']);
     }
 
-    public static function find($id) {
+    public static function find($id, bool $reload = false) {
         $model = new static();
         $where = [];
         foreach (explode(',', $id) as $key => $value) {
