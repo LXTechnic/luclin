@@ -4,6 +4,7 @@ namespace Luclin\Flow;
 
 use Luclin\Contracts;
 use Luclin\Flow;
+use Luclin\Foundation;
 
 use DB;
 use Log;
@@ -12,6 +13,8 @@ use Log;
  */
 abstract class Domain
 {
+    use Foundation\InstancableTrait;
+
     public function id(): string {
         return static::class;
     }
