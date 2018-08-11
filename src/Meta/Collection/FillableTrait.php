@@ -34,7 +34,7 @@ trait FillableTrait {
             if ($data instanceof Arrayable) {
                 $data = $data->toArray();
             } else {
-                throw new \InvalidArgumentException("fill data error");
+                throw new \UnexpectedValueException("fill data error");
             }
         }
 
