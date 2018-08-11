@@ -27,7 +27,7 @@ trait FillableTrait {
      *
      * @param \Traversable|array $data
      * @return MetaInterface
-     * @throws \InvalidArgumentException
+     * @throws \UnexpectedValueException
      */
     public function fill($data): MetaInterface {
         if (!is_array($data) && !($data instanceof \Traversable)) {
