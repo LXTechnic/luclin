@@ -2,7 +2,6 @@
 
 namespace Luclin\Protocol\Foundation;
 
-use Luclin\MetaInterface;
 use Luclin\Meta\Collection;
 use Luclin\Protocol\Lists;
 

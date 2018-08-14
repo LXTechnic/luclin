@@ -3,6 +3,7 @@
 namespace luc;
 
 use Illuminate\Support\Arr;
+use Log;
 
 class assert
 {
@@ -26,7 +27,11 @@ class assert
         echo "\n!!> Exception raise: ";
         echo $exc->getMessage();
         echo " @ ".$exc->getFile()."(".$exc->getLine().")";
-        echo "\n".$exc->getTraceAsString()."\n";
+        echo "\n  See details in the log <!!\n\n";
+
+        Log::debug("Test error: ".$exc->getMessage(), [
+            'exception' => $exc,
+        ]);
     }
 
 }

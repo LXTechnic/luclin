@@ -2,7 +2,7 @@
 
 namespace Luclin\Meta;
 
-use Luclin\MetaInterface;
+use Luclin\Contracts;
 use Luclin\Support\Recursive;
 
 /**
@@ -29,9 +29,9 @@ trait CollectionTrait
      *
      * @param int|string $key
      * @param mixed $value
-     * @return MetaInterface
+     * @return Contracts\Meta
      */
-    public function set($key, $value): MetaInterface {
+    public function set($key, $value): Contracts\Meta {
         $key === null ? $this->items[] = $value : $this->items[$key] = $value;
         return $this;
     }
@@ -50,9 +50,9 @@ trait CollectionTrait
      * 替换集合中已经存在的键值
      *
      * @param array $items
-     * @return MetaInterface
+     * @return Contracts\Meta
      */
-    public function replace(array $items): MetaInterface {
+    public function replace(array $items): Contracts\Meta {
         foreach ($items as $key => $value) {
             $this->has($key) && $this->set($key, $value);
         }
@@ -83,31 +83,31 @@ trait CollectionTrait
      * 移除一个单元
      *
      * @param int|string $key
-     * @return MetaInterface
+     * @return Contracts\Meta
      */
-    public function remove($key): MetaInterface {
+    public function remove($key): Contracts\Meta {
         unset($this->items[$key]);
         return $this;
     }
 
     /**
      *
-     * @return MetaInterface
+     * @return Contracts\Meta
      */
-    public function clear(): MetaInterface {
+    public function clear(): Contracts\Meta {
         $this->items = [];
         return $this;
     }
 
     /**
      *
-     * @return MetaInterface
+     * @return Contracts\Meta
      * @throws \UnexpectedValueException
      */
-    public function confirm(): MetaInterface {
+    public function confirm(): Contracts\Meta {
         // confirm 内部所有meta
         $it = new Recursive\TraversableIterator($this, function($value) {
-            if (is_object($value) && $value instanceof MetaInterface) {
+            if (is_object($value) && $value instanceof Contracts\Meta) {
                 $value->confirm();
                 return false;
             }

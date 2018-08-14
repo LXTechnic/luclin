@@ -2,8 +2,8 @@
 
 namespace Luclin\Meta\Collection;
 
+use Luclin\Contracts;
 use Luclin\Meta\Struct;
-use Luclin\MetaInterface;
 
 use Illuminate\Contracts\Support\Arrayable;
 
@@ -26,10 +26,10 @@ trait FillableTrait {
      * 填充数据方法
      *
      * @param \Traversable|array $data
-     * @return MetaInterface
+     * @return Contracts\Meta
      * @throws \UnexpectedValueException
      */
-    public function fill($data): MetaInterface {
+    public function fill($data): Contracts\Meta {
         if (!is_array($data) && !($data instanceof \Traversable)) {
             if ($data instanceof Arrayable) {
                 $data = $data->toArray();
@@ -51,9 +51,9 @@ trait FillableTrait {
      * 添加要排除的字段。不传参数为添空之前添加的排除字段。
      *
      * @param array $keys
-     * @return MetaInterface
+     * @return Contracts\Meta
      */
-    public function exclude(...$keys): MetaInterface {
+    public function exclude(...$keys): Contracts\Meta {
         if ($keys) {
             foreach ($keys as $key) {
                 $this->_excludeKeys[$key] = 1;

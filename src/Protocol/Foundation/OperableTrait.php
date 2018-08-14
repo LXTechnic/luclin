@@ -3,7 +3,6 @@
 namespace Luclin\Protocol\Foundation;
 
 use Luclin\Luri;
-use Luclin\MetaInterface;
 use Luclin\Operators;
 use Luclin\Meta\Collection;
 use Luclin\Protocol\Operator;

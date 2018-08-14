@@ -2,7 +2,7 @@
 
 namespace Luclin\Protocol;
 
-use Luclin\MetaInterface;
+use Luclin\Contracts;
 use Luclin\Meta\Struct;
 
 abstract class Type extends Struct implements FieldInterface
@@ -29,7 +29,7 @@ abstract class Type extends Struct implements FieldInterface
         return $this->_raw;
     }
 
-    public function fill($data): MetaInterface {
+    public function fill($data): Contracts\Meta {
         if (is_object($data)) {
             $this->_raw = $data;
             if (method_exists($data, 'id')) {

@@ -1,7 +1,7 @@
 <?php
 namespace Luclin\Meta;
 
-use Luclin\MetaInterface;
+use Luclin\Contracts;
 
 /**
  * 标准Struct基类
@@ -113,10 +113,10 @@ trait StructTrait
 
     /**
      *
-     * @return MetaInterface
+     * @return Contracts\Meta
      * @throws \UnexpectedValueException
      */
-    public function confirm(): MetaInterface {
+    public function confirm(): Contracts\Meta {
         $nullable = static::_nullable();
 
         // confirm勾子

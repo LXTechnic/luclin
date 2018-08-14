@@ -2,8 +2,8 @@
 
 namespace Luclin\Protocol;
 
+use Luclin\Contracts;
 use Luclin\Meta\Struct;
-use Luclin\MetaInterface;
 
 use Validator;
 use Illuminate\Http\Request as LaravelRequest;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Luclin\Foundation\Http\Middleware\XHeaders;
 
 class Request extends Struct
-    implements \Luclin\MetaInterface
+    implements Contracts\Meta
 {
     use Foundation\OperableTrait;
 
@@ -57,7 +57,7 @@ class Request extends Struct
         return $result;
     }
 
-    public function confirm(): MetaInterface {
+    public function confirm(): Contracts\Meta {
         $validator = Validator::make($this->toArray(), static::_validate(),
             ...static::_hints());
         if ($validator->fails()) {

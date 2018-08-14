@@ -104,6 +104,7 @@ class AppServiceProvider extends Providers\AppService
 
     protected function registerQueueJobEvent(): void {
         Queue::before(function (JobProcessing $event) {
+            Cabin::clean();
             Support\CacheLoader::cleanAll();
         });
     }

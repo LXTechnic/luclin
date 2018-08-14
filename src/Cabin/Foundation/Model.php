@@ -8,11 +8,10 @@ use Luclin\Cabin;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
 
 use DB;
-
-// TODO: 需要在之后加入对find/findMany以及whereKey的支持
 
 abstract class Model extends EloquentModel implements Contracts\Model
 {
@@ -21,21 +20,58 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     protected $_onFactory = false;
 
+    protected $_newBindId = null;
+
     public function setOnFactoryAttribute($value) {
         $this->_onFactory = $value;
     }
 
+    public function setNewBindId(string $id): self {
+        $this->_newBindId = $id;
+        return $this;
+    }
+
     public static function find($id, bool $reload = false) {
-        if (is_array($id) || $id instanceof Arrayable) {
+        return Cabin::load(static::class, $id, function(array $id) {
             return static::findMany($id);
+        }, $reload);
+    }
+
+    public static function findOrFail($id, bool $reload = false) {
+        $result = static::find($id, $reload);
+
+        if (is_array($id)) {
+            if (count($result) === count(array_unique($id))) {
+                return $result;
+            }
+        } elseif (! is_null($result)) {
+            return $result;
         }
 
-        return static::whereKey($id)->first();
+        throw (new ModelNotFoundException)->setModel(
+            static::class, $id
+        );
+    }
+
+    public static function found($feature, bool $reload = false) {
+        return Cabin::loadByFeatures(static::class, $feature, function($feature) {
+            if (is_array($feature)) {
+                $model  = static::firstOrNew($feature);
+            } else {
+                $model  = static::findOrNew($feature);
+            }
+
+            return $model;
+        }, $reload);
     }
 
     public function id() {
         $key = is_array($this->primaryKey) ? static::getIdField() : $this->primaryKey;
         return $this->{$key};
+    }
+
+    public function findId() {
+        return $this->id();
     }
 
     public function setId($id): self {
@@ -79,6 +115,10 @@ abstract class Model extends EloquentModel implements Contracts\Model
             }
         }
         return $this->fill($data);
+    }
+
+    public static function cabin(): Cabin\Container {
+        return Cabin\Container::instance(static::class);
     }
 
     // public static function f($id) {
@@ -215,7 +255,13 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     public function save(array $options = []) {
         $this->confirm();
-        return parent::save($options);
+        $result = parent::save($options);
+
+        // 处理newBindId
+        if ($this->_newBindId) {
+            $this->cabin()->transformNewModel($this->_newBindId);
+            $this->_newBindId = null;
+        }
     }
 
     public static function foundByIds(...$ids): array {

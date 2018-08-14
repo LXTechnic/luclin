@@ -2,7 +2,7 @@
 
 namespace Luclin\Meta\Struct;
 
-use Luclin\MetaInterface;
+use Luclin\Contracts;
 
 /**
  * （仅为）Struct接口实现类赋加重载访问属性支持
@@ -48,9 +48,9 @@ trait SerializableTrait {
     /**
      * 根据数字下标的array填充
      * @param array $arr
-     * @return MetaInterface
+     * @return Contracts\Meta
      */
-    public function fillByArray(array $arr): MetaInterface {
+    public function fillByArray(array $arr): Contracts\Meta {
         $count  = 0;
         foreach (static::defaults(true) as $key => $default) {
             isset($arr[$count]) && $this->set($key, $arr[$count]);

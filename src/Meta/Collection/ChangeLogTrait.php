@@ -2,7 +2,7 @@
 
 namespace Luclin\Meta\Collection;
 
-use Luclin\MetaInterface;
+use Luclin\Contracts;
 
 /**
  * Collection和Struct接口实现字段变更记录
@@ -13,14 +13,14 @@ trait ChangeLogTrait {
     protected $_originalData = [];
     protected $_isAllChanged = false;
 
-    public function set($key, $value): MetaInterface {
+    public function set($key, $value): Contracts\Meta {
         if (!$this->_isAllChanged && !array_key_exists($key, $this->_originalData)) {
             $this->_originalData[$key] = $this->get($key);
         }
         return parent::set($key, $value);
     }
 
-    public function remove($key): MetaInterface {
+    public function remove($key): Contracts\Meta {
         if (!$this->_isAllChanged) {
             if (array_key_exists($key, $this->_originalData)) {
                 unset($this->_originalData[$key]);
@@ -31,13 +31,13 @@ trait ChangeLogTrait {
         return parent::remove($key);
     }
 
-    public function clear(): MetaInterface {
+    public function clear(): Contracts\Meta {
         $this->releaseOriginalData();
         $this->_isAllChanged = true;
         return parent::clear();
     }
 
-    public function push($value): MetaInterface {
+    public function push($value): Contracts\Meta {
         $this->releaseOriginalData();
         $this->_isAllChanged = true;
         return parent::push($value);
@@ -71,7 +71,7 @@ trait ChangeLogTrait {
         return $this->_originalData + $this->iterate()->toArray();
     }
 
-    public function releaseOriginalData(): MetaInterface {
+    public function releaseOriginalData(): Contracts\Meta {
         $this->_originalData = [];
         $this->_isAllChanged = false;
         return $this;

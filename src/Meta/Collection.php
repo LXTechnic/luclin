@@ -2,8 +2,10 @@
 
 namespace Luclin\Meta;
 
+use Luclin\Contracts;
+
 use Illuminate\Support;
-use Illuminate\Contracts\Support as Contracts;
+use Illuminate\Contracts\Support as ContractsSupport;
 
 /**
  * 标准Collection基类
@@ -11,9 +13,9 @@ use Illuminate\Contracts\Support as Contracts;
  * @author andares
  */
 class Collection extends Support\Collection
-    implements \Luclin\MetaInterface,
+    implements Contracts\Meta,
     \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggregate,
-    Contracts\Arrayable, Contracts\Jsonable
+    ContractsSupport\Arrayable, ContractsSupport\Jsonable
 {
     use CollectionTrait;
 }

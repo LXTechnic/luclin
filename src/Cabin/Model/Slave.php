@@ -8,6 +8,7 @@ use Luclin\Cabin\Foundation\{
 };
 
 use Illuminate\Database\Schema\Blueprint;
+use DB;
 
 /**
  *
@@ -28,13 +29,18 @@ abstract class Slave extends Model
         $table->primary(['id', 'master_type']);
     }
 
-    public static function find($id, bool $reload = false) {
-        $model = new static();
-        $where = [];
-        foreach (explode(',', $id) as $key => $value) {
-            $where[$model->primaryKey[$key]] = $value;
+    public static function findMany(array $ids)
+    {
+        [$masterType] = explode(',', $ids[0]);
+        foreach ($ids as $key => $id) {
+            [$_, $id] = explode(',', $id);
+            $ids[$key] = $id;
         }
-        return static::firstOrNew($where);
+
+        return static::query()
+            ->where('master_type', $masterType)
+            ->whereIn('id', $ids)
+            ->get();
     }
 
     public function resolveRouteBinding($id)
@@ -44,11 +50,12 @@ abstract class Slave extends Model
         foreach (explode(',', $id) as $key => $value) {
             $where[$keys[$key]] = $value;
         }
-        return static::firstOrNew($where);
+        return static::found($where);
     }
 
-    public static function findOrFail($id) {
-        return static::find($id);
+    public function findId() {
+        return ($this->master_type && $this->id)
+            ? "$this->master_type,$this->id" : null;
     }
 
     abstract public function master(): ?object;

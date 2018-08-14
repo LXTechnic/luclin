@@ -3,7 +3,6 @@
 namespace Luclin\Protocol;
 
 use Luclin\Contracts;
-use Luclin\MetaInterface;
 use Luclin\Meta\Collection;
 use Luclin\Luri\Preset;
 
@@ -46,13 +45,6 @@ class Lists extends Collection implements FieldInterface
         }
 
         $slaveClass = get_class($slave[0]);
-
-        // if (!is_array($slave)) {
-        //     if ($slave instanceof MetaInterface) {
-        //         $slave->confirm();
-        //     }
-        //     $slave = $slave->toArray();
-        // }
 
         $data = new Foundation\UnionData($this,
              $alias ? [$alias => [$class, $masterField, $slaveField]]

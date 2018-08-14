@@ -2,7 +2,7 @@
 
 namespace Luclin\Protocol\Foundation;
 
-use Luclin\MetaInterface;
+use Luclin\Contracts;
 use Luclin\Meta\Collection;
 use Luclin\Support\Recursive;
 
@@ -54,10 +54,10 @@ trait ContrableTrait
         return $arr;
     }
 
-    public function confirm(): MetaInterface {
+    public function confirm(): Contracts\Meta {
         // confirm 内部所有 contract
         $it = new Recursive\TraversableIterator($this->getContracts(), function($value) {
-            if (is_object($value) && $value instanceof MetaInterface) {
+            if (is_object($value) && $value instanceof Contracts\Meta) {
                 $value->confirm();
                 return false;
             }
