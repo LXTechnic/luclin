@@ -76,6 +76,8 @@ class Cabin
                 $container->index($feature, $model->findId());
             } else {
                 $container[$model->findId()] = $model;
+                // 对于generator类型的model来说，未存储前可能也已经生成了id
+                $container->index($feature, $model->findId());
             }
         }
         return $model;

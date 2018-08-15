@@ -123,11 +123,9 @@ trait CollectionTrait
 
         // 整体confirm勾子
         $methods = $this->afterConfirm();
-        if ($methods && is_array($methods)) {
-            foreach ($methods as $method) {
-                $call = [$this, $method];
-                $call();
-            }
+        if ($methods && is_array($methods)) foreach ($methods as $method) {
+            $call = [$this, $method];
+            $call();
         }
 
         return $this;

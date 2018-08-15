@@ -151,11 +151,9 @@ abstract class Model extends EloquentModel implements Contracts\Model
     public function confirm(): self {
         // 整体confirm勾子
         $methods = $this->afterConfirm();
-        if ($methods && is_array($methods)) {
-            foreach ($methods as $method) {
-                $call = [$this, $method];
-                $call();
-            }
+        if ($methods && is_array($methods)) foreach ($methods as $method) {
+            $call = [$this, $method];
+            $call();
         }
         return $this;
     }
@@ -253,14 +251,26 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $query->update($update);
     }
 
+    public function toCabin(): self {
+        $this->cabin()[$this->findId()] = $this;
+    }
+
     public function save(array $options = []) {
         $this->confirm();
+
+        $isCreated = !$this->exists;
+
         $result = parent::save($options);
+        if (!$result) {
+            return $result;
+        }
 
         // 处理newBindId
         if ($this->_newBindId) {
             $this->cabin()->transformNewModel($this->_newBindId);
             $this->_newBindId = null;
+        } elseif ($isCreated) {
+            $this->cabin()[$this->findId()] = $this;
         }
     }
 
