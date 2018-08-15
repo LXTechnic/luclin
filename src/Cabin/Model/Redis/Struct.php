@@ -15,7 +15,6 @@ abstract class Struct extends Meta\Struct
     protected static $_prefix = '';
     protected static $_expire = null;
     protected static $_connection   = 'default';
-    protected static $_idPrefix     = 'ar';
 
     protected $id;
 
@@ -69,7 +68,7 @@ abstract class Struct extends Meta\Struct
 
     public function genId(): string {
         $id = \luc\idgen::sortedUuid();
-        return $this->setId(static::$_idPrefix.'-'.$id)->id();
+        return $this->setId($id)->id();
     }
 
     protected static function encode($data): string {

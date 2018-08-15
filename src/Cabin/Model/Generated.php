@@ -32,10 +32,6 @@ abstract class Generated extends Model
         $table->index('id_sim');
     }
 
-    protected function idPrefix(): string {
-        return 'ac';
-    }
-
     public function genId(): string {
         $id = $this->genPrimaryId();
         $this->id_sim = static::genSimId($id);
@@ -44,10 +40,6 @@ abstract class Generated extends Model
 
     protected function genPrimaryId(): string {
         return \luc\idgen::sortedUuid();
-    }
-
-    public function setIdAttribute($value) {
-        $this->attributes['id'] = $this->idPrefix()."-$value";
     }
 
     public function setIdSimAttribute($value) {
