@@ -59,6 +59,16 @@ class Cabin
         return isset($result[1]) ? new Collection($result) : $result[0];
     }
 
+    /**
+     * 根据字段特征多条件载入数据
+     *
+     * @todo 这里在以后可以考虑支持feature中某些字段传数组使用in来获取一个列表。支持难度较大。
+     * @param string $class
+     * @param mixed|array $feature
+     * @param callable $loader
+     * @param boolean $reload
+     * @return void
+     */
     public static function loadByFeatures(string $class, $feature,
         callable $loader, bool $reload = false)
     {
