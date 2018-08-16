@@ -17,6 +17,7 @@ abstract class Struct extends Meta\Struct
     protected static $_connection   = 'default';
 
     protected $id;
+    public $exists = false;
 
     public function __construct($id = null) {
         if ($id) {
@@ -39,6 +40,12 @@ abstract class Struct extends Meta\Struct
         return $model;
     }
 
+    public static function found($id): self {
+        $model  = new static($id);
+        $model->load();
+        return $model;
+    }
+
     public function id() {
         return $this->id;
     }
@@ -55,6 +62,7 @@ abstract class Struct extends Meta\Struct
             return null;
         }
         $this->fill(static::decode($data));
+        $this->exists = true;
         return $this;
     }
 
@@ -63,6 +71,14 @@ abstract class Struct extends Meta\Struct
         $key    = static::getKey($this->id);
         static::redis()->set($key, static::encode($arr));
         static::$_expire && static::redis()->expire($key, static::$_expire);
+
+        !$this->exists && $this->exists = true;
+        return $this;
+    }
+
+    public function delete(): self {
+        $key    = static::getKey($this->id);
+        static::redis()->delete($key);
         return $this;
     }
 
