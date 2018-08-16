@@ -32,9 +32,14 @@ abstract class Model extends EloquentModel implements Contracts\Model
     }
 
     public static function find($id, bool $reload = false) {
-        return Cabin::load(static::class, $id, function(array $id) {
+        $result = Cabin::load(static::class, $id, function(array $id) {
             return static::findMany($id);
         }, $reload);
+
+        if (is_array($id) && !is_iterable($result)) {
+            return new Collection([$result]);
+        }
+        return $result;
     }
 
     public static function findOrFail($id, bool $reload = false) {
