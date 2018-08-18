@@ -22,6 +22,9 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
 
     public function __construct(string $name, array $config = []) {
         $this->name     = $name;
+        if (!isset($config[$name])) {
+            throw new \RuntimeException("Preset config [$name] is not found");
+        }
         $this->patterns = $config[$name]['patterns'] ?? [];
         $this->defaults = $config[$name]['defaults'] ?? [];
     }
