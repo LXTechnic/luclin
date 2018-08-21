@@ -1,0 +1,30 @@
+<?php
+
+namespace Luclin\Cabin\Foundation\Queriers;
+
+use Luclin\Contracts;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class In implements Contracts\Endpoint, Contracts\QueryApplier
+{
+    protected $params;
+
+    public function __construct(array $params) {
+        $this->params = $params;
+    }
+
+    public static function new(array $arguments, array $options,
+        Contracts\Context $context): Contracts\Endpoint
+    {
+        return new static($options);
+    }
+
+    public function apply(Builder $query, array $settings): void {
+        $mapping = $settings['mapping'] ?? null;
+        foreach ($this->params as $field => $value) {
+            isset($mapping[$field]) && $field = $mapping[$field];
+            $query->whereIn($field, explode(',', $value));
+        }
+    }
+}
