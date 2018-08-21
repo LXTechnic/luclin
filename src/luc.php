@@ -11,3 +11,4 @@ require LUC_PATH.'conf.php';
 require LUC_PATH.'idgen.php';
 require LUC_PATH.'protocol.php';
 require LUC_PATH.'assert.php';
+require LUC_PATH.'event.php';
