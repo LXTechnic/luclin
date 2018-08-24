@@ -5,6 +5,8 @@ namespace Luclin\Luri;
 use Luclin\Contracts;
 use Luclin\Luri;
 
+use Validator;
+
 /**
  * 预设机制。
  *
@@ -13,6 +15,9 @@ use Luclin\Luri;
  */
 class Preset implements Contracts\Endpoint, Contracts\Operator
 {
+    public $validate = [];
+    public $hints    = [];
+
     protected $name;
     protected $vars = [];
     protected $patterns;
@@ -38,6 +43,9 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
         $context->defaults  && $preset->applyDefaults($context->defaults);
         $context->vars      && $preset->applyVars($context->vars);
 
+        $context->validate  && $preset->validate = $context->validate;
+        $context->hints     && $preset->hints = $context->hints;
+
         $preset->luri = $context->_luri;
         return $preset;
     }
@@ -57,6 +65,8 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
     }
 
     public function parse(): array {
+        $this->validate();
+
         $result = [];
 
         $pattern = $this->patterns;
@@ -95,5 +105,16 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
 
     public function __set(string $name, $value): void {
         $this->vars[$name] = $value;
+    }
+
+    protected function validate(): void {
+        if (!$this->validate) {
+            return;
+        }
+
+        $validator = Validator::make($this->vars, $this->validate, ...$this->hints);
+        if ($validator->fails()) {
+            throw new \InvalidArgumentException($validator->errors()->first());
+        }
     }
 }
