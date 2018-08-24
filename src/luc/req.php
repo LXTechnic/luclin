@@ -3,13 +3,16 @@
 namespace luc;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\{
+    RequestException,
+    BadResponseException
+};
 
 class req
 {
     public static $config = [
         'base_uri'  => null,
-        'timeout'   => 5,
+        'timeout'   => 3,
     ];
 
     public static $silent = true;
@@ -48,6 +51,10 @@ class req
                 throw $exc;
             }
         }
+        if (!$response) {
+            throw new \RuntimeException("Request timeout.");
+        }
+
         return [
             static::decode($response->getBody()),
             $response->getStatusCode(),
