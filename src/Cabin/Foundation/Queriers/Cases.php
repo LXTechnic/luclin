@@ -23,11 +23,25 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
     public function apply(Builder $query, array $settings): void {
         $cases = $settings['cases'] ?? null;
         if ($cases) foreach ($this->params as $name => $params) {
-            @[$state, $assign] = explode(',', $params);
-            $case = $cases[$name][$state];
+            $params = explode(',', $params);
+            if ($params[0] === \luc\UNIT) {
+                continue;
+            }
+
+            if (count($cases[$name]) == 1) { // 只有一个选项时，params完全为参数，直接选中
+                $case   = $cases[$name][0];
+                $assign = $params;
+            } else {
+                $state = array_shift($params);
+                $case = $cases[$name][$state];
+            }
+
+            $pos = 0;
             foreach ($case as [$field, $operator, $value]) {
-                $assign && $value = $assign;
+                $value === null && isset($assign[$pos]) && ($value = $assign[$pos]);
                 $query->where($field, $operator, $value);
+
+                $pos++;
             }
         }
     }
