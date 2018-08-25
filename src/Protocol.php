@@ -9,9 +9,9 @@ abstract class Protocol implements Contracts\Protocol
     }
 
     public function ok(...$arguments) {
-        $data = ['ok' => 1];
-        $arguments && $data['extra'] = $arguments;
-        return response($data);
+        $response = $this->response();
+        $arguments && $response->extra = $arguments;
+        return $response->ok();
     }
 
     public function abort(Abort $abort,
