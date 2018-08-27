@@ -32,6 +32,9 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
         }
         $this->patterns = $config[$name]['patterns'] ?? [];
         $this->defaults = $config[$name]['defaults'] ?? [];
+
+        $this->validate = $config[$name]['validate'] ?? [];
+        $this->hints    = $config[$name]['hints']    ?? [];
     }
 
     public static function new(array $arguments, array $options,
@@ -42,9 +45,6 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
 
         $context->defaults  && $preset->applyDefaults($context->defaults);
         $context->vars      && $preset->applyVars($context->vars);
-
-        $context->validate  && $preset->validate = $context->validate;
-        $context->hints     && $preset->hints = $context->hints;
 
         $preset->luri = $context->_luri;
         return $preset;
