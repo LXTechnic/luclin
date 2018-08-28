@@ -34,6 +34,28 @@ class Baseline
         }
     }
 
+    public function applyTrail(string $ver) {
+        $found = false;
+        foreach ($this->trail as ['ver' => $v, 'line' => $line]) {
+            if ($ver != $v) {
+                continue;
+            }
+
+            $found = $line;
+            break;
+        }
+
+        if (!$found) {
+            throw new \Exception("Trail [$ver] is not found.");
+        }
+        foreach ($found as $repo => $tag) {
+            if (!isset($this->repos[$repo])) {
+                throw new \Exception("Repository [$repo] is not found.");
+            }
+            yield [$this->repos[$repo]['dir'], $this->repos[$repo]['url'], $tag];
+        }
+    }
+
     public function checkout(string $dir, string $url, string $tag): void {
         $baseDir = dirname($dir);
         if (!file_exists($baseDir)) {

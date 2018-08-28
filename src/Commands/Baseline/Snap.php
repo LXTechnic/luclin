@@ -4,18 +4,19 @@ namespace Luclin\Commands\Baseline;
 
 use Luclin\Support\Baseline;
 
-use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
 use File;
 
 class Snap extends Command
 {
+    use CommonTrait;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'luc:baseline:snap {name} {--renew}';
+    protected $signature = 'luc:baseline:snap {name} {--renew} {--conf=?}';
 
     /**
      * The console command description.
@@ -41,18 +42,7 @@ class Snap extends Command
      */
     public function handle()
     {
-        $topConfFile = base_path('.baseline.yml');
-        try {
-            if (file_exists($topConfFile)) {
-                $topConf = Yaml::parse(file_get_contents($topConfFile));
-            } else {
-                $topConf = [];
-            }
-        } catch (\Throwable $exc) {
-            throw $exc;
-        }
-
-        $baseline = new Baseline($topConf);
+        $baseline = new Baseline($this->conf());
         foreach ($baseline->applySnap($this->argument('name'))
             as [$dir, $url, $flag])
         {

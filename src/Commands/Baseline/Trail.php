@@ -2,18 +2,21 @@
 
 namespace Luclin\Commands\Baseline;
 
-use Symfony\Component\Yaml\Yaml;
+use Luclin\Support\Baseline;
+
 use Illuminate\Console\Command;
 use File;
 
 class Trail extends Command
 {
+    use CommonTrait;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'luc:baseline:trail {name} {ver?}';
+    protected $signature = 'luc:baseline:trail {ver} {--conf=?}';
 
     /**
      * The console command description.
@@ -39,6 +42,12 @@ class Trail extends Command
      */
     public function handle()
     {
+        $baseline = new Baseline($this->conf());
+        foreach ($baseline->applyTrail($this->argument('ver'))
+            as [$dir, $url, $flag])
+        {
+            $baseline->checkout($dir, $url, $flag);
+        }
         $this->info('done.');
     }
 

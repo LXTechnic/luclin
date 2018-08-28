@@ -18,6 +18,9 @@ class Command
             if (strtolower($info->getExtension()) != 'php') {
                 continue;
             }
+            if (strpos($info->getBasename(), 'Trait.')) {
+                continue;
+            }
             $filename   = $info->getPathname();
             $commands[] = "$prefix".
                 str_replace(DIRECTORY_SEPARATOR, '\\', substr($filename, $rootLength, -4));
