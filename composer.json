@@ -22,6 +22,9 @@
         "firebase/php-jwt": "^5.0"
     },
     "suggest": {
+        "enqueue/laravel-queue": "Luclin queue function support.",
+        "enqueue/amqp-ext": "RabbitMQ support.",
+        "ext-amqp": "RabbitMQ support.",
         "ext-msgpack": "Redis model serialize by msgpack, it is compact & faster."
     },
     "autoload": {
