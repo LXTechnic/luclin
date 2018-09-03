@@ -5,7 +5,7 @@ namespace luc;
 use Illuminate\Support\Arr;
 use Log;
 
-class assert
+class assert extends \PHPUnit\Framework\Assert
 {
     public static function exc($exc): void {
         if ($exc instanceof \Throwable) {
@@ -13,6 +13,24 @@ class assert
         } elseif (isset($exc->exception) && $exc->exception instanceof \Throwable) {
             static::dumpException($exc->exception);
         }
+    }
+
+    public static function raise(callable $func,
+        $code = null, ?string $message = null): void
+    {
+        $hasExc = false;
+        try {
+            $func();
+        } catch (\Throwable $exc) {
+            $hasExc = true;
+            if (class_exists($code)) {
+                static::assertEquals($code, $exc);
+            } else {
+                $code    !== null && static::assertEquals($code,    $exc->getCode());
+                $message !== null && static::assertEquals($message, $exc->getMessage());
+            }
+        }
+        static::assertTrue($hasExc);
     }
 
     public static function arrayHas(array $arr, string $key) {
