@@ -97,8 +97,8 @@ function raise($error, array $extra = [], \Throwable $previous = null): Abort
     return $abort;
 }
 
-function pipe($handle): Support\Pipe {
-    return new Support\Pipe($handle);
+function pipe($handle, $agent = ''): Support\Pipe {
+    return new Support\Pipe($handle, $agent);
 }
 
 function fs(): Filesystem {

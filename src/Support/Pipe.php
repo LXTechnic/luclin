@@ -8,6 +8,7 @@ class Pipe
 {
     private $handle;
     private $agent;
+    private $processes = [];
 
     /**
      *
@@ -20,16 +21,24 @@ class Pipe
     }
 
     public function __call(string $name, array $arguments) {
-        if ($this->agent instanceof Contracts\CallAgent) {
-            $this->handle   = $this->agent->$name($this->handle, ...$arguments);
-        } else {
-            $func = "$this->agent\\$name";
-            $this->handle   = $func($this->handle, ...$arguments);
-        }
+        $this->processes[] = [$name, $arguments];
         return $this;
     }
 
     public function __get(string $name) {
-        return $name == 'result' ? $this->handle : null;
+        return $this->$name();
+    }
+
+    public function __invoke() {
+        $target = $this->handle;
+        foreach ($this->processes as [$func, $arguments]) {
+            if ($this->agent instanceof Contracts\CallAgent) {
+                $target = $this->agent->$func($target, ...$arguments);
+            } else {
+                $func = "$this->agent\\$func";
+                $target = $func($target, ...$arguments);
+            }
+        }
+        return $target;
     }
 }
