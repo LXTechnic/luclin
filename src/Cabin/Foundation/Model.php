@@ -237,9 +237,16 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $this;
     }
 
+    /**
+     *
+     * // return $this->self()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));
+     *
+     * @param string $field
+     * @param array $path
+     * @param string $value
+     * @return void
+     */
     public function updateJson(string $field, array $path, string $value) {
-        // return $this->self()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));
-
         [$conn, $table] = static::connection();
 
         $sql = "UPDATE $table SET $field = jsonb_set($field, '{".implode(',', $path)."}', '$value') WHERE ".$this->getKeyName()." = ".$this->getKey();
