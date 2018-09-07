@@ -43,11 +43,15 @@ abstract class Generated extends Model
     }
 
     public function setIdSimAttribute($value) {
-        $this->attributes['id_sim'] = $value - 134000000;
+        $this->attributes['id_sim'] = static::getStoragedIdSim($value);
     }
 
     public function getIdSimAttribute($value) {
-        return $value !== null ? $value + 134000000 : $value;
+        return $value !== null ? $value + 200000000 : $value;
+    }
+
+    public static function getStoragedIdSim($value): int {
+        return $value - 200000000;
     }
 
     public static function genSimId(string $id): int {
