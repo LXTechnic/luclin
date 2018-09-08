@@ -32,9 +32,9 @@ class Pipe
     public function __invoke() {
         $target = $this->handle;
         foreach ($this->processes as [$func, $arguments]) {
-            if (strpos($func, '__') === 0) {
+            if (strpos($func, '_') === 0) {
                 switch ($func) {
-                    case '__closure':
+                    case '_closure':
                         $func   = array_shift($arguments);
                         $target = $func($target, ...$arguments);
                         break;
