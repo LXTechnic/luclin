@@ -43,10 +43,16 @@ abstract class Slave extends Model
             ->get();
     }
 
+    /**
+     * 这里是注入实现的路由绑定
+     *
+     * @param mixed $id
+     * @return self
+     */
     public function resolveRouteBinding($id)
     {
         $keys   = $this->getRouteKeyName();
-        $where  = [];
+        $where  = $this->defaultPrimaries();
         foreach (explode(',', $id) as $key => $value) {
             $where[$keys[$key]] = $value;
         }
@@ -57,6 +63,8 @@ abstract class Slave extends Model
         return ($this->master_type && $this->id)
             ? "$this->master_type,$this->id" : null;
     }
+
+    abstract protected function defaultPrimaries(): array;
 
     abstract public function master(): ?object;
 }
