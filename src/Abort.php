@@ -18,6 +18,7 @@ class Abort extends \Exception
 
     const LEVEL_NOTICE_MAPPING = [
         'unauthed'  => true,
+        '404'       => true,
         'notice'    => true,
         'warning'   => true,
         'error'     => false,
