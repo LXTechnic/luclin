@@ -23,7 +23,7 @@ class Same implements Contracts\Endpoint, Contracts\QueryApplier
     public function apply(Builder $query, array $settings): void {
         $mapping = $settings['mapping'] ?? null;
         foreach ($this->params as $field => $value) {
-            if ($value === null) {
+            if ($value === \luc\UNIT) {
                 continue;
             }
             isset($mapping[$field]) && $field = $mapping[$field];

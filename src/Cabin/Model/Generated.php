@@ -17,11 +17,11 @@ abstract class Generated extends Model
     protected $keyType = 'string';
 
     public function __construct(array $attributes = []) {
-        parent::__construct($attributes);
-
-        if (static::$autoGenId && !$this->id()) {
+        if (static::$autoGenId) {
             $this->genId();
         }
+
+        parent::__construct($attributes);
     }
 
     protected static function migrateUpPrimary(Blueprint $table): void

@@ -23,10 +23,10 @@ class Raw implements Contracts\Endpoint, Contracts\QueryApplier
     }
 
     public function apply(Builder $query, array $settings): void {
-        [$template, $lists] = $settings;
+        ['template' => $template, 'lists' => $lists] = $settings['raw'][$this->name];
         $params = [];
         foreach ($this->params as $k => $v) {
-            if ($v === null) {
+            if ($v === \luc\UNIT) {
                 continue;
             }
 
@@ -40,7 +40,6 @@ class Raw implements Contracts\Endpoint, Contracts\QueryApplier
         }
 
         $condition = \luc\padding($template, $params);
-        dump($condition);
         $query->whereRaw($condition);
     }
 }
