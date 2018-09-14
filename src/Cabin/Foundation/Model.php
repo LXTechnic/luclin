@@ -13,6 +13,11 @@ use Illuminate\Database\Schema\Blueprint;
 
 use DB;
 
+/**
+ *
+ *
+ * DB::statement("ALTER TABLE main.castle_user ALTER COLUMN roles SET DEFAULT '{member}';");
+ */
 abstract class Model extends EloquentModel implements Contracts\Model
 {
 
@@ -72,7 +77,7 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     public function id() {
         $key = is_array($this->primaryKey) ? static::getIdField() : $this->primaryKey;
-        return $this->{$key};
+        return array_key_exists($key, $this->attributes) ? $this->{$key} : null;
     }
 
     public function findId() {
@@ -165,6 +170,11 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     protected function afterConfirm() {}
 
+    public static function migrate(): object {
+        $class = __NAMESPACE__.'\\Migration\\'.ucfirst((new static())->getDriver());
+        return new $class(static::class);
+    }
+
     public static function connectionInfo(): array {
         $model  = new static();
         $connection = $model->getConnectionName();
@@ -179,6 +189,11 @@ abstract class Model extends EloquentModel implements Contracts\Model
             static::resolveConnection($connection),
             $schema ? "$schema.$table" : $table,
         ];
+    }
+
+    public function getDriver(): string {
+        $connection = $this->getConnectionName();
+        return config("database.connections.$connection.driver");
     }
 
     public function getSchema(): string {
@@ -321,7 +336,7 @@ abstract class Model extends EloquentModel implements Contracts\Model
     {
         // 去一下空字符
         $data = [];
-        foreach ($value as $k => $v) {
+        foreach ($value ?: [] as $k => $v) {
             $v = trim($v);
             $v && $data[] = $v;
         }

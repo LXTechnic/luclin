@@ -19,7 +19,7 @@ abstract class Generated extends Model
     public function __construct(array $attributes = []) {
         parent::__construct($attributes);
 
-        if (static::$autoGenId) {
+        if (static::$autoGenId && !$this->id()) {
             $this->genId();
         }
     }

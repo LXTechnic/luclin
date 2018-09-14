@@ -7,11 +7,21 @@ use Log;
 
 class assert extends \PHPUnit\Framework\Assert
 {
-    public static function exc($exc): void {
+    public static function checkExc($exc): void {
         if ($exc instanceof \Throwable) {
             static::dumpException($exc);
         } elseif (isset($exc->exception) && $exc->exception instanceof \Throwable) {
             static::dumpException($exc->exception);
+        }
+    }
+
+    public static function hasExc($exc, $code = null): void {
+        if ($exc instanceof \Throwable) {
+            static::assertEquals($code, $exc->getCode());
+        } elseif (isset($exc->exception) && $exc->exception instanceof \Throwable) {
+            static::assertEquals($code, $exc->exception->getCode());
+        } else {
+            throw new \Exception('There has now exception throw out.');
         }
     }
 
