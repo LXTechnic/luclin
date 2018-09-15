@@ -301,22 +301,6 @@ abstract class Model extends EloquentModel implements Contracts\Model
         }
     }
 
-    public static function foundByIds(...$ids): array {
-        $pkey   = (new static())->primaryKey;
-        $tmp    = self::whereIn($pkey, $ids)->get()->keyBy($pkey);
-        $result = [];
-        foreach ($ids as $id) {
-            if (isset($tmp[$id])) {
-                $result[] = $tmp[$id];
-            } else {
-                $model = new static();
-                $model->$pkey = $id;
-                $result[] = $model;
-            }
-        }
-        return $result;
-    }
-
 // array field access
 
     protected function arrayFieldDecode(string $field): array

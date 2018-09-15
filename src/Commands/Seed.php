@@ -14,7 +14,7 @@ class Seed extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:seed {module?} {--class} {--force}';
+    protected $signature = 'luc:seed {module?} {--classes=} {--force}';
 
     /**
      * The console command description.
@@ -44,9 +44,17 @@ class Seed extends Command
             'module'    => $module,
         ] = $this->arguments();
         @[
-            'class'     => $class,
+            'classes'   => $classes,
             'force'     => $force,
         ] = $this->options();
+        if ($classes) {
+            $classIndex = [];
+            foreach (explode(',', $classes) as $class) {
+                $classIndex[ucfirst($class)] = true;
+            }
+        } else {
+            $classIndex = null;
+        }
 
         if ($module) {
             $modules = [$module];
@@ -61,6 +69,9 @@ class Seed extends Command
             {
                 $name = $info->getBasename('.php');
                 if (substr($name, strlen($name) - 6) != 'Seeder') {
+                    continue;
+                }
+                if ($classIndex && !isset($classIndex[substr($name, 0, strlen($name) - 6)])) {
                     continue;
                 }
                 $params = [

@@ -12,10 +12,15 @@ use DB;
 
 /**
  *
+ * 关于该类型的单记录查取方法：
+ * find() 方法参数只能是 '<master_type>,<id>'这种
+ * findMany() 中每一项同上
+ * found() 方法才允许在仅填写id的时候进行查询
  */
 abstract class Slave extends Model
 {
     use Traits\Query,
+        Traits\MoreKeys,
         HasCompositePrimaryKeyTrait;
 
     protected $primaryKey = ['id', 'master_type'];
@@ -51,20 +56,13 @@ abstract class Slave extends Model
      */
     public function resolveRouteBinding($id)
     {
-        $keys   = $this->getRouteKeyName();
-        $where  = $this->defaultPrimaries();
-        foreach (explode(',', $id) as $key => $value) {
-            $where[$keys[$key]] = $value;
-        }
-        return static::found($where);
+        return static::found($id);
     }
 
     public function findId() {
         return ($this->master_type && $this->id)
             ? "$this->master_type,$this->id" : null;
     }
-
-    abstract protected function defaultPrimaries(): array;
 
     abstract public function master(): ?object;
 }
