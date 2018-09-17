@@ -116,7 +116,7 @@ function ndecode(string $data) {
 function toArray(iterable $iterable,
     callable $filter = null): array
 {
-    $toArray = new Recursive\ToArray($iterable, $filter);
+    $toArray = new Support\Recursive\ToArray($iterable, $filter);
     return $toArray();
 }
 
