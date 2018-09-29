@@ -157,6 +157,6 @@ abstract class AppService extends ServiceProvider
     protected function importConfigFrom(string $path, $key): void {
         $config = $this->app->config->get($key, []);
 
-        $this->app->config->set($key, array_merge($config, require $path));
+        env('APP_ENV') && $this->app->config->set($key, array_merge($config, require $path));
     }
 }
