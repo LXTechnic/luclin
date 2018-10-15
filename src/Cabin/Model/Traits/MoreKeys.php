@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait MoreKeys
 {
-    public static function found($feature, bool $reload = false) {
+    public static function found($feature, bool $reload = false, array $extra = []) {
         if (!is_array($feature)) {
             $id      = explode(',', $feature);
             $feature = static::defaultKeys();
@@ -19,7 +19,7 @@ trait MoreKeys
                 $count++;
             }
         }
-        return parent::found($feature, $reload);
+        return parent::found($feature, $reload, $extra);
     }
 
     abstract protected static function defaultKeys(): array;
