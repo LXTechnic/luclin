@@ -36,8 +36,16 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $this;
     }
 
-    public static function find($id, bool $reload = false) {
-        $result = Cabin::load(static::class, $id, function(array $id) {
+    public static function find($id, bool $reload = false, array $extra = []) {
+        $result = Cabin::load(static::class, $id, function(array $id) use ($extra) {
+            // TODO: 注意这里目前对复写了findMany()方法的Slave基类不起作用
+            if ($extra['withTrashed'] ?? false) {
+                return static::withTrashed()->findMany($id);
+            } elseif ($extra['withoutTrashed'] ?? false) {
+                return static::withoutTrashed()->findMany($id);
+            } elseif ($extra['onlyTrashed'] ?? false) {
+                return static::onlyTrashed()->findMany($id);
+            }
             return static::findMany($id);
         }, $reload);
 
@@ -47,8 +55,8 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $result;
     }
 
-    public static function findOrFail($id, bool $reload = false) {
-        $result = static::find($id, $reload);
+    public static function findOrFail($id, bool $reload = false, array $extra = []) {
+        $result = static::find($id, $reload, $extra);
 
         if (is_array($id)) {
             if (count($result) === count(array_unique($id))) {
@@ -63,12 +71,29 @@ abstract class Model extends EloquentModel implements Contracts\Model
         );
     }
 
-    public static function found($feature, bool $reload = false) {
-        return Cabin::loadByFeatures(static::class, $feature, function($feature) {
+    public static function found($feature, bool $reload = false, array $extra = []) {
+        return Cabin::loadByFeatures(static::class, $feature, function($feature) use ($extra) {
             if (is_array($feature)) {
-                $model  = static::firstOrNew($feature);
+                if ($extra['withTrashed'] ?? false) {
+                    $model  = static::withTrashed()->firstOrNew($feature);
+                } elseif ($extra['withoutTrashed'] ?? false) {
+                    $model  = static::withoutTrashed()->firstOrNew($feature);
+                } elseif ($extra['onlyTrashed'] ?? false) {
+                    $model  = static::onlyTrashed()->firstOrNew($feature);
+                } else {
+                    $model  = static::firstOrNew($feature);
+                }
+
             } else {
-                $model  = static::findOrNew($feature);
+                if ($extra['withTrashed'] ?? false) {
+                    $model  = static::withTrashed()->findOrNew($feature);
+                } elseif ($extra['withoutTrashed'] ?? false) {
+                    $model  = static::withoutTrashed()->findOrNew($feature);
+                } elseif ($extra['onlyTrashed'] ?? false) {
+                    $model  = static::onlyTrashed()->findOrNew($feature);
+                } else {
+                    $model  = static::findOrNew($feature);
+                }
             }
 
             return $model;
