@@ -5,6 +5,7 @@ namespace Luclin\Cabin\Foundation\Queriers;
 use Luclin\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
+use DB;
 
 class Cases implements Contracts\Endpoint, Contracts\QueryApplier
 {
@@ -21,27 +22,30 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
     }
 
     public function apply(Builder $query, array $settings): void {
-        $cases = $settings['cases'] ?? null;
-        if ($cases) foreach ($this->params as $name => $params) {
-            $params = explode(',', $params);
-            if ($params[0] === \luc\UNIT) {
+        $cases  = $settings['cases'] ?? null;
+        $params = $this->params;
+
+        $quote  = true;
+        if (isset($params['_quote'])) {
+            $quote = intval($params['_quote']) ? true : false;
+            unset($params['_quote']);
+        }
+
+        if ($cases) foreach ($params as $name => $values) {
+            if ($values === \luc\UNIT) {
                 continue;
             }
 
-            if (count($cases[$name]) == 1) { // 只有一个选项时，params完全为参数，直接选中
-                $case   = $cases[$name][0];
-                $assign = $params;
-            } else {
-                $state = array_shift($params);
-                $case = $cases[$name][$state];
+            $assign = [];
+            foreach (explode(',', $values) as $value) {
+                $assign[] = $quote ? DB::getPdo()->quote($value) : $value;
             }
 
-            $pos = 0;
-            foreach ($case as [$field, $operator, $value]) {
-                $value === null && isset($assign[$pos]) && ($value = $assign[$pos]);
-                $query->where($field, $operator, $value);
+            $case   = $cases[$name];
 
-                $pos++;
+            foreach ($case as $sql) {
+                $sql = \luc\padding($sql, $assign);
+                $query->whereRaw($sql);
             }
         }
     }
