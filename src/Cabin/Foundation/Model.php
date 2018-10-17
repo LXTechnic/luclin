@@ -125,16 +125,15 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $collection;
     }
 
+    public static function queryByIds(array $ids): Builder {
+        return self::whereIn(static::getIdField(), $ids);
+    }
+
     /**
      * TODO: 以后这些查询强化要设法加入到query对象中
      */
     public static function getByIds(...$ids): Collection {
-        if (isset($ids[0]) && is_callable($ids[0])) {
-            $fun   = array_shift($ids);
-            $query  = $fun(self::whereIn(static::getIdField(), $ids));
-        } else {
-            $query  = self::whereIn(static::getIdField(), $ids);
-        }
+        $query = static::queryByIds($ids);
         return $query->get();
     }
 
