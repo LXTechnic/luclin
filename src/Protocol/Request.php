@@ -24,6 +24,10 @@ class Request extends Struct
         }
     }
 
+    protected static function _mapping(): array {
+        return [];
+    }
+
     protected static function _nullable(): ?array {
         return null;
     }
@@ -49,7 +53,7 @@ class Request extends Struct
 
     public function toArrayWithoutNull(): array {
         $result = [];
-        foreach (parent::toArray() as $key => $value) {
+        foreach ($this->toArray() as $key => $value) {
             if ($value !== null) {
                 $result[$key] = $value;
             }
@@ -57,8 +61,20 @@ class Request extends Struct
         return $result;
     }
 
+    public function toArray(callable $filter = null, bool $applyMapping = true): array {
+        $arr = parent::toArray($filter);
+
+        if ($applyMapping) foreach (static::_mapping() as $from => $to) {
+            if (isset($arr[$from])) {
+                $arr[$to] = $arr[$from];
+                unset($arr[$from]);
+            }
+        }
+        return $arr;
+    }
+
     public function confirm(): Contracts\Meta {
-        $validator = Validator::make($this->toArray(), static::_validate(),
+        $validator = Validator::make($this->toArray(null, false), static::_validate(),
             ...static::_hints());
         if ($validator->fails()) {
             throw new \InvalidArgumentException($validator->errors()->first());

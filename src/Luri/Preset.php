@@ -37,6 +37,14 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
         $this->hints    = $config[$name]['hints']    ?? [];
     }
 
+    /**
+     * 在通过luri构建preset时，仅vars和defaults支持在context里补充，其他的要走config
+     *
+     * @param array $arguments
+     * @param array $options
+     * @param Contracts\Context $context
+     * @return Contracts\Endpoint
+     */
     public static function new(array $arguments, array $options,
         Contracts\Context $context): Contracts\Endpoint
     {
