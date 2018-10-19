@@ -14,6 +14,9 @@ class Cabin
     {
         $container = Cabin\Container::instance($class);
         !is_array($ids) && $ids = [$ids];
+        if (!$ids) {
+            return new Collection();
+        }
 
         // 强制重载
         if ($reload) {

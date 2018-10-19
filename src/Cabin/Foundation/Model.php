@@ -155,18 +155,6 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return Cabin\Container::instance(static::class);
     }
 
-    // public static function f($id) {
-    //     return Cabin::load(static::class, $id);
-    // }
-
-    // public static function fof($id) {
-    //     return Cabin::load(static::class, $id, true);
-    // }
-
-    // public static function fofWithTrashed($id) {
-    //     return Cabin::load(static::class, $id, true, true);
-    // }
-
     public static function contains(string $field, ...$values): Builder {
         return self::query()
             ->whereRaw("$field @> '{".implode(',', $values)."}'");
