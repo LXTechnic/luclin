@@ -53,6 +53,17 @@ class CasesOr implements Contracts\Endpoint, Contracts\QueryApplier
 
             $sqlList = [];
             foreach ($case as $sql) {
+                if (is_array($sql)) {
+                    if (isset($sql['when'])) {
+                        $when = $sql['when'];
+                        if (!$when(...$assign)) {
+                            continue;
+                        }
+                    }
+
+                    $sql = $sql['sql'];
+                }
+
                 $sqlList[] = \luc\padding($sql, $assign);
             }
             $query->where(function($query) use ($sqlList) {

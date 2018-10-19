@@ -44,6 +44,17 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
             $case   = $cases[$name];
 
             foreach ($case as $sql) {
+                if (is_array($sql)) {
+                    if (isset($sql['when'])) {
+                        $when = $sql['when'];
+                        if (!$when(...$assign)) {
+                            continue;
+                        }
+                    }
+
+                    $sql = $sql['sql'];
+                }
+
                 $sql = \luc\padding($sql, $assign);
                 $query->whereRaw($sql);
             }
