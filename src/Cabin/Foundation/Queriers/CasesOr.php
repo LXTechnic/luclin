@@ -44,8 +44,9 @@ class CasesOr implements Contracts\Endpoint, Contracts\QueryApplier
                 continue;
             }
 
+            $values = explode(',', $values);
             $assign = [];
-            foreach (explode(',', $values) as $value) {
+            foreach ($values as $value) {
                 $assign[] = $quote ? DB::getPdo()->quote($value) : $value;
             }
 
@@ -56,7 +57,7 @@ class CasesOr implements Contracts\Endpoint, Contracts\QueryApplier
                 if (is_array($sql)) {
                     if (isset($sql['when'])) {
                         $when = $sql['when'];
-                        if (!$when(...$assign)) {
+                        if (!$when(...$values)) {
                             continue;
                         }
                     }
