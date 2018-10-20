@@ -66,9 +66,20 @@ abstract class Model extends EloquentModel implements Contracts\Model
             return $result;
         }
 
-        throw (new ModelNotFoundException)->setModel(
-            static::class, $id
-        );
+        static::orFail(null, $id);
+    }
+
+    public static function orFail($model, $info = 0, string $abort = null): object {
+        if (!$model) {
+            if ($abort) {
+                throw \luc\raise($abort, $info ? (is_array($info) ? $info : ['info' => $info]) : []);
+            } else {
+                throw (new ModelNotFoundException)->setModel(
+                    static::class, $info
+                );
+            }
+        }
+        return $model;
     }
 
     public static function found($feature, bool $reload = false, array $extra = []) {

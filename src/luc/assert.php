@@ -15,11 +15,23 @@ class assert extends \PHPUnit\Framework\Assert
         }
     }
 
-    public static function hasExc($exc, $code = null): void {
+    public static function hasExc($exc, $feature = null): void {
         if ($exc instanceof \Throwable) {
-            static::assertEquals($code, $exc->getCode());
+            if ($feature) {
+                if (is_numeric($feature)) {
+                    static::assertEquals($feature, $exc->getCode());
+                } else {
+                    static::assertEquals($feature, get_class($exc));
+                }
+            }
         } elseif (isset($exc->exception) && $exc->exception instanceof \Throwable) {
-            static::assertEquals($code, $exc->exception->getCode());
+            if ($feature) {
+                if (is_numeric($feature)) {
+                    static::assertEquals($feature, $exc->exception->getCode());
+                } else {
+                    static::assertEquals($feature, get_class($exc->exception));
+                }
+            }
         } else {
             throw new \Exception('There has now exception throw out.');
         }
