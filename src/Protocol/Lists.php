@@ -31,7 +31,7 @@ class Lists extends Collection implements FieldInterface
 
     public function assign(string $field, $collection, string $fromField): self {
         foreach ($collection as $key => $row) {
-            $this[$key]->$field = $fromField;
+            $this[$key]->$field = $row->$fromField;
         }
         return $this;
     }
