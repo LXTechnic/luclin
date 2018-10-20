@@ -29,9 +29,14 @@ class Lists extends Collection implements FieldInterface
         return $this;
     }
 
-    public function assign(string $field, $collection, string $fromField): self {
+    public function assign($collection, $fromField, $toField = null): self {
+        !is_array($fromField) && $fromField = [$fromField];
+        $toField && !is_array($toField) && $toField = [$toField];
         foreach ($collection as $key => $row) {
-            $this[$key]->$field = $row->$fromField;
+            foreach ($fromField as $pos => $from) {
+                $to = $toField[$pos] ?? $from;
+                $this[$key]->$to = $row->$from;
+            }
         }
         return $this;
     }
