@@ -137,7 +137,7 @@ abstract class Model extends EloquentModel implements Contracts\Model
     }
 
     public static function queryByIds(array $ids): Builder {
-        return self::whereIn(static::getIdField(), $ids);
+        return static::whereIn(static::getIdField(), $ids);
     }
 
     /**
