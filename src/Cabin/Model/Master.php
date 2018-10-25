@@ -10,11 +10,9 @@ abstract class Master extends Model
 {
     use Traits\Query;
 
-    protected static function migrateUpPrimary(Blueprint $table,
-        bool $isBig = true): void
+    protected static function migrateUpPrimary(Blueprint $table): void
     {
-        $isBig ? $table->bigIncrements('id') : $table->increments('id');
-
+        $table->bigIncrements('id');
     }
 
     public function renewId(): self {
