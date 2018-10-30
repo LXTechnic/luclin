@@ -113,15 +113,18 @@ class Lists extends Collection implements FieldInterface
         $class  = get_class($model);
 
         // 判断有没有query，如果没有的话走估算方案
-        $hasQuery = false;
-        foreach ($parsed = $preset->parse() as $applier) {
-            if (!($applier instanceof Contracts\Seeker)) {
-                $hasQuery = true;
-                break;
+        $hasQuery   = false;
+        $parsed     = $preset->parse();
+        $queries    = [];
+        foreach ($parsed as $applier) {
+            if ($applier instanceof Contracts\Seeker) {
+                continue;
             }
+            $hasQuery   = true;
+            $queries[]  = $applier;
         }
         if ($hasQuery) {
-            $query  = $class::query(...$preset->parse());
+            $query  = $class::query(...$queries);
             $total  = $class::countLimit($query, 100000);
         } else {
             $total  = min(100000, $class::estimateLiveRows());
