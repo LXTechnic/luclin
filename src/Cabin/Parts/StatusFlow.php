@@ -25,7 +25,7 @@ trait StatusFlow
 
 
     public function setStatusAttribute($value) {
-        if ($this->attributes['status'] != $value
+        if (($this->attributes['status'] ?? null) != $value
             && !$this->_onFactory
             && !$this->checkStatusFlow($value))
         {
