@@ -41,7 +41,7 @@ class JwtToken
     public function make(string $secret, int $duration = 3600,
         $alg = 'HS256', $keyId = null): string
     {
-        !$this->createdAt   && $this->createdAt     = now()->timestamp;
+        !$this->createdAt   && $this->createdAt     = \luc\time::now()->timestamp;
         !$this->activedAt   && $this->activedAt     = $this->createdAt - 10;
         !$this->expireTime  && $this->expireTime    = $this->createdAt + $duration;
 
