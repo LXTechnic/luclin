@@ -95,7 +95,7 @@ class Test extends Command
     }
 
     private function getNameAndCategory(string $name): array {
-        $name       = ucwords(strtr($name, '.', '\\'), '\\');
+        $name       = \luc\hyphen2class($name, '.');
         $category   = null;
         if ($pos = strrpos($name, '\\')) {
             $category   = substr($name, 0, $pos);

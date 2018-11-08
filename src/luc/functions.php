@@ -15,7 +15,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
 use Nette\Neon\Neon;
 
-
 function env(...$match): bool {
     return App::environment($match);
 }
@@ -26,6 +25,12 @@ function debug(): bool {
 
 function mod(string $name, string $prefix = 'lumod:'): Module {
     return app("$prefix$name");
+}
+
+function hyphen2class(string $haystack, string $hyphen = '-', $slash = '\\'): string {
+    return \luc\pipe($haystack)
+        ->strtr($hyphen, $slash)
+        ->ucwords($slash)();
 }
 
 function uri($url, array $context = []) {
@@ -50,12 +55,6 @@ function ins(string $name, ...$extra) {
         }
     }
     return $instance;
-}
-
-function str2cls(string $name, string $slash): string {
-    $slash  = " \t\r\n\f\v$slash";
-    $name   = ucwords($name, $slash);
-
 }
 
 function xheaders(): Protocol\XHeaders {

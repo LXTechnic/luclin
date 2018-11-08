@@ -31,7 +31,7 @@ class Loader
         if (!array_key_exists($name, $this->cache)) {
             $this->cache[$name] = null;
 
-            $class  = strtr(ucwords($name, $slash), $slash, '\\');
+            $class  = \luc\hyphen2class($name, $slash);
             foreach ($this->registers as $namespace => $builder) {
                 $fullName = "$namespace\\$class";
                 if (class_exists($fullName)) {
