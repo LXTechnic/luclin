@@ -21,6 +21,6 @@ class time
     }
 
     public static function now(?string $name = 'default'): Carbon {
-        return $name ? (static::$mocks[$name] ?: now()) : now();
+        return $name ? (static::$mocks[$name] ?? now()) : now();
     }
 }
