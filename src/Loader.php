@@ -27,11 +27,11 @@ class Loader
         return $this;
     }
 
-    public function class(string $name, string $slash = '/'): ?array {
+    public function class(string $name): ?array {
         if (!array_key_exists($name, $this->cache)) {
             $this->cache[$name] = null;
 
-            $class  = \luc\hyphen2class($name, $slash);
+            $class  = \luc\hyphen2class($name);
             foreach ($this->registers as $namespace => $builder) {
                 $fullName = "$namespace\\$class";
                 if (class_exists($fullName)) {

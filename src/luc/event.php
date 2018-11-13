@@ -10,8 +10,7 @@ class event
 
     public static function __callStatic(string $name, array $arguments)
     {
-        $event = ucfirst(array_shift($arguments));
-        $class = self::$alias[$name]."\\$event";
+        $class = self::$alias[$name]."\\".\luc\hyphen2class(array_shift($arguments));
         \event(new $class(...$arguments));
     }
 }

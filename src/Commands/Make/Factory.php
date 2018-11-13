@@ -49,7 +49,7 @@ class Factory extends Command
         ] = $this->arguments();
 
         // 初步处理
-        $model  = \luc\hyphen2class($model, '.');
+        $model  = \luc\hyphen2class($model);
         $name   = str_replace('\\', '', $model);
 
         // 细化处理

@@ -28,9 +28,11 @@ function mod(string $name, string $prefix = 'lumod:'): Module {
 }
 
 function hyphen2class(string $haystack, string $hyphen = '-', $slash = '\\'): string {
-    return \luc\pipe($haystack)
-        ->strtr($hyphen, $slash)
-        ->ucwords($slash)();
+
+    return str_replace('-', '', \luc\pipe($haystack)
+        ->ucwords('/ -')
+        ->strtr('/', '\\')
+        ());
 }
 
 function uri($url, array $context = []) {
