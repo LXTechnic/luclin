@@ -27,10 +27,15 @@ function mod(string $name, string $prefix = 'lumod:'): Module {
     return app("$prefix$name");
 }
 
-function hyphen2class(string $haystack, string $hyphen = '-', $slash = '\\'): string {
+function hyphen2class(string $haystack): string {
 
-    return str_replace('-', '', \luc\pipe($haystack)
-        ->ucwords('/ -')
+    return \luc\pipe($haystack)
+        ->ucwords('/_-')
+        ->strtr('/', '\\')
+        ();
+
+    return str_replace(['_', '-'], '', \luc\pipe($haystack)
+        ->ucwords('/_-')
         ->strtr('/', '\\')
         ());
 }
