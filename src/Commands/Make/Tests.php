@@ -77,7 +77,7 @@ class Tests extends Command
         $path   = str_replace(\luc\mod($module)->space(), '', $matches[1]);
         if ($path) {
             $path   = substr($path, 1);
-            $name   = strtr($path, '\\', '.').".$class";
+            $name   = strtr($path, '\\', '/')."/$class";
         } else {
             $name   = $class;
         }
