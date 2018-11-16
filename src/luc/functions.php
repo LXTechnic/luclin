@@ -28,12 +28,6 @@ function mod(string $name, string $prefix = 'lumod:'): Module {
 }
 
 function hyphen2class(string $haystack): string {
-
-    return \luc\pipe($haystack)
-        ->ucwords('/_-')
-        ->strtr('/', '\\')
-        ();
-
     return str_replace(['_', '-'], '', \luc\pipe($haystack)
         ->ucwords('/_-')
         ->strtr('/', '\\')
