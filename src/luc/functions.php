@@ -23,6 +23,16 @@ function debug(): bool {
     return config('app.debug');
 }
 
+function mqt($connection = 'default'): Support\Mqt {
+    $conf = config("mqt.$connection");
+    if (!$conf) {
+        throw new \RuntimeException("Mqtt connection [$connection] not found.");
+    }
+
+    return Support\Mqt::instance($connection,
+        $conf['brokers'], $conf['options'], $conf['auth']);
+}
+
 function mod(string $name, string $prefix = 'lumod:'): Module {
     return app("$prefix$name");
 }
