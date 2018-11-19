@@ -23,14 +23,22 @@ function debug(): bool {
     return config('app.debug');
 }
 
-function mqt($connection = 'default'): Support\Mqt {
+function mqt(string $clientId = null, $connection = 'default'): Support\Mqt {
     $conf = config("mqt.$connection");
     if (!$conf) {
         throw new \RuntimeException("Mqtt connection [$connection] not found.");
     }
 
-    return Support\Mqt::instance($connection,
+    $clientId && $conf['options']['clientId'] = $clientId;
+    return Support\Mqt::instance("$clientId-$connection",
         $conf['brokers'], $conf['options'], $conf['auth']);
+}
+
+function packet(Luri $luri, array $context = [], $version = 1): Support\Mqt\Packet {
+    $packet = new Support\Mqt\Packet($luri->toArray());
+    $packet->setContext($context);
+    $packet->version = $version;
+    return $packet;
 }
 
 function mod(string $name, string $prefix = 'lumod:'): Module {
@@ -44,7 +52,7 @@ function hyphen2class(string $haystack): string {
         ());
 }
 
-function uri($url, array $context = []) {
+function uri($url, ?array $context = [], $autoResolve = true) {
     if (is_array($url)) {
         $scheme = strstr($url[0], ':', true);
         $path   = substr($url[0], strlen($scheme) + 1);
@@ -52,7 +60,7 @@ function uri($url, array $context = []) {
     } else {
         $luri = Luri::createByUri($url);
     }
-    return $luri ? $luri->resolve($context)[0] : null;
+    return ($luri && $autoResolve) ? $luri->resolve($context)[0] : $luri;
 }
 
 function ins(string $name, ...$extra) {

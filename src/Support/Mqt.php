@@ -12,7 +12,6 @@ class Mqt
 {
     use Foundation\SingletonNamedTrait;
 
-    public $defaultPacketVersion = 1;
     public $connected = false;
 
     protected $client;
@@ -39,18 +38,26 @@ class Mqt
 
         $cliendId = $this->options['cliendId'] ?: \luc\idgen::sortedUuid();
         $this->client   = new Client($cliendId, $this->options['clean']);
+        $this->prepare();
     }
 
-    public function makeJwt($auth): string {
+    public function makeJwt($auth, $permanently = false): string {
         $jwt = new JwtToken();
         $jwt->auth          = $auth;
         $jwt->id            = \luc\idgen::sorted36();
+
+        $expire = $permanently ? (365 * 4 + 1) :
+            ($this->auth['jwt']['expire'] ?? (365 * 4 + 1));
         $jwt->expireTime    = \luc\time::now()
-            ->addDays($this->auth['jwt']['expire'])
+            ->addDays($expire ?: (365 * 4 + 1))
             ->timestamp;
         $token = $jwt->make($this->auth['jwt']['secret']);
 
         return $token;
+    }
+
+    public function clientId() {
+        return $this->options['clientId'];
     }
 
     public function selectBroker(): string {
@@ -80,17 +87,29 @@ class Mqt
             return $this;
         }
         if ($topic) {
-            if (isset($this->buffer[$topic])) foreach ($this->buffer[$topic] as $content) {
-                $this->client->publish($topic, $content,
-                    $this->options['qos'], $this->options['retain']);
-            }
-        } else {
-            foreach ($this->buffer as $topic => $contents) {
-                foreach ($contents as $content) {
+            $hasExc = false;
+            try {
+                if (isset($this->buffer[$topic])) foreach ($this->buffer[$topic] as $content) {
                     $this->client->publish($topic, $content,
                         $this->options['qos'], $this->options['retain']);
                 }
+            } catch (\Mosquitto\Exception $exc) {
+                $hasExc = true;
             }
+            !$hasExc && $this->buffer[$topic] = [];
+        } else {
+            $hasExc = false;
+            try {
+                foreach ($this->buffer as $topic => $contents) {
+                    foreach ($contents as $content) {
+                        $this->client->publish($topic, $content,
+                            $this->options['qos'], $this->options['retain']);
+                    }
+                }
+            } catch (\Mosquitto\Exception $exc) {
+                $hasExc = true;
+            }
+            !$hasExc && $this->buffer = [];
         }
         return $this;
     }
@@ -100,6 +119,7 @@ class Mqt
             $this->connected = true;
             $this->flush();
             $this->close();
+            $this->connected = false;
         });
         $this->client->loopForever();
         return $this;
@@ -123,21 +143,8 @@ class Mqt
 
     public function close(): self {
         $this->client->disconnect();
+        $this->client->exitLoop();
         return $this;
-    }
-
-    public function makePacket($url, array $context = []): Mqt\Packet {
-        if (is_array($url)) {
-            $scheme = strstr($url[0], ':', true);
-            $path   = substr($url[0], strlen($scheme) + 1);
-            $luri = new Luri($scheme, $path, $url[1] ?? []);
-        } else {
-            $luri = Luri::createByUri($url);
-        }
-
-        $packet = new Mqt\Packet($luri->toArray(), $this->defaultPacketVersion);
-        $packet->setContext($context);
-        return $packet;
     }
 
 }

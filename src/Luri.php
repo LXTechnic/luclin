@@ -77,8 +77,8 @@ class Luri
         return $onlyValue ? $value : ('$'.$this-root()."=$value");
     }
 
-    public function resolve(array $context = []): array {
-        $context = (new Context())->fill($context);
+    public function resolve(?array $context = []): array {
+        $context = $context ? (new Context())->fill($context) : (new Context());
         $context->_luri = $this;
 
         // $offset = 0;
