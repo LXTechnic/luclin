@@ -119,7 +119,6 @@ class Mqt
             $this->connected = true;
             $this->flush();
             $this->close();
-            $this->connected = false;
         });
         $this->client->loopForever();
         return $this;

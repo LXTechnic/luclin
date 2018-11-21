@@ -40,6 +40,11 @@
         "luc"
     ],
     "extra": {
+        "test": {
+            "unit": [
+                "src"
+            ]
+        },
         "laravel": {
             "providers": [
                 "Luclin\\Providers\\AppServiceProvider",
