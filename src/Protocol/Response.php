@@ -36,4 +36,10 @@ class Response extends Container
         $this->setContract('code', $code);
         return $this->send($code, $headers);
     }
+
+    public function image(string $data, string $format = 'png') {
+        return response($data, 200, [
+            'content-type'  => "image/$format",
+        ]);
+    }
 }
