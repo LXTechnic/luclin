@@ -138,6 +138,10 @@ function toArray(iterable $iterable,
     return $toArray();
 }
 
+function ddQuery($query) {
+    dd($query->toSql(), $query->getBindings());
+}
+
 function timer() {
     static $start = null;
     if (!$start) {

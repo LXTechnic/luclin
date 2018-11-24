@@ -13,6 +13,10 @@ class conf
         return $instance;
     }
 
+    public function exists(): bool {
+        return \config($this->_prefix) ? true : false;
+    }
+
     public function alias(string $alias, string $path): self {
         $this->_alias[$alias] = $path;
         return $this;
