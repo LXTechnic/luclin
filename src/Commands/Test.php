@@ -4,6 +4,7 @@ namespace Luclin\Commands;
 
 use Illuminate\Console\Command;
 use File;
+use Artisan;
 
 class Test extends Command
 {
@@ -45,6 +46,9 @@ class Test extends Command
             'onlySeq'   => $onlySeq,
         ] = $this->arguments();
         $class && $class = ucfirst($class).'Test';
+
+        Artisan::call('config:clear', [
+        ]);
 
         if (!$module) {
             exec("./vendor/bin/phpunit", $result);
