@@ -111,6 +111,11 @@ abstract class Model extends EloquentModel implements Contracts\Model
         }, $reload);
     }
 
+    public static function foundOrNull($feature, bool $reload = false, array $extra = []) {
+        $model = static::found($feature, $reload, $extra);
+        return $model->exists ? $model : null;
+    }
+
     public function id() {
         $key = is_array($this->primaryKey) ? static::getIdField() : $this->primaryKey;
         return array_key_exists($key, $this->attributes) ? $this->{$key} : null;
