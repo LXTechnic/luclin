@@ -34,6 +34,14 @@ class Packet
         return $this;
     }
 
+    public function getFact(): array {
+        return $this->fact;
+    }
+
+    public function getContext(): array {
+        return $this->context;
+    }
+
     public static function unpack(string $payload): ?self {
         $payload = msgpack_unpack($payload);
         if (!$payload || ($payload[0] ?? null) != 'PHOIAC') {

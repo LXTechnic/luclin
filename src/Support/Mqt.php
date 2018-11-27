@@ -7,6 +7,7 @@ use Luclin\Foundation;
 use Luclin\Luri;
 
 use Mosquitto\Client;
+use Mosquitto\Message;
 
 class Mqt
 {
@@ -22,7 +23,7 @@ class Mqt
         'clean'     => true,
         'qos'       => 1,
         'retain'    => false,
-        'keepAlive' => 0,
+        'keepAlive' => 15,
         'username'  => null,
         'password'  => null,
     ];
@@ -82,6 +83,11 @@ class Mqt
         return $this;
     }
 
+    public function sub(string $topic): self {
+        $this->client->subscribe($topic, $this->options['qos']);
+        return $this;
+    }
+
     private function flush(string $topic = null): self {
         if (!$this->connected) {
             return $this;
@@ -124,10 +130,15 @@ class Mqt
         return $this;
     }
 
-    public function listen(): self {
+    public function listen(callable $func = null): self {
+        $func && $this->client->onMessage(function(Message $message) use ($func) {
+            $func($message->payload, $message->topic, $message->mid, $message->retain);
+        });
+
         $this->client->onConnect(function() {
             $this->connected = true;
             $this->flush();
+
         });
         $this->client->loopForever();
         return $this;
