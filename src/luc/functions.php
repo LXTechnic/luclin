@@ -45,6 +45,27 @@ function mod(string $name, string $prefix = 'lumod:'): Module {
     return app("$prefix$name");
 }
 
+function mods(string $prefix = 'lumod:'): iterable {
+    $fetch = function(): array {
+        return $this->instances;
+    };
+
+    $length = strlen($prefix);
+    foreach ($fetch->call(app()) as $key => $module) {
+        if (strpos($key, $prefix) === 0) {
+            yield substr($key, $length) => $module;
+        }
+    }
+}
+
+function it2arr(iterable $it): array {
+    $result = [];
+    foreach ($it as $key => $value) {
+        $result[$key] = $value;
+    }
+    return $result;
+}
+
 function hyphen2class(string $haystack): string {
     return str_replace(['_', '-'], '', \luc\pipe($haystack)
         ->ucwords('/_-')

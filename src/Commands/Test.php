@@ -13,7 +13,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:test {module?} {class?} {onlySeq?}';
+    protected $signature = 'luc:test {module?} {class?} {--seq=} {--exclude=} {--dissEx}';
 
     /**
      * The console command description.
@@ -43,25 +43,56 @@ class Test extends Command
         @[
             'module'    => $module,
             'class'     => $class,
-            'onlySeq'   => $onlySeq,
         ] = $this->arguments();
         $class && $class = ucfirst($class).'Test';
+
+        [
+            'seq'       => $seq,
+            'exclude'   => $exclude,
+            'dissEx'    => $dissEx,
+        ] = $this->options();
+
+        if ($dissEx) {
+            $exclude = [];
+        } else {
+            $exclude = $exclude ? explode(',', $exclude) : [];
+            $exclude[] = 'luclin';
+        }
 
         Artisan::call('config:clear', [
         ]);
 
+        // $root   = \app_path().DIRECTORY_SEPARATOR."..";
+        // $cmd    = realpath("$root/vendor/bin/phpunit").
+        // $cmd    = "./vendor/bin/phpunit".
+        //     " -c ".realpath("$root/phpunit.xml");
+        $cmd    = "./vendor/bin/phpunit";
+
         if (!$module) {
-            exec("./vendor/bin/phpunit", $result);
-            foreach ($result as $line) {
-                $this->info($line);
+            if ($exclude) {
+                // exclude仅在没有其他参数时生效
+                foreach (\luc\mods() as $name => $_module) {
+                    if (in_array($name, $exclude)) {
+                        continue;
+                    }
+                    exec("$cmd ".\luc\mod($name)->path('tests'), $result);
+                    foreach ($result as $line) {
+                        echo $line."\n";
+                    }
+                }
+            } else {
+                exec("$cmd", $result);
+                foreach ($result as $line) {
+                    echo $line."\n";
+                }
             }
             return;
         }
 
         if (!$class) {
-            exec("./vendor/bin/phpunit ".\luc\mod($module)->path('tests'), $result);
+            exec("$cmd ".\luc\mod($module)->path('tests'), $result);
             foreach ($result as $line) {
-                $this->info($line);
+                echo $line."\n";
             }
             return;
         }
@@ -73,14 +104,14 @@ class Test extends Command
                 continue;
             }
             $count++;
-            if ($onlySeq && $onlySeq != $count) {
+            if ($seq && $seq != $count) {
                 continue;
             }
 
             $result = [];
-            exec("./vendor/bin/phpunit ".$info->getRealPath(), $result);
+            exec("$cmd ".$info->getRealPath(), $result);
             foreach ($result as $line) {
-                $this->info($line);
+                echo $line."\n";
             }
         }
     }
