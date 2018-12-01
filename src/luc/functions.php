@@ -23,7 +23,7 @@ function debug(): bool {
     return config('app.debug');
 }
 
-function mqt(string $clientId = null, $connection = 'default'): Support\Mqt {
+function mqt(string $clientId = null, $mode = 'tcp', $connection = 'default'): Support\Mqt {
     $conf = config("mqt.$connection");
     if (!$conf) {
         throw new \RuntimeException("Mqtt connection [$connection] not found.");
@@ -31,7 +31,7 @@ function mqt(string $clientId = null, $connection = 'default'): Support\Mqt {
 
     $clientId && $conf['options']['clientId'] = $clientId;
     return Support\Mqt::instance("$clientId-$connection",
-        $conf['brokers'], $conf['options'], $conf['auth']);
+        $conf['brokers'][$mode], $conf['options'], $conf['auth']);
 }
 
 function packet(Luri $luri, array $context = [], $version = 1): Support\Mqt\Packet {
