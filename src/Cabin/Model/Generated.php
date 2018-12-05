@@ -27,7 +27,7 @@ abstract class Generated extends Model
     protected static function migrateUpPrimary(Blueprint $table): void
     {
         $table->string('id', 50);
-        $table->integer('id_sim');
+        $table->bigInteger('id_sim');
         $table->primary('id');
         $table->index('id_sim');
     }
