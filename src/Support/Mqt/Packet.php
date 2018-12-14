@@ -4,16 +4,6 @@ namespace Luclin\Support\Mqt;
 
 
 /**
- * 结构：
- * - "PHOIAC" 固定签名|生成规则是strtoupper(substr(gmpStrval(36, '0x'.sha1("FPACT0")), 0, 6))
- * - 版本号
- * - 包id
- * - 基础开关配置
- * - 有几个section
- * - section 组
- *  - section开关配置
- *  - context 如果有
- *  - 后面是fact 列表
  */
 class Packet
 {

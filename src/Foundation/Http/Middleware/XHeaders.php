@@ -13,8 +13,9 @@ class XHeaders
     protected $prefixes = [];
     protected $mapping  = [];
 
-    protected $arrayable = [];
-    protected $queryable = [];
+    protected $arrayable    = [];
+    protected $queryable    = [];
+    protected $jsonObject   = [];
 
     public function handle(Request $request, Closure $next)
     {
@@ -50,6 +51,11 @@ class XHeaders
 
                 $xheaders->setRaw($header, $value);
             }
+        }
+
+        // 处理jsonObject
+        if ($this->jsonObject) foreach ($this->jsonObject as $name) {
+            $xheaders->$name = json_decode($xheaders->$name, true) ?: [];
         }
 
         $xheaders->confirm();
