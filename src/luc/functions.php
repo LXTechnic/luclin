@@ -84,21 +84,10 @@ function uri($url, ?array $context = [], $autoResolve = true) {
     return ($luri && $autoResolve) ? $luri->resolve($context)[0] : $luri;
 }
 
-function ins(string $name, ...$extra) {
-    $category = strstr($name, '.', true) ?: $name;
-    $instance = \app("luclin.$name");
-    if ($extra) {
-        switch ($category) {
-            case 'path':
-                $instance .= '/'.implode('/', $extra);
-                break;
-        }
-    }
-    return $instance;
-}
-
-function xheaders(): Protocol\XHeaders {
-    return ins('xheaders');
+function xheaders(bool $refresh = false): Protocol\XHeaders {
+    $container = \app();
+    $refresh && $container->forgetInstance('luclin.xheaders');
+    return $container['luclin.xheaders'];
 }
 
 function flow($body): Flow {

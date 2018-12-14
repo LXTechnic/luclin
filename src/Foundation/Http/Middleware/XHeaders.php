@@ -19,7 +19,7 @@ class XHeaders
 
     public function handle(Request $request, Closure $next)
     {
-        $xheaders = \luc\xheaders();
+        $xheaders = \luc\xheaders(true);
         $headers  = $request->headers->all();
 
         // 先处理queryable的参数
@@ -55,7 +55,8 @@ class XHeaders
 
         // 处理jsonObject
         if ($this->jsonObject) foreach ($this->jsonObject as $name) {
-            $xheaders->$name = json_decode($xheaders->$name, true) ?: [];
+            $value = $xheaders->$name;
+            !is_array($value) && ($xheaders->$name = json_decode($value, true) ?: []);
         }
 
         $xheaders->confirm();
