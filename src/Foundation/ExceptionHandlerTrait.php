@@ -6,6 +6,7 @@ use Luclin\Abort;
 use Luclin\Contracts\Protocol;
 
 use Illuminate\Auth\AuthenticationException;
+use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Log;
 use Psr\Log\LoggerInterface;
@@ -71,12 +72,20 @@ trait ExceptionHandlerTrait
 
     protected function renderException($request, \Throwable $exception): ?Response
     {
+        $isIgnore = function(\Throwable $exception): bool {
+            if ($exception instanceof AuthenticationException) {
+                return true;
+            } elseif ($exception instanceof ModelNotFoundException) {
+                return true;
+            }
+            return false;
+        };
         try {
             if (!($exception instanceof Abort)) {
                 // TODO: 这里的逻辑之后优化
                 if ($exception instanceof \InvalidArgumentException) {
                     $abort = new Abort($exception);
-                } elseif ($exception instanceof AuthenticationException) {
+                } elseif ($isIgnore($exception)) {
                     return null;
                 } elseif (\luc\debug()) {
                     return null;
