@@ -30,12 +30,14 @@ abstract class Dock
         }
 
         // 这里重新布局了参数结构, 首为context, domains位于context中约定 _domains字段表述
-        $context = array_shift($arguments);
-        if (isset($context['_domains'])) {
-            $domains = $context['_domains'];
-            !is_array($domains) && $domains = [$domains];
-        } else {
-            $domains = static::$domains;
+        $context = [];
+        $domains = static::$domains;
+        if ($arguments) {
+            $context = array_shift($arguments);
+            if (isset($context['_domains'])) {
+                $domains = $context['_domains'];
+                !is_array($domains) && $domains = [$domains];
+            }
         }
         [$result, $content] = $flow($domains, $context, ...$arguments);
         return $result;
