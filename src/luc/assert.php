@@ -2,12 +2,18 @@
 
 namespace luc;
 
+use Illuminate\Http\Response;
+use Illuminate\Foundation\Testing;
 use Illuminate\Support\Arr;
 use Log;
 
 if (class_exists('\PHPUnit\Framework\Assert')) {
     class assert extends \PHPUnit\Framework\Assert
     {
+        public static function dumpResponse(Testing\TestResponse $response) {
+            echo "\n>> Dump Response -----------------\n$response->baseResponse\n<< --------------------------------\n";
+        }
+
         public static function checkExc($exc): void {
             if ($exc instanceof \Throwable) {
                 static::dumpException($exc);

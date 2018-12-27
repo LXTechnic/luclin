@@ -7,24 +7,19 @@ use Luclin\Flow;
 use Luclin\Foundation;
 
 /**
+ * @see 因为闭包是以flow对象调用，因此在闭包内调自身方法不能使用static::而必须指定类名
  */
 abstract class Dock
 {
     protected static $domains   = [];
-
-    protected static $flows     = null;
 
     public static $context      = null;
 
     abstract protected function flows(): array;
 
     public static function __callStatic(string $name, array $arguments) {
-        if (!static::$flows) {
-            $dock = new static();
-            static::$flows = $dock->flows();
-        }
-
-        $flow = static::$flows[$name] ?? null;
+        $dock = new static();
+        $flow = $dock->flows()[$name] ?? null;
         if (!$flow) {
             throw new \BadFunctionCallException("Flow $name@".static::class." is not exists.");
         }
