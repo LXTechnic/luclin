@@ -280,6 +280,13 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $this;
     }
 
+    public function getExtra(string $class): object {
+        $model = $class::found([
+            'id'    => $this->id(),
+        ]);
+        return $model;
+    }
+
     /**
      *
      * // return $this->self()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));

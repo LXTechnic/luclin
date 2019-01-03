@@ -29,10 +29,9 @@ abstract class Extra extends Model
         return $model;
     }
 
-    protected static function migrateUpPrimary(Blueprint $table,
-        bool $numeric = true): void
+    protected static function migrateUpPrimary(Blueprint $table): void
     {
-        $numeric ? $table->bigInteger('id') : $table->string('id', 100);
+        $table->bigInteger('id');
         $table->primary('id');
     }
 
