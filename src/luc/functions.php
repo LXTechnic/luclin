@@ -152,6 +152,11 @@ function ddQuery($query) {
     dd($query->toSql(), $query->getBindings());
 }
 
+function suffix(string $subject, string $search = '.'): string {
+    $pos = strrpos($subject, $search);
+    return substr($subject, $pos + 1);
+}
+
 function timer() {
     static $start = null;
     if (!$start) {
