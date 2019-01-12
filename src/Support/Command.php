@@ -29,4 +29,14 @@ class Command
             $artisan->resolveCommands($commands);
         });
     }
+
+    public static function active(...$classes): void {
+        // 原来以为要取到文件，发现只要class就可以了
+        // $module = \luc\mod($module);
+        // $path   = strtr(substr($class, strlen($module->space()) + 1), '\\', '/');
+        // $file   = $module->path('src', "$path.php");
+        Artisan::starting(function ($artisan) use ($classes) {
+            $artisan->resolveCommands($classes);
+        });
+    }
 }
