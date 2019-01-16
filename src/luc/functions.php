@@ -109,7 +109,7 @@ function raise($error, array $extra = [], \Throwable $previous = null): Abort
             $msg = \luc\padding($conf['msg'], $extra);
         } else {
             $pos = strpos($error, '.');
-            $msg = \luc\__(substr_replace($error, '::aborts', $pos, 0), $extra);;
+            $msg = \luc\__(substr_replace($error, '::aborts', $pos, 0), $extra);
         }
         $exc = $conf['exc'] ?? \LogicException::class;
         $error = new $exc($msg, $num, $previous);
@@ -157,6 +157,12 @@ function suffix(string $subject, string $search = '.'): string {
     return substr($subject, $pos + 1);
 }
 
+function patchSet(array $oldSet, array $newSet): array {
+    $remove = array_diff($oldSet, $newSet);
+    $append = array_diff($newSet, $oldSet);
+    return [$remove, $append];
+}
+
 function timer() {
     static $start = null;
     if (!$start) {
@@ -191,7 +197,7 @@ function __(string $key, array $replace = [],
     };
 
     $line = $liner->call($translator);
-    if ($line && is_string($line)) {
+    if ($line && is_string($line) && $replace) {
         return padding($line, $replace);
     }
     return $line;
