@@ -68,6 +68,7 @@ class Test extends Command
         //     " -c ".realpath("$root/phpunit.xml");
         $cmd    = "./vendor/bin/phpunit";
 
+        // 整体多模块跑测试
         if (!$module) {
             if ($exclude) {
                 // exclude仅在没有其他参数时生效
@@ -75,6 +76,7 @@ class Test extends Command
                     if (in_array($name, $exclude)) {
                         continue;
                     }
+                    $this->info("--> Run tests for module [$name]");
                     exec("$cmd ".\luc\mod($name)->path('tests'), $result);
                     foreach ($result as $line) {
                         echo $line."\n";
@@ -89,6 +91,7 @@ class Test extends Command
             return;
         }
 
+        // 按模块跑测试
         if (!$class) {
             exec("$cmd ".\luc\mod($module)->path('tests'), $result);
             foreach ($result as $line) {
@@ -97,6 +100,7 @@ class Test extends Command
             return;
         }
 
+        // 单跑模块中的同名测试，支持指字序列
         $conf   = file_get_contents(\luc\mod($module)->path('composer.json'));
         $count  = 0;
         foreach (File::allFiles(\luc\mod($module)->path('tests')) as $info) {

@@ -11,6 +11,8 @@ use DB;
  */
 trait StatusFlow
 {
+    protected $_statusChange = [];
+
     abstract protected function getStatusFlow(): array;
 
     protected static function migrateUpStatusFlow(Blueprint $table): void
@@ -23,6 +25,9 @@ trait StatusFlow
         $table->dropColumn('status');
     }
 
+    public function isStatusChange($from, $to): bool {
+        return $this->_statusChange == [$from, $to];
+    }
 
     public function setStatusAttribute($value) {
         if (($this->attributes['status'] ?? null) != $value
@@ -31,6 +36,10 @@ trait StatusFlow
         {
             $this->raiseStatusFlowError($this->status, $value);
         }
+
+        $from   = $this->attributes['status'] ?? static::getDefaultStatus();
+        $to     = $value;
+        $this->_statusChange = [$from, $to];
         $this->attributes['status'] = $value;
     }
 

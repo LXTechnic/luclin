@@ -19,6 +19,10 @@ function env(...$match): bool {
     return App::environment($match);
 }
 
+function du(...$arguments): void {
+    \dump(...$arguments);
+}
+
 function debug(): bool {
     return config('app.debug');
 }
@@ -148,8 +152,9 @@ function toArray(iterable $iterable,
     return $toArray();
 }
 
-function ddQuery($query) {
-    dd($query->toSql(), $query->getBindings());
+function duQuery($query) {
+    dump($query->toSql());
+    dump($query->getBindings());
 }
 
 function suffix(string $subject, string $search = '.'): string {
@@ -197,7 +202,7 @@ function __(string $key, array $replace = [],
     };
 
     $line = $liner->call($translator);
-    if ($line && is_string($line) && $replace) {
+    if ($replace && $line && is_string($line)) {
         return padding($line, $replace);
     }
     return $line;
