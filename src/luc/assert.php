@@ -10,6 +10,11 @@ use Log;
 if (class_exists('\PHPUnit\Framework\Assert')) {
     class assert extends \PHPUnit\Framework\Assert
     {
+        public static function jsonId($response, string $field) {
+            $result = $response->json();
+            return $result[$field][0]['_id'] ?? null;
+        }
+
         public static function dumpResponse(Testing\TestResponse $response) {
             echo "\n>> Dump Response -----------------\n$response->baseResponse\n<< --------------------------------\n";
         }
