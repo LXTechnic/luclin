@@ -62,6 +62,14 @@ function mods(string $prefix = 'lumod:'): iterable {
     }
 }
 
+function transBit($data, int $fromBit, int $toBit) {
+    $gmp  = gmp_init($data, $fromBit);
+    if ($toBit == 10) {
+        return gmp_intval($gmp);
+    }
+    return gmp_strval($gmp, $toBit);
+}
+
 function it2arr(iterable $it): array {
     $result = [];
     foreach ($it as $key => $value) {
@@ -153,8 +161,8 @@ function toArray(iterable $iterable,
 }
 
 function duQuery($query) {
-    dump($query->toSql());
-    dump($query->getBindings());
+    du($query->toSql());
+    du($query->getBindings());
 }
 
 function suffix(string $subject, string $search = '.'): string {

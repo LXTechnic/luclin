@@ -28,7 +28,8 @@ class XHeaders
                 continue;
             }
             // 这里的处理方式不会覆盖原headers中的数据
-            $headers[$header][] = $value;
+            isset($headers[$header]) ? array_unshift($headers[$header], $value) :
+                ($headers[$header][] = $value);
         }
 
         // 再从头中读取
