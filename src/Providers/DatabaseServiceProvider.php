@@ -2,6 +2,8 @@
 
 namespace Luclin\Providers;
 
+use Luclin\Cabin\Foundation\ConnectionFactory;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 
@@ -18,8 +20,8 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('db.connection', function ($app) {
-            return $app['db']->connection();
+        $this->app->singleton('db.factory', function ($app) {
+            return new ConnectionFactory($app);
         });
     }
 }
