@@ -48,7 +48,8 @@
         "laravel": {
             "providers": [
                 "Luclin\\Providers\\AppServiceProvider",
-                "Luclin\\Providers\\AuthServiceProvider"
+                "Luclin\\Providers\\AuthServiceProvider",
+                "Luclin\\Providers\\DatabaseServiceProvider"
             ]
         }
     }
