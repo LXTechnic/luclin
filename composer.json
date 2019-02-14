@@ -17,7 +17,6 @@
         "illuminate/database": "^5.6",
         "illuminate/support": "^5.6",
         "php-amqplib/php-amqplib": "^2.7",
-        "andares/phpmqtt": "^1.0",
         "nette/neon": "^2.4",
         "picqer/php-barcode-generator": "^0.2",
         "firebase/php-jwt": "^5.0"
