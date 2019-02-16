@@ -3,8 +3,10 @@
 namespace Luclin\Commands\Module;
 
 use Luclin\Support\Composer\Fork\JsonFormatter;
+use Luclin\Support\Recursive\FileFinder;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
+use Symfony\Component\Finder\Finder;
 use File;
 
 /**
@@ -51,10 +53,10 @@ class Up extends Command
         $directories = $this->argument('directories') ?: [base_path('modules')];
         $requires    = [];
         foreach ($directories as $dir) {
-            foreach (File::allFiles($dir) as $file) {
-                if ($file->getBasename() != 'composer.json') {
-                    continue;
-                }
+            $it = new FileFinder($dir, function ($fileinfo) {
+                return $fileinfo->getBasename() == 'composer.json';
+            });
+            foreach ($it() as $file) {
                 $modulePath     = $file->getPath();
                 $content        = file_get_contents($file->getRealPath());
                 $composerConf   = json_decode($content, true);
@@ -69,6 +71,7 @@ class Up extends Command
                 $this->prepareTest($modulePath);
             }
         }
+
         // 单元测试配置写入
         file_put_contents(base_path('phpunit.xml'), $this->phpUnitXml);
 
