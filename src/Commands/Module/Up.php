@@ -6,7 +6,6 @@ use Luclin\Support\Composer\Fork\JsonFormatter;
 use Luclin\Support\Recursive\FileFinder;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
-use Symfony\Component\Finder\Finder;
 use File;
 
 /**
