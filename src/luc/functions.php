@@ -27,6 +27,21 @@ function debug(): bool {
     return config('app.debug');
 }
 
+function tryWhen(callable $try, callable $when, callable $throw, ...$arguments) {
+    do {
+        $exc = null;
+        try {
+            $result = $try(...$arguments);
+        } catch (\Throwable $exc) {
+            // do nothing..
+        }
+    } while($exc && $arguments = $when($exc, $arguments));
+    if ($exc) {
+        $throw($exc);
+    }
+    return $result;
+}
+
 function mqt(string $clientId = null, $mode = 'tcp', $connection = 'default'): Support\Mqt {
     $conf = config("mqt.$connection");
     if (!$conf) {
