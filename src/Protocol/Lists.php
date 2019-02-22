@@ -41,9 +41,7 @@ class Lists extends Collection implements FieldInterface
         return $this;
     }
 
-    public function union($slave, string $alias = null,
-        string $masterField = 'id', string $slaveField = 'id',
-        string $class = null): self
+    public function union($slave, string $name = null): self
     {
         if (!$slave || !isset($slave[0])) {
             return $this;
@@ -51,9 +49,13 @@ class Lists extends Collection implements FieldInterface
 
         $slaveClass = get_class($slave[0]);
 
-        $data = new Foundation\UnionData($this,
-             $alias ? [$alias => [$class, $masterField, $slaveField]]
-                : $this->unionConf[$slaveClass]);
+        if ($name) {
+            $conf = [$name => $this->unionConf[$slaveClass][$name]];
+        } else {
+            $conf = $this->unionConf[$slaveClass];
+        }
+
+        $data = new Foundation\UnionData($this, $conf);
         $data($slave);
         return $this;
     }
