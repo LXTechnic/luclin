@@ -171,21 +171,6 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return Cabin\Container::instance(static::class);
     }
 
-    public static function contains(string $field, ...$values): Builder {
-        return self::query()
-            ->whereRaw("$field @> '{".implode(',', $values)."}'");
-    }
-
-    public static function notContains(string $field, ...$values): Builder {
-        return self::query()
-            ->whereRaw("not ($field && '{".implode(',', $values)."}')");
-    }
-
-    public static function congruent(string $field, ...$values): Builder {
-        return self::query()
-            ->whereRaw("$field = '{".implode(',', $values)."}'");
-    }
-
     public function confirm(): self {
         // 整体confirm勾子
         $methods = $this->afterConfirm();
