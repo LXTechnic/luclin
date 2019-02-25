@@ -1,8 +1,7 @@
 {
     "name": "my/module",
     "description": "my module",
-    "authors": [
-    ],
+    "authors": [],
     "autoload": {
         "psr-4": {
             "Seeds\\": "database/seeds/",
@@ -18,6 +17,7 @@
             "unit": [
                 "src/Commands",
                 "src/Domains",
+                "src/Flows",
                 "src/Models"
             ]
         },
