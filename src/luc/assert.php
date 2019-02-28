@@ -10,9 +10,9 @@ use Log;
 if (class_exists('\PHPUnit\Framework\Assert')) {
     class assert extends \PHPUnit\Framework\Assert
     {
-        public static function jsonId($response, string $field) {
+        public static function jsonId($response, string $field, int $seq = 0) {
             $result = $response->json();
-            return $result[$field][0]['_id'] ?? null;
+            return $result[$field][$seq]['_id'] ?? null;
         }
 
         public static function dumpResponse(Testing\TestResponse $response) {
