@@ -27,6 +27,15 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     protected $_newBindId = null;
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->initUpdate();
+    }
+
+    protected function initUpdate(): void {}
+
     public function setOnFactoryAttribute($value) {
         $this->_onFactory = $value;
     }
