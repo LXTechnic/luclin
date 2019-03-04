@@ -36,6 +36,12 @@ abstract class Model extends EloquentModel implements Contracts\Model
 
     protected function initUpdate(): void {}
 
+    public function newFromBuilder($attributes = [], $connection = null) {
+        $model = parent::newFromBuilder($attributes, $connection);
+        $model->initUpdate();
+        return $model;
+    }
+
     public function setOnFactoryAttribute($value) {
         $this->_onFactory = $value;
     }
