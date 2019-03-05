@@ -74,7 +74,7 @@ class Seeder extends Command
         // 移动到模块中
         $dir    = $path.DIRECTORY_SEPARATOR;
         if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
+            mkdir($dir, 0755, true);
         }
         $target = "$dir{$name}Seeder.php";
         File::move($source, $target);

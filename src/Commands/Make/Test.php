@@ -66,7 +66,7 @@ class Test extends Command
                 : '';
         $dir    = $path.DIRECTORY_SEPARATOR.$dir;
         if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
+            mkdir($dir, 0755, true);
         }
         $target = "$dir{$name}Test.php";
         if (File::exists($target)) {
