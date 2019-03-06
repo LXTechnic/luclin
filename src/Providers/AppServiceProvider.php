@@ -29,6 +29,7 @@ use Illuminate\Support\{
     Facades\Queue
 };
 use Illuminate\Queue\{
+    QueueManager,
     Events\JobProcessed,
     Events\JobProcessing,
     Events\JobFailed
@@ -117,6 +118,9 @@ class AppServiceProvider extends Providers\AppService
 
         // 队列系统修改
         $this->app->bind(QueueFactoryContract::class, function ($app) {
+            return new Bus\QueueManager($app);
+        });
+        $this->app->bind(QueueManager::class, function ($app) {
             return new Bus\QueueManager($app);
         });
 
