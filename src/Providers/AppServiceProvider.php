@@ -117,12 +117,9 @@ class AppServiceProvider extends Providers\AppService
         parent::register();
 
         // 队列系统修改
-        $this->app->singleton('queue', function ($app) {
-            return new Bus\QueueManager($app);
+        $this->app->extend('queue', function ($qm) {
+            return Bus\QueueManager::inherit($qm);
         });
-        // $this->app->singleton(QueueFactoryContract::class, function ($app) {
-        //     return new Bus\QueueManager($app);
-        // });
 
         // 实现控制器方法参数控制是否需要登录
         $this->app->bind('Luclin\Contracts\Auth', function($app) {

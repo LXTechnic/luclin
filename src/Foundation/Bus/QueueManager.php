@@ -6,6 +6,13 @@ use Illuminate\Queue;
 
 class QueueManager extends Queue\QueueManager
 {
+    public static function inherit(Queue\QueueManager $qm): self {
+        $my = new self($qm->app);
+        $my->connections    = $qm->connections;
+        $my->connectors     = $qm->connectors;
+        return $my;
+    }
+
     protected function getConfig($name)
     {
         $config = parent::getConfig($name);
@@ -31,7 +38,11 @@ class QueueManager extends Queue\QueueManager
         return $config;
     }
 
-    public function conf($name) {
+    public function debugConf($name) {
         return $this->getConfig($name);
+    }
+
+    public function debugConnectors() {
+        return $this->connectors;
     }
 }
