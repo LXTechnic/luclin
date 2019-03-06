@@ -10,6 +10,7 @@ use Luclin\Luri;
 use Luclin\Routers;
 use Luclin\Foundation\{
     Providers,
+    Bus,
     LuclinScheme
 };
 use Luclin\Protocol\{
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent;
 // use Illuminate\Database\Eloquent\{
 //     Relations\Relation as Relation
 // };
+use Illuminate\Contracts\Queue\Factory as QueueFactoryContract;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\{
     Facades\Queue
@@ -112,6 +114,11 @@ class AppServiceProvider extends Providers\AppService
     public function register()
     {
         parent::register();
+
+        // 队列系统修改
+        $this->app->bind(QueueFactoryContract::class, function ($app) {
+            return new Bus\QueueManager($app);
+        });
 
         // 实现控制器方法参数控制是否需要登录
         $this->app->bind('Luclin\Contracts\Auth', function($app) {

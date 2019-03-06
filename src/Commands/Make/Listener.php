@@ -10,7 +10,7 @@ use File;
 
 use Illuminate\Console\DetectsApplicationNamespace;
 
-class Job extends Command
+class Listener extends Command
 {
     use DetectsApplicationNamespace;
 
@@ -19,14 +19,14 @@ class Job extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:make:job {module} {name}';
+    protected $signature = 'luc:make:listener {module} {name} {--e|event=} {--queued}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '为某个模块创建Job';
+    protected $description = '为某个模块创建Listener';
 
     /**
      * Create a new command instance.
@@ -52,8 +52,13 @@ class Job extends Command
         ] = $this->arguments();
         $name       = ucfirst($name);
 
+        [
+            'queued'    => $queued,
+            'event'     => $event,
+        ] = $this->options();
+
         // 目录生成
-        $path = \luc\mod($module)->path('src', 'Jobs');
+        $path = \luc\mod($module)->path('src', 'Listeners');
         if (!file_exists($path)) {
             if (!mkdir($path, 0755, true)) {
                 throw new \Exception("Seed directory [$path] is not exists.");
@@ -65,11 +70,13 @@ class Job extends Command
         $params     = [
             'name'  => $tmpName,
         ];
-        $this->call('make:job', $params);
+        $queued && $params['--queued']  = true;
+        $event  && $params['--event']   = $event;
+        $this->call('make:listener', $params);
 
         // 内容更正
         $source = base_path('app'.DIRECTORY_SEPARATOR.
-            'Jobs'.DIRECTORY_SEPARATOR.
+            'Listeners'.DIRECTORY_SEPARATOR.
             "$tmpName.php");
         $content = $this->update(file_get_contents($source), $tmpName, $name,
             \luc\mod($module)->space());
@@ -96,8 +103,8 @@ class Job extends Command
             $className  = $name;
             $prefix     = '';
         }
-        $fromNamespace  = $this->getAppNamespace()."Jobs";
-        $toNamespace    = $namespace."\\Jobs$prefix";
+        $fromNamespace  = $this->getAppNamespace()."Listeners";
+        $toNamespace    = $namespace."\\Listeners$prefix";
         $content = str_replace("namespace $fromNamespace",
             "namespace $toNamespace", $content);
 
