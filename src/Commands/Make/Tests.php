@@ -49,12 +49,20 @@ class Tests extends Command
         $conf = file_get_contents(\luc\mod($module)->path('composer.json'));
         $conf = json_decode($conf, true)['extra']['test'] ?? [];
         if (isset($conf['feature'])) foreach ($conf['feature'] as $path) {
-            foreach (File::allFiles(\luc\mod($module)->path($path)) as $info) {
+            $path = \luc\mod($module)->path($path);
+            if (!file_exists($path)) {
+                continue;
+            }
+            foreach (File::allFiles($path) as $info) {
                 $this->makeTest($module, $info, false);
             }
         }
         if (isset($conf['unit'])) foreach ($conf['unit'] as $path) {
-            foreach (File::allFiles(\luc\mod($module)->path($path)) as $info) {
+            $path = \luc\mod($module)->path($path);
+            if (!file_exists($path)) {
+                continue;
+            }
+            foreach (File::allFiles($path) as $info) {
                 $this->makeTest($module, $info, true);
             }
         }

@@ -27,7 +27,7 @@ abstract class Protocol implements Contracts\Protocol
         return [
             'message'   => $abort->getMessage(),
             'code'      => $abort->getCode(),
-            'extra'     => $abort->extra()['_show'] ?? (new \stdClass()),
+            'extra'     => $abort->extra()['_show'] ?? (new class{}),
             'hidden'    => $abort->extra()['_hidden'] ?? false,
             '$jump'     => $abort->extra()['_jump'] ?? [],
         ];
