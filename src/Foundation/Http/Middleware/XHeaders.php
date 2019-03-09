@@ -12,6 +12,7 @@ class XHeaders
 
     protected $prefixes = [];
     protected $mapping  = [];
+    protected $inherits = [];
 
     protected $arrayable    = [];
     protected $queryable    = [];
@@ -58,6 +59,11 @@ class XHeaders
         if ($this->jsonObject) foreach ($this->jsonObject as $name) {
             $value = $xheaders->$name;
             !is_array($value) && ($xheaders->$name = json_decode($value, true) ?: []);
+        }
+
+        // 处理继承
+        if ($this->inherits)  foreach ($this->inherits as $to => $from) {
+            !$xheaders->$to && $xheaders->$to = $xheaders->$from;
         }
 
         $xheaders->confirm();

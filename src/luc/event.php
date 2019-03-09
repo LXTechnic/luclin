@@ -11,6 +11,16 @@ class event
     public static function __callStatic(string $name, array $arguments)
     {
         $class = self::$alias[$name]."\\".\luc\hyphen2class(array_shift($arguments));
-        \event(new $class(...$arguments));
+
+        // 处理末尾闭包支持
+        if (is_callable($arguments[count($arguments) - 1])) {
+            $modifier = array_pop($arguments);
+        } else {
+            $modifier = null;
+        }
+
+        $event = new $class(...$arguments);
+        $modifier && $modifier($event);
+        \event($event);
     }
 }

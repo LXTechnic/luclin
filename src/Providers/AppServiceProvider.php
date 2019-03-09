@@ -109,6 +109,7 @@ class AppServiceProvider extends Providers\AppService
         Queue::before(function (JobProcessing $event) {
             Cabin::clean();
             Support\CacheLoader::cleanAll();
+            \luc\xheaders(true);
         });
     }
 
