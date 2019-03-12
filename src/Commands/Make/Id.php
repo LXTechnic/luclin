@@ -22,7 +22,7 @@ class Id extends Command
      *
      * @var string
      */
-    protected $description = '创建一个可排序uuid';
+    protected $description = '创建一个可排序唯一ID';
 
     /**
      * Create a new command instance.
@@ -41,7 +41,7 @@ class Id extends Command
      */
     public function handle()
     {
-        $this->info(\luc\idgen::sortedUuid());
+        $this->info("Generated: ".\luc\idgen::sortedUuid());
     }
 
 }
