@@ -106,7 +106,7 @@ trait ExceptionHandlerTrait
             return \luc\protocol::abort($abort)->send(...$abort->httpStatus());
         } catch (\Error $exc) {
             // TODO: 这里记录方案要完善
-            Log::error($exc->getMessage(), $exc->getTrace());
+            Log::critical($exc->getMessage(), $exc->getTrace());
             return response(['msg' => $exc->getMessage()], 500);
         } catch (\Exception $exc) {
             // 若在处理渲染报错时出错，记录错词日志并将错误交由框架处理
