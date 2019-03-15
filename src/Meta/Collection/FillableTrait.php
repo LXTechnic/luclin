@@ -30,7 +30,7 @@ trait FillableTrait {
      * @throws \UnexpectedValueException
      */
     public function fill($data): Contracts\Meta {
-        if ($$data === null) {
+        if ($data === null) {
             return $this;
         }
         if (!is_array($data) && !($data instanceof \Traversable)) {
