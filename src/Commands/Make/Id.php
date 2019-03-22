@@ -15,7 +15,7 @@ class Id extends Command
      *
      * @var string
      */
-    protected $signature = 'luc:make:id';
+    protected $signature = 'luc:make:id {number=1}';
 
     /**
      * The console command description.
@@ -41,7 +41,10 @@ class Id extends Command
      */
     public function handle()
     {
-        $this->info("Generated: ".\luc\idgen::sortedUuid());
+        $this->info("Generated:");
+        for ($i = 0; $i < $this->argument('number'); $i++) {
+            $this->info("- ".\luc\idgen::sortedUuid());
+        }
     }
 
 }
