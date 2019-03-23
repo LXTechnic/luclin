@@ -26,7 +26,8 @@ trait Query
         if ($appliers) {
             foreach ($appliers as $applier) {
                 if (is_array($applier)) {
-                    [$name, $vars] = $applier;
+                    $name = $applier[0];
+                    $vars = $applier[1] ?? [];
                     $applier = new Preset($name, static::_preset());
                     $applier->assign($vars);
                 }
