@@ -6,6 +6,7 @@ use Luclin\Cabin\Foundation\Model;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * 该类型使用find系列方法读取时表现和Master类型没有区别。
@@ -20,6 +21,26 @@ abstract class Enum extends Model
     {
         $table->increments('id');
         $table->unique($keys);
+    }
+
+    public static function findKey(...$arguments): ?self {
+        $features = [];
+        $count = 0;
+        foreach (static::defaultKeys() as $key => $default) {
+            $features[$key] = $arguments[$count] ?? $default;
+            $count++;
+        }
+        $model = static::found($features);
+
+        return $model->exists ? $model : null;
+    }
+
+    public static function findKeyOrFail(...$arguments): self {
+        $model = static::findKey(...$arguments);
+        if (!$model) {
+            static::orFail(null, implode('-', $arguments));
+        }
+        return $model;
     }
 
     public function resolveRouteBinding($id)
