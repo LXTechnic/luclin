@@ -27,7 +27,7 @@ class In implements Contracts\Endpoint, Contracts\QueryApplier
                 continue;
             }
             isset($mapping[$field]) && $field = $mapping[$field];
-            $query->whereIn($field, explode(',', $value));
+            $query->whereIn($field, is_string($value) ? explode(',', $value) : $value);
         }
     }
 }
