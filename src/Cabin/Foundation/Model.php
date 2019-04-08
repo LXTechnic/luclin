@@ -336,6 +336,21 @@ abstract class Model extends EloquentModel implements Contracts\Model
         }
     }
 
+    public static function contains(string $field, ...$values): Builder {
+        return self::query()
+            ->whereRaw("$field @> '{".implode(',', $values)."}'");
+    }
+
+    public static function notContains(string $field, ...$values): Builder {
+        return self::query()
+            ->whereRaw("not ($field && '{".implode(',', $values)."}')");
+    }
+
+    public static function congruent(string $field, ...$values): Builder {
+        return self::query()
+            ->whereRaw("$field = '{".implode(',', $values)."}'");
+    }
+
 // array field access
 
     protected function arrayFieldDecode(string $field): array
