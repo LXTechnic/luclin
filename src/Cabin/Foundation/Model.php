@@ -272,7 +272,7 @@ abstract class Model extends EloquentModel implements Contracts\Model
     }
 
     public function reloadAttributes(...$attributes): self {
-        $reload = self::find($this->id());
+        $reload = self::query()->where($this->getKeyName(), $this->id())->first();
         foreach ($attributes as $attribute) {
             $this->$attribute = $reload->$attribute;
             $this->syncOriginalAttribute($attribute);
