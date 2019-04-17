@@ -12,7 +12,7 @@ class Container extends Meta\Collection
 {
     use Foundation\SingletonNamedTrait;
 
-    private $_cacheLimit = 3000;
+    private $_cacheLimit = 30000;
     private $_index = [];
     private $_new = [];
 
