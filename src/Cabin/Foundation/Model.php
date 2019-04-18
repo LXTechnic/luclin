@@ -287,6 +287,28 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return $model;
     }
 
+    public static function traverse(callable $condition,
+        $startId = null, int $limit = 2000, string $order = 'asc'): iterable
+    {
+        $model = new static();
+        $primaryKey = $model->getKeyName();
+
+        do {
+            $query      = static::query()->where($condition);
+            $operator   = $order == 'asc' ? '>' : '<';
+            $startId && $query->where($primaryKey, $operator, $startId);
+            $query->orderBy($primaryKey, $order)->take($limit);
+
+            $count = 0;
+            foreach ($query->get() as $row) {
+                yield $row;
+
+                $count++;
+                $startId = $row->$primaryKey;
+            }
+        } while ($count);
+    }
+
     /**
      *
      * // return $this->self()->update(DB::Raw("$field = jsonb_set($field, '{".implode(',', $path)."}', '$value')"));

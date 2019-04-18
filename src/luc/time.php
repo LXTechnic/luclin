@@ -14,13 +14,16 @@ class time
 
     public static function mock($time = null, string $name = 'default'): void {
         if ($time) {
-            static::$mocks[$name] = is_string($time) ? static::create($time) : $time;
+            self::$mocks[$name] = is_string($time) ? self::create($time) : $time;
         } else {
-            unset(static::$mocks[$name]);
+            unset(self::$mocks[$name]);
         }
     }
 
     public static function now(?string $name = 'default'): Carbon {
-        return $name ? (static::$mocks[$name] ?? now()) : now();
+        if ($name && isset(self::$mocks[$name])) {
+            return self::create(self::$mocks[$name]);
+        }
+        return now();
     }
 }
