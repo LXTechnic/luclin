@@ -31,12 +31,15 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
             unset($params['_quote']);
         }
 
+        $explode    = $params['_explode'] ?? ',';
+        unset($params['_explode']);
+
         if ($cases) foreach ($params as $name => $values) {
             if ($values === \luc\UNIT) {
                 continue;
             }
 
-            $values = explode(',', $values);
+            $values = $explode ? explode($explode, $values) : [$values];
             $assign = [];
             foreach ($values as $value) {
                 $assign[] = $quote ? DB::getPdo()->quote($value) : $value;
