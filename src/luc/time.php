@@ -9,7 +9,8 @@ class time
     static $mocks = [];
 
     public static function create($time): Carbon {
-        return new Carbon($time, config('app.timezone'));
+        return is_int($time) ? Carbon::createFromTimestamp($time) :
+            new Carbon($time, config('app.timezone'));
     }
 
     public static function mock($time = null, string $name = 'default'): void {
