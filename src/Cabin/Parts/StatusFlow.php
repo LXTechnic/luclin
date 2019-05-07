@@ -29,6 +29,10 @@ trait StatusFlow
         return $this->_statusChange == [$from, $to];
     }
 
+    public function getStatusAttribute($value) {
+        return $value === null ? static::getDefaultStatus() : $value;
+    }
+
     public function setStatusAttribute($value) {
         if (!$this->_onFactory
             // && ($this->attributes['status'] ?? null) != $value
