@@ -56,7 +56,7 @@ trait StatusFlow
      */
     protected function checkStatusFlow($nextStatus) {
         $statusFlow = $this->getStatusFlow();
-        if (!isset($statusFlow[$nextStatus])) {
+        if (!array_key_exists($nextStatus, $statusFlow)) {
             $this->raiseStatusFlowNotExist($nextStatus);
         }
 
