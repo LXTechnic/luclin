@@ -10,6 +10,12 @@ use Log;
 if (class_exists('\PHPUnit\Framework\Assert')) {
     class assert extends \PHPUnit\Framework\Assert
     {
+        public static $primed = false;
+
+        public static function primed(bool $state = true): void {
+            self::$primed = $state;
+        }
+
         public static function jsonId($response, string $field, int $seq = 0) {
             $result = $response->json();
             return $result[$field][$seq]['_id'] ?? null;
