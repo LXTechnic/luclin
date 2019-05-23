@@ -13,7 +13,7 @@ class event
         $class = self::$alias[$name]."\\".\luc\hyphen2class(array_shift($arguments));
 
         // 处理末尾闭包支持
-        if (is_callable($arguments[count($arguments) - 1])) {
+        if (is_callable($arguments[count($arguments) - 1] ?? null)) {
             $modifier = array_pop($arguments);
         } else {
             $modifier = null;
