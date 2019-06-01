@@ -8,12 +8,17 @@ use Luclin\Flow;
 use Luclin\Luri;
 use Luclin\Protocol;
 use Luclin\Support;
+use Luclin\Variant;
 
 use App;
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
 use Nette\Neon\Neon;
+
+function uni(...$arguments): Variant {
+    return new Variant(...$arguments);
+}
 
 function env(...$match): bool {
     return App::environment($match);

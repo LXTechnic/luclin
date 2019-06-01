@@ -3,6 +3,7 @@
 namespace Luclin\Protocol;
 
 use Luclin\Contracts;
+use Luclin\Variant;
 use Luclin\Meta\Struct;
 
 use Validator;
@@ -69,8 +70,10 @@ class Request extends Struct
         if ($fillable) {
             $raw = $this->raw->toArray();
             foreach ($arr as $key => $value) {
-                if ($value === \luc\UNIT) {
-                    if (array_key_exists($key, $raw) && $raw[$key] === null) {
+                if ($value instanceof Variant) {
+                    if (array_key_exists($key, $raw) &&
+                        ($raw[$key] === null || $value()->search($raw[$key]) !== false))
+                    {
                         $arr[$key] = null;
                     } else {
                         unset($arr[$key]);
