@@ -28,9 +28,11 @@
     },
     "autoload": {
         "psr-4": {
+            "fun\\": "fun/",
             "Luclin\\": "src/"
         },
         "files": [
+            "fun.php",
             "src/luc.php"
         ]
     },

@@ -1,10 +1,10 @@
 <?php
 
-namespace Luclin;
+namespace fun;
 
 use Illuminate\Support\Collection;
 
-class Variant
+class variant
 {
     private $arguments = [];
 
