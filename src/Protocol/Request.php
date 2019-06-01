@@ -61,11 +61,26 @@ class Request extends Struct
         return $result;
     }
 
-    public function toArray(callable $filter = null, bool $applyMapping = true): array {
+    public function toArray(callable $filter = null, bool $applyMapping = true,
+        bool $fillable = true): array
+    {
         $arr = parent::toArray($filter);
 
+        if ($fillable) {
+            $raw = $this->raw->toArray();
+            foreach ($arr as $key => $value) {
+                if ($value === \luc\UNIT) {
+                    if (array_key_exists($key, $raw) && $raw[$key] === null) {
+                        $arr[$key] = null;
+                    } else {
+                        unset($arr[$key]);
+                    }
+                }
+            }
+        }
+
         if ($applyMapping) foreach (static::_mapping() as $from => $to) {
-            if (isset($arr[$from])) {
+            if (array_key_exists($from, $arr)) {
                 $arr[$to] = $arr[$from];
                 unset($arr[$from]);
             }
