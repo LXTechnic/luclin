@@ -55,11 +55,16 @@ class Request extends Struct
     public function toArrayWithoutNull(): array {
         $result = [];
         foreach ($this->toArray() as $key => $value) {
-            if ($value !== null) {
+            if ($value !== null && !($value instanceof variant)) {
                 $result[$key] = $value;
             }
         }
         return $result;
+    }
+
+    public function get($key, $default = null) {
+        $value = parent::get($key, $default);
+        return ($value instanceof variant) ? null : $value;
     }
 
     public function toArray(callable $filter = null, bool $applyMapping = true,
