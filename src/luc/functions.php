@@ -202,6 +202,12 @@ function timer() {
     return $elapsed;
 }
 
+function id(): string {
+    $or = gmp_init((int)(microtime(true) * 10));
+    $id = gmp_strval($or, 16).str_replace('-', '', uuid_create());
+    return gmp_strval(gmp_init('0x'.$id, 16), 62);
+}
+
 // TODO: 对数组获取的兼容？
 function __(string $key, array $replace = [],
     ?string $locale = null): ?string
