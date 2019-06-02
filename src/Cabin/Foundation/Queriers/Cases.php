@@ -40,6 +40,10 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
             }
 
             $values = $explode ? explode($explode, $values) : [$values];
+            if ($values[0] === \luc\UNIT) {
+                continue;
+            }
+
             $assign = [];
             foreach ($values as $value) {
                 $assign[] = $quote ? DB::getPdo()->quote($value) : $value;
