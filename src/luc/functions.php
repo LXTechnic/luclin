@@ -14,6 +14,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
 use Nette\Neon\Neon;
+use lastguest\Murmur;
 
 function env(...$match): bool {
     return App::environment($match);
@@ -218,6 +219,10 @@ function id(): string {
     $order  = gmp_init((int)(microtime(true) * 10));
     $id16   = gmp_strval($order, 16).str_replace('-', '', uuid_create());
     return gmp_strval(gmp_init('0x'.$id16, 16), 62);
+}
+
+function hash($value): string {
+    return Murmur::hash3($value);
 }
 
 // TODO: 对数组获取的兼容？
