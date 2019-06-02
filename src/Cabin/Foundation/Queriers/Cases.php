@@ -64,7 +64,9 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
                 }
 
                 $sql = \luc\padding($sql, $assign);
-                $query->whereRaw($sql);
+                $query->where(function($query) use ($sql) {
+                    $query->whereRaw($sql);
+                });
             }
         }
     }
