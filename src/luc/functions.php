@@ -202,10 +202,22 @@ function timer() {
     return $elapsed;
 }
 
+function to64($num): string {
+    static $dict = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz._';
+
+    $to = 64;
+    $result = '';
+    do {
+        $result = $dict[bcmod($num, $to)].$result;
+        $num = bcdiv($num, $to);
+    } while ($num > 0);
+    return $result;
+}
+
 function id(): string {
-    $or = gmp_init((int)(microtime(true) * 10));
-    $id = gmp_strval($or, 16).str_replace('-', '', uuid_create());
-    return gmp_strval(gmp_init('0x'.$id, 16), 62);
+    $order  = gmp_init((int)(microtime(true) * 10));
+    $id16   = gmp_strval($order, 16).str_replace('-', '', uuid_create());
+    return gmp_strval(gmp_init('0x'.$id16, 16), 62);
 }
 
 // TODO: 对数组获取的兼容？
