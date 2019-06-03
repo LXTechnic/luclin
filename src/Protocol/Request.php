@@ -73,7 +73,7 @@ class Request extends Struct
         $arr = parent::toArray($filter);
 
         if ($fillable) {
-            $raw = $this->raw->toArray();
+            $raw = $this->raw ? $this->raw->toArray() : $arr;
             foreach ($arr as $key => $value) {
                 if ($value instanceof variant) {
                     if (array_key_exists($key, $raw) &&
