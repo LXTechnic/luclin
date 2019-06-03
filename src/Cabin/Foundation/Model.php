@@ -216,7 +216,25 @@ abstract class Model extends EloquentModel implements Contracts\Model
         return [
             static::resolveConnection($connection),
             $schema ? "$schema.$table" : $table,
+            $schema,
+            $table,
         ];
+    }
+
+    public static function makeIndex(string $type, ...$fields): void {
+        [$conn, $table, $schema, $realTable] = static::connection();
+
+        $name = "{$realTable}_".implode('_', $fields)."_idx";
+        $sql = "CREATE INDEX $name ON $table USING $type(".implode(',', $fields).")";
+        $conn->update($sql);
+    }
+
+    public static function removeIndex(...$fields): void {
+        [$conn, $table, $schema, $realTable] = static::connection();
+
+        $name = "{$realTable}_".implode('_', $fields)."_idx";
+        $sql = "DROP INDEX $schema.$name";
+        $conn->update($sql);
     }
 
     public function getDriver(): string {
