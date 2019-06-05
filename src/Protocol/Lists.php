@@ -35,6 +35,9 @@ class Lists extends Collection implements FieldInterface
         foreach ($collection as $key => $row) {
             foreach ($fromField as $pos => $from) {
                 $to = $toField[$pos] ?? $from;
+                if (!isset($this[$key])) {
+                    throw new \InvalidArgumentException("Assign value to lists should be pair.");
+                }
                 $this[$key]->$to = $row->$from;
             }
         }
