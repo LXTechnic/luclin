@@ -164,7 +164,10 @@ abstract class Model extends EloquentModel implements Contracts\Model
      * TODO: 以后这些查询强化要设法加入到query对象中
      */
     public static function getByIds(...$ids): Collection {
+        $func = null;
+        isset($ids[0]) && is_callable($ids[0]) && ($func = array_shift($ids));
         $query = static::queryByIds($ids);
+        $func && $func($query);
         return $query->get();
     }
 
