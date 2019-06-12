@@ -18,6 +18,8 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
     public $validate = [];
     public $hints    = [];
 
+    public $parsed;
+
     protected $name;
     protected $vars = [];
     protected $patterns;
@@ -75,20 +77,20 @@ class Preset implements Contracts\Endpoint, Contracts\Operator
     public function parse(): array {
         $this->validate();
 
-        $result = [];
+        $this->parsed = [];
 
         $pattern = $this->patterns;
         if ($pattern) foreach ($pattern as $key => $row) {
             $row = \luc\padding($row, $this->vars);
             $endpoint = \luc\uri($row);
             if ($endpoint) {
-                $result[$key] = $endpoint;
+                $this->parsed[$key] = $endpoint;
             } else {
                 parse_str(Luri::unQuote($row), $params);
-                $result[$key] = $params;
+                $this->parsed[$key] = $params;
             }
         }
-        return $result;
+        return $this->parsed;
     }
 
     public function render(array $query = null, $quote = false): string {

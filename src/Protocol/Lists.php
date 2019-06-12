@@ -106,6 +106,20 @@ class Lists extends Collection implements FieldInterface
         return $this;
     }
 
+    public function seekGroup(Preset $preset, $start = null,
+        string $startName = 'start'): self
+    {
+        $group  = $preset->parsed[count($preset->parsed) - 1];
+        $vars   = $group->next ? [$startName => $group->next] : [];
+
+        // 设置分页装饰器
+        $this->addDecorator('seek', [
+            'type'      => 'group',
+            '$preset'   => $preset->render($vars),
+        ]);
+        return $this;
+    }
+
     public function seekCounter(Preset $preset, string $pageName = 'page',
         string $takeName = 'take'): self
     {
