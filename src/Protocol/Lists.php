@@ -110,7 +110,10 @@ class Lists extends Collection implements FieldInterface
         string $startName = 'start'): self
     {
         $group  = $preset->parsed[count($preset->parsed) - 1];
-        $vars   = $group->next ? [$startName => $group->next] : [];
+        if (!$group->next) {
+            return $this;
+        }
+        $vars   = [$startName => $group->next];
 
         // 设置分页装饰器
         $this->addDecorator('seek', [
