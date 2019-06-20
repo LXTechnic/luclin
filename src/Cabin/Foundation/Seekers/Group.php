@@ -12,12 +12,14 @@ class Group extends Start
     public $next = null;
 
     protected $subField = 'id';
+    protected $subOrder = 'desc';
 
     public static function new(array $arguments, array $options,
         Contracts\Context $context): Contracts\Endpoint
     {
         $group = parent::new($arguments, $options, $context);
-        isset($options['subField']) && $group->setField($options['subField']);
+        isset($options['subField']) && $group->subField = $options['subField'];
+        isset($options['subOrder']) && $group->subOrder = $options['subOrder'];
         return $group;
     }
 
@@ -64,7 +66,7 @@ class Group extends Start
 
         // 实际查询
         $query->orderBy($field, $this->direction)
-            ->orderBy($subField, $this->direction);
+            ->orderBy($subField, $this->subOrder);
         $this->next && ($this->direction == 'desc'
             ? $query->where($field, '>', $this->next)
                 : $query->where($field, '<', $this->next));
