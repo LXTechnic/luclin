@@ -203,10 +203,18 @@ function timer() {
     return $elapsed;
 }
 
+function toLetters($num): string {
+    static $dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    return transBitByDict($num, $dict);
+}
+
 function to64($num): string {
     static $dict = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz._';
+    return transBitByDict($num, $dict);
+}
 
-    $to = 64;
+function transBitByDict($num, string $dict): string {
+    $to = strlen($dict);
     $result = '';
     do {
         $result = $dict[bcmod($num, $to)].$result;
