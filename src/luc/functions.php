@@ -208,12 +208,31 @@ function toLetters($num): string {
     return transBitByDict($num, $dict);
 }
 
+function fromLetters($letters): int {
+    return transBitByDict(strtoupper($letters), '0123456789', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+}
+
 function to64($num): string {
     static $dict = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz._';
     return transBitByDict($num, $dict);
 }
 
-function transBitByDict($num, string $dict): string {
+function transBitByDict($num, string $dict, string $sourceDict = null): string {
+    if ($sourceDict) {
+        // 索引化吧
+        $sourceDictIndex = [];
+        for ($i = 0; $i < strlen($sourceDict); $i++) {
+            $sourceDictIndex[$sourceDict[$i]] = $i;
+        }
+        $sourceBits = strlen($sourceDict);
+
+        $numStr = strrev("$num");
+        $num    = 0;
+        for ($i = 0; $i < strlen($numStr); $i++) {
+            $num += $sourceDictIndex[$numStr[$i]] * pow($sourceBits, $i);
+        }
+    }
+
     $to = strlen($dict);
     $result = '';
     do {
