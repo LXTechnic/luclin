@@ -30,10 +30,12 @@
     "autoload": {
         "psr-4": {
             "fun\\": "fun/",
+            "Luclin2\\": "luclin2/src/",
             "Luclin\\": "src/"
         },
         "files": [
             "fun.php",
+            "luclin2/luc.php",
             "src/luc.php"
         ]
     },
