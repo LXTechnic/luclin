@@ -2,7 +2,7 @@
 
 namespace Luclin2;
 
-abstract class Flex {
+class Flex implements \IteratorAggregate {
     use Features\Pipable;
 
     protected $items = [];
@@ -30,9 +30,13 @@ abstract class Flex {
 
     public function map(): iterable {
         foreach ($this->items as $key => $item) {
-
+            yield $key => $item;
         }
 
         return $this->items;
+    }
+
+    public function getIterator(): iterable {
+        return $this->map();
     }
 }
