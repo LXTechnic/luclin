@@ -71,7 +71,6 @@ class Request extends Struct
         bool $fillable = true): array
     {
         $arr = parent::toArray($filter);
-        dump($arr);
 
         if ($fillable) {
             $raw = $this->raw ? $this->raw->toArray() : $arr;
@@ -87,7 +86,6 @@ class Request extends Struct
                 }
             }
         }
-        dd($arr);
 
         if ($applyMapping) foreach (static::_mapping() as $from => $to) {
             if (array_key_exists($from, $arr)) {

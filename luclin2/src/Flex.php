@@ -24,4 +24,15 @@ abstract class Flex {
         }
     }
 
+    public function items(): array {
+        return $this->items;
+    }
+
+    public function map(): iterable {
+        foreach ($this->items as $key => $item) {
+
+        }
+
+        return $this->items;
+    }
 }

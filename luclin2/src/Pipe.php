@@ -1,6 +1,6 @@
 <?php
 
-namespace Luclin2\Utils;
+namespace Luclin2;
 
 class Pipe
 {

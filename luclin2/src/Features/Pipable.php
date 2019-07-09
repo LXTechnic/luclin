@@ -2,10 +2,8 @@
 
 namespace Luclin2\Features;
 
-use Luclin2\Utils;
-
 trait Pipable {
-    public function pipe($primary = null): Utils\Pipe {
-        return new Utils\Pipe($primary, $this);
+    public function pipe($primary = null): Luclin2\Pipe {
+        return new Luclin2\Pipe($primary, $this);
     }
 }
