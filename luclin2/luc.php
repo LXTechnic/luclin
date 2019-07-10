@@ -1,5 +1,7 @@
 <?php
 
+//
+
 class luc {
 
     public static function flex(...$arguments): Luclin2\Flex {
