@@ -19,6 +19,7 @@ use Luclin\Protocol\{
     Request
 };
 
+use Illuminate\Http\Request as LaravelRequest;
 use Illuminate\Database\Eloquent;
 // use Illuminate\Database\Eloquent\{
 //     Relations\Relation as Relation
@@ -70,6 +71,11 @@ class AppServiceProvider extends Providers\AppService
     protected function registerResolving(): void {
         $this->app->resolving(Request::class, function ($request, $app) {
             $request->confirm();
+        });
+        $this->app->resolving(\Luclin2\Interaop\Request::class, function ($request, $app)
+        {
+            $request[] = $app->get(LaravelRequest::class);
+            $request();
         });
     }
 
