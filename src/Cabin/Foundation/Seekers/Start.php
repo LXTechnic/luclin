@@ -17,7 +17,7 @@ class Start implements Contracts\Endpoint, Contracts\QueryApplier, Contracts\See
 
     public function __construct($start, int $take, bool $more = true) {
         $this->start    = $start;
-        $this->take     = $take > 500 ? 500 : $take;
+        $this->take     = $take > 2500 ? 2500 : $take;
         $this->more     = $more;
     }
 

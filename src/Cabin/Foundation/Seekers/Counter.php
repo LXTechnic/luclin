@@ -16,7 +16,7 @@ class Counter implements Contracts\Endpoint, Contracts\QueryApplier, Contracts\S
 
     public function __construct($page, int $take) {
         $this->page     = $page;
-        $this->take     = $take > 500 ? 500 : $take;
+        $this->take     = $take > 2500 ? 2500 : $take;
     }
 
     public static function new(array $arguments, array $options,
