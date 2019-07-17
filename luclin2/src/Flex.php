@@ -4,7 +4,8 @@ namespace Luclin2;
 
 class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggregate
 {
-    use Features\Pipable;
+    use Features\Pipable,
+        Features\UtilsCall;
 
     protected $items = [];
 
@@ -17,7 +18,7 @@ class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggr
     public function assign($items): void {
         $this->previous = $this->items;
 
-        if (count($items) == 1) {
+        if (count($items) == 1 && isset($items[0])) {
             $items = $items[0];
             if (is_array($items)) {
                 $this->items = $items;
@@ -33,22 +34,29 @@ class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggr
         }
     }
 
-    public function __invoke(): self {
-        $this->resolve();
+    public function __invoke(...$tails): self {
+        $this->resolve(...$tails);
         return $this;
     }
 
-    public function resolve($mode = null) {
-        $result     = [];
-        $keys       = [];
-        $params     = [];
-        $resolver   = [];
+    public function resolve(...$tails) {
+        foreach ($tails as $tail) {
+            $this[] = $tail;
+        }
+
+        $result = [];
         foreach ($this->it() as $key => $value) {
             if (is_callable($value)) {
-                $result[] = $value->call($this, $params, $keys);
+                $resultTmp  = $value->call($this, $result);
+                if ($resultTmp !== null) {
+                    if (is_iterable($resultTmp)) {
+                        $result = $resultTmp;
+                    } else {
+                        $result = [$resultTmp];
+                    }
+                }
             } else {
-                $params[]   = $value;
-                $keys[]     = $key;
+                $result[$key]   = $value;
             }
         }
         $this->assign($result);
@@ -89,6 +97,14 @@ class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggr
 
     public function set($value, $key = null): void {
         $key === null ? ($this->items[] = $value) : ($this->items[$key] = $value);
+    }
+
+    public function __get($key) {
+        return $this->get($key);
+    }
+
+    public function __set($key, $value): void {
+        $this->set($value, $key);
     }
 
     public function count(): int {

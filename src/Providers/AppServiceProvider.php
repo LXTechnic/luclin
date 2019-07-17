@@ -37,6 +37,7 @@ use Illuminate\Queue\{
 };
 use Auth;
 use Log;
+use Validator;
 
 class AppServiceProvider extends Providers\AppService
 {
@@ -74,8 +75,16 @@ class AppServiceProvider extends Providers\AppService
         });
         $this->app->resolving(\Luclin2\Interaop\Request::class, function ($request, $app)
         {
-            $request[] = $app->get(LaravelRequest::class);
-            $request();
+            $raw = $app->get(LaravelRequest::class);
+            $request->assign($raw->toArray());
+            $request->setRaw($raw);
+            $request(function($request) {
+                $validator = Validator::make($request,
+                    ...static::validate()['laravel'] ?? []);
+                if ($validator->fails()) {
+                    throw new \InvalidArgumentException($validator->errors()->first());
+                }
+            });
         });
     }
 

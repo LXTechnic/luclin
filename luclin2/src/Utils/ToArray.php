@@ -17,16 +17,16 @@ class ToArray
     }
 
     public function __invoke(): array {
-        return $this->_toArray($this->root, $this->fun);
+        return $this->apply($this->root, $this->fun);
     }
 
-    public function _toArray(iterable $traversable, callable $filter = null): array {
+    private function apply(iterable $traversable, callable $filter = null): array {
         $result = [];
         foreach ($traversable as $key => $value) {
             if (method_exists($value, 'toArray')) {
                 $value = $value->toArray();
             } elseif ($value instanceof \Traversable || is_array($value)) {
-                $value = $this->_toArray($value, $filter);
+                $value = $this->apply($value, $filter);
             }
 
             // 过滤器
