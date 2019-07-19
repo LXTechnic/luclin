@@ -28,7 +28,7 @@ class Request extends \Luclin2\Flex {
 
     public function resolve(...$tails) {
         $this[] = function(array $request) {
-            return \luc\_($request)->defaults(static::defaults())();
+            return \luc\_($request)->defaults(static::defaults(), $this)();
         };
         parent::resolve(...$tails);
     }
