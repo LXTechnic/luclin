@@ -35,7 +35,7 @@ class Defaults
                 $merges  = [];
             }
 
-            !isset($this->data[$name]) && $this->data[$name] = \luc\UNIT;
+            !array_key_exists($name, $this->data) && $this->data[$name] = \luc\UNIT;
             $value = in_array($this->data[$name], $merges, true) ?
                 $default : $this->data[$name];
             $result[$name] = $hook ? $hook($value) : $value;

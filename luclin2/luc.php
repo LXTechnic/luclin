@@ -18,7 +18,7 @@ namespace luc {
 
     function head(iterable $data, $noTail = false): array {
         if ($noTail) {
-            $head = $data[0];
+            $head = $data[0] ?? null;
             $tail = null;
         } else {
             $head = array_shift($data);
@@ -29,7 +29,7 @@ namespace luc {
 
     function tail(iterable $data, $noHead = true): array {
         if ($noHead) {
-            $tail = $data[count($data) - 1];
+            $tail = $data[count($data) - 1] ?? null;
             $head = null;
         } else {
             $tail = array_pop($data);
