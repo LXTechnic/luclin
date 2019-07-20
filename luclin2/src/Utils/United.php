@@ -23,7 +23,7 @@ class United
                 if (!$value && is_array($value)) {
                     continue;
                 }
-            } elseif ($value == \luc\UNIT) {
+            } elseif ($value === \luc\UNIT) {
                 continue;
             }
             $result[$key] = $value;
