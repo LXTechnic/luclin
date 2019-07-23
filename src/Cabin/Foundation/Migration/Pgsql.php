@@ -62,6 +62,7 @@ class Pgsql
 
     public function apply() {
         try {
+            // TODO: 这里是有问题的，没有对事实操作的库开启事务。
             DB::beginTransaction();
 
             $class = $this->class;
