@@ -183,7 +183,7 @@ function duQuery($query) {
 
 function suffix(string $subject, string $search = '.'): string {
     $pos = strrpos($subject, $search);
-    return substr($subject, $pos + 1);
+    return $pos !== null ? substr($subject, $pos + 1) : '';
 }
 
 function patchSet(array $oldSet, array $newSet): array {
