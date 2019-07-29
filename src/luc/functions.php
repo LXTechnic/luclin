@@ -248,6 +248,17 @@ function id(): string {
     return gmp_strval(gmp_init('0x'.$id16, 16), 62);
 }
 
+function gid(int $now = 0, string $instance = '0000',
+    int $randomBits = 4, $version = '0'): string
+{
+    !$now && $now = microtime(true);
+    $now = ($now - 1500000000) * 1000;
+    $hex = str_pad(dechex($now), 10, '0', \STR_PAD_LEFT).
+        $instance.
+        bin2hex(openssl_random_pseudo_bytes($randomBits));
+    return $version.gmp_strval(gmp_init("0x$hex", 16), 62);
+}
+
 function hash($value): string {
     return Murmur::hash3($value);
 }
