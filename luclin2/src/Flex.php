@@ -46,8 +46,12 @@ class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggr
 
         $result = [];
         foreach ($this->it() as $key => $value) {
-            if (is_callable($value)) {
-                $resultTmp  = $value->call($this, $result);
+            if (!is_string($value) &&
+                !is_array($value) &&
+                is_callable($value))
+            {
+                $resultTmp  = $value instanceof \Closure ?
+                    $value->call($this, $result) : $value($result);
                 if ($resultTmp !== null) {
                     if (is_iterable($resultTmp)) {
                         $result = $resultTmp;
