@@ -7,6 +7,8 @@ use Luclin\Cabin\Foundation\ConnectionFactory;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+use \Illuminate\Support\Fluent;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,14 @@ class DatabaseServiceProvider extends ServiceProvider
         Builder::macro('congruent', function (string $field, ...$values) {
             $this->whereRaw("$field = '{".implode(',', $values)."}'");
             return $this;
+        });
+
+        PostgresGrammar::macro('type_varchar', function(Fluent $column) {
+            return "varchar[]";
+        });
+
+        PostgresGrammar::macro('type_integer', function(Fluent $column) {
+            return "int8[]";
         });
     }
 
