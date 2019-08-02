@@ -15,12 +15,6 @@ abstract class Primary extends Cabin\Model\Master
 {
     use SoftDeletes;
 
-    use Cabin\Parts\Named,
-        Cabin\Parts\Mailable,
-        Cabin\Parts\Mobile,
-        Cabin\Parts\Password,
-        Cabin\Parts\Avatar;
-
     protected static $unguarded = true;
 
     protected $casts = [

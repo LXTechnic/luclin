@@ -14,14 +14,6 @@ abstract class Log extends Cabin\Model\Generated2
 {
     use SoftDeletes;
 
-    use Cabin\Parts\Timestamps,
-        Cabin\Parts\SoftDeletes,
-        Cabin\Parts\Named,
-        Cabin\Parts\Mailable,
-        Cabin\Parts\Mobile,
-        Cabin\Parts\Password,
-        Cabin\Parts\Avatar;
-
     protected static $unguarded = true;
 
     protected $casts = [
