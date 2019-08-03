@@ -203,43 +203,12 @@ function timer() {
     return $elapsed;
 }
 
-function toLetters($num): string {
-    static $dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    return transBitByDict($num, $dict);
+function toLetters($number): string {
+    return Support\Letter::encode($number);
 }
 
 function fromLetters($letters): int {
-    return transBitByDict(strtoupper($letters), '0123456789', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-}
-
-function to64($num): string {
-    static $dict = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz._';
-    return transBitByDict($num, $dict);
-}
-
-function transBitByDict($num, string $dict, string $sourceDict = null): string {
-    if ($sourceDict) {
-        // 索引化吧
-        $sourceDictIndex = [];
-        for ($i = 0; $i < strlen($sourceDict); $i++) {
-            $sourceDictIndex[$sourceDict[$i]] = $i;
-        }
-        $sourceBits = strlen($sourceDict);
-
-        $numStr = strrev("$num");
-        $num    = 0;
-        for ($i = 0; $i < strlen($numStr); $i++) {
-            $num += $sourceDictIndex[$numStr[$i]] * pow($sourceBits, $i);
-        }
-    }
-
-    $to = strlen($dict);
-    $result = '';
-    do {
-        $result = $dict[bcmod($num, $to)].$result;
-        $num = bcdiv($num, $to);
-    } while ($num > 0);
-    return $result;
+    return hexdec(Support\Letter::decode($letters));
 }
 
 function id(): string {
@@ -248,15 +217,29 @@ function id(): string {
     return gmp_strval(gmp_init('0x'.$id16, 16), 62);
 }
 
-function gid(int $now = 0, string $instance = '0000',
-    int $randomBits = 4, $version = '0'): string
+function gid(int $now = 0, string $realm = '0000',
+    int $randomBytes = 4, $version = '0'): string
 {
     !$now && $now = microtime(true);
     $now = ($now - 1500000000) * 1000;
     $hex = str_pad(dechex($now), 10, '0', \STR_PAD_LEFT).
-        $instance.
-        bin2hex(openssl_random_pseudo_bytes($randomBits));
+        $realm.
+        bin2hex(openssl_random_pseudo_bytes($randomBytes));
     return $version.gmp_strval(gmp_init("0x$hex", 16), 62);
+}
+
+function parseGid(string $gid, int $realmBytes = 2, int $randomBytes = 4): array {
+    $version    = $gid[0];
+    $hexed      = gmp_strval(gmp_init($gid, 62), 16);
+    $length     = strlen($hexed);
+
+    $timestampLength = $length - 2 * $randomBytes - 2 * $realmBytes;
+    $timeHex    = substr($hexed, 0, $timestampLength);
+    $timestamp  = gmp_intval(gmp_init('0x'.$timeHex, 16)) / 1000;
+
+    $realm      = substr($hexed, $timestampLength, 2 * $realmBytes);
+    $random     = substr($hexed, $timestampLength + 2 * $realmBytes, 2 * $randomBytes);
+    return [$version, $timestamp, $realm, $random];
 }
 
 function hash($value): string {
