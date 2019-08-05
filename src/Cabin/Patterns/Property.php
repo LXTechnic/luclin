@@ -24,6 +24,7 @@ abstract class Property extends Cabin\Model\Generated2
         'body'          => 'array',
         'details'       => 'array',
         'vars'          => 'array',
+        'hooks'         => 'array',
         'extends'       => 'array',
         'hub'           => 'string',
         'tags'          => 'string',
@@ -32,7 +33,6 @@ abstract class Property extends Cabin\Model\Generated2
         'flags'         => 'string',
         'roles'         => 'string',
         'states'        => 'string',
-        'hooks'         => 'string',
     ];
 
     public static function migrateUpdate(Blueprint $table, ...$features): void {
@@ -111,7 +111,7 @@ abstract class Property extends Cabin\Model\Generated2
         if (in_array('hook', $features)) {
             // hooks
             $table->jsonb('vars')->nullable()->comment('替换类扩展数据');
-            $table->addColumn('_varchar', 'hooks', ['nullable' => true])->comment('勾子');
+            $table->jsonb('hooks')->nullable()->comment('勾子');
         }
 
         if (in_array('extend', $features)) {
@@ -175,14 +175,6 @@ abstract class Property extends Cabin\Model\Generated2
 
     public function getStatesAttribute() {
         return $this->arrayFieldDecode('states');
-    }
-
-    public function setHooksAttribute($value) {
-        $this->attributes['hooks'] = $this->arrayFieldEncode($value);
-    }
-
-    public function getHooksAttribute() {
-        return $this->arrayFieldDecode('hooks');
     }
 
 }

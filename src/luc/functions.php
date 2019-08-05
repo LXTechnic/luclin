@@ -207,8 +207,9 @@ function toLetters($number): string {
     return Support\Letter::encode($number);
 }
 
-function fromLetters($letters): int {
-    return hexdec(Support\Letter::decode($letters));
+function fromLetters($letters, bool $hex = false) {
+    $hexed = Support\Letter::decode($letters);
+    return $hex ? $hexed : hexdec($hexed);
 }
 
 function id(): string {
