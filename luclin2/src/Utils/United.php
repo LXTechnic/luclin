@@ -20,7 +20,7 @@ class United
         foreach ($traversable as $key => $value) {
             if (is_iterable($value)) {
                 $value = $this->apply($value);
-                if (!$value && is_array($value)) {
+                if (!$value && !is_array($value)) {
                     continue;
                 }
             } elseif ($value === \luc\UNIT) {

@@ -20,17 +20,16 @@ class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggr
 
         if (count($items) == 1 && isset($items[0])) {
             $items = $items[0];
-            if (is_array($items)) {
-                $this->items = $items;
-            } elseif (is_iterable($items)) {
-                foreach ($items as $key => $item) {
-                    $this->items[$key] = $item;
-                }
-            } else {
-                $this->items[] = $items;
+        }
+
+        if (is_array($items)) {
+            $this->items = $items;
+        } elseif (is_iterable($items)) {
+            foreach ($items as $key => $item) {
+                $this->items[$key] = $item;
             }
         } else {
-            $this->items = $items;
+            $this->items[] = $items;
         }
     }
 
@@ -74,8 +73,8 @@ class Flex implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggr
         return array_shift($this->items);
     }
 
-    public function items(): iterable {
-        return $this->items;
+    public function items(bool $previous = false): iterable {
+        return $previous ? $this->previous : $this->items;
     }
 
     public function it(bool $reverse = false): iterable {
