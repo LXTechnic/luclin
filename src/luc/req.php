@@ -12,7 +12,7 @@ class req
 {
     public static $config = [
         'base_uri'  => null,
-        'timeout'   => 5,
+        'timeout'   => 15,
     ];
 
     public static $silent = true;
