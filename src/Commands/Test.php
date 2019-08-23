@@ -76,13 +76,16 @@ class Test extends Command
                     if (in_array($name, $exclude)) {
                         continue;
                     }
+
                     $this->info("--> Run tests for module [$name]");
+                    $result = [];
                     exec("$cmd ".\luc\mod($name)->path('tests'), $result);
                     foreach ($result as $line) {
                         echo $line."\n";
                     }
                 }
             } else {
+                $result = [];
                 exec("$cmd", $result);
                 foreach ($result as $line) {
                     echo $line."\n";
@@ -93,6 +96,7 @@ class Test extends Command
 
         // 按模块跑测试
         if (!$class) {
+            $result = [];
             exec("$cmd ".\luc\mod($module)->path('tests'), $result);
             foreach ($result as $line) {
                 echo $line."\n";
