@@ -102,7 +102,7 @@ class Pgsql
                 DB::statement($sql);
 
                 // post processing
-                if ($this->postProcessing[$id]) {
+                if (isset($this->postProcessing[$id])) {
                     foreach ($this->postProcessing[$id] as $sql) {
                         $sql = \luc\padding($sql, [
                             'schema'    => $schema,
