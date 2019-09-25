@@ -31,6 +31,12 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
             unset($params['_quote']);
         }
 
+        $concat = null;
+        if (isset($params['_concat'])) {
+            $concat = $params['_concat'];
+            unset($params['_concat']);
+        }
+
         $explode    = $params['_explode'] ?? ',';
         unset($params['_explode']);
 
@@ -48,6 +54,8 @@ class Cases implements Contracts\Endpoint, Contracts\QueryApplier
             foreach ($values as $value) {
                 $assign[] = $quote ? DB::getPdo()->quote($value) : $value;
             }
+
+            $concat && $assign = [implode($concat, $assign)];
 
             $case   = $cases[$name];
 
