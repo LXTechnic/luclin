@@ -229,6 +229,17 @@ function gid(int $now = 0, string $realm = '0000',
     return $version.gmp_strval(gmp_init("0x$hex", 16), 62);
 }
 
+function sgid(int $now = 0, string $realm = '0',
+    int $randomBytes = 5): string
+{
+    !$now && $now = time();
+    $now = ceil(($now - 1500000000) / 10000);
+    $hex = str_pad(dechex($now), 4, '0', \STR_PAD_LEFT).
+        $realm.
+        bin2hex(openssl_random_pseudo_bytes($randomBytes));
+    return gmp_strval(gmp_init("0x$hex", 16), 62);
+}
+
 function parseGid(string $gid, int $realmBytes = 2, int $randomBytes = 4): array {
     $version    = $gid[0];
     $hexed      = gmp_strval(gmp_init($gid, 62), 16);
