@@ -42,6 +42,10 @@ trait CurryingTrait
                     $arguments));
             }
 
+            public function __get(string $name) {
+                return $this->$name();
+            }
+
             public function arguments(): array {
                 return $this->arguments;
             }
