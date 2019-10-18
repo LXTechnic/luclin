@@ -22,7 +22,8 @@ trait CurryingTrait
             $arguments = $previous;
         }
 
-        $arguments && ($this->_curry = $this->_makeCurry($arguments));
+        ($arguments || !$this->_curry) &&
+            ($this->_curry = $this->_makeCurry($arguments));
         return $this->_curry;
     }
 
