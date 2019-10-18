@@ -6,28 +6,28 @@ use Luclin\Contracts;
 
 trait CurryingTrait
 {
-    private $_lastCurrying;
+    private $_curry = null;
 
     public function for(...$arguments): object {
-        return $this->_makeCurrying($arguments);
-    }
+        $previous   = $this->_curry ? $this->_curry->arguments() : [];
+        $appendArgs = $previous ?
+            array_slice($arguments, count($previous)) : $arguments;
 
-    public function forBack(...$arguments): object {
-        if (!$this->_lastCurrying) {
-            throw new \Exception('No previous currying exists.');
+        if (is_callable($appendArgs[0] ?? null)) {
+            $curry  = $this->_curry;
+            $func   = array_shift($appendArgs);
+            $func($this->_makeCurry($previous));
+
+            $this->_curry = $curry;
+            $arguments = $previous;
         }
 
-        $previousArgs   = $this->_lastCurrying->arguments();
-        $count          = count($arguments);
-        if ($count < count($previousArgs)) {
-            $previousArgs   = array_slice($previousArgs, 0, -$count);
-            $arguments      = array_merge($previousArgs, $arguments);
-        }
-        return $this->_makeCurrying($arguments);
+        $this->_curry = $this->_makeCurry($arguments);
+        return $this->_curry;
     }
 
-    protected function _makeCurrying(array $arguments): object {
-        $this->_lastCurrying = new class($this, ...$arguments) {
+    private function _makeCurry(array $arguments): object {
+        return new class($this, ...$arguments) {
             private $agent;
             private $arguments;
 
@@ -38,11 +38,6 @@ trait CurryingTrait
             }
 
             public function __call(string $name, array $arguments) {
-                if ($name == 'forBack') {
-                    $this->arguments = array_slice($this->arguments, 0,
-                        count($arguments));
-                }
-
                 return $this->agent->$name(...array_merge($this->arguments,
                     $arguments));
             }
@@ -51,6 +46,5 @@ trait CurryingTrait
                 return $this->arguments;
             }
         };
-        return $this->_lastCurrying;
     }
 }
