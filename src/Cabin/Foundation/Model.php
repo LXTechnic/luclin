@@ -98,6 +98,11 @@ abstract class Model extends EloquentModel implements Contracts\Model
     }
 
     public static function found($feature, bool $reload = false, array $extra = []) {
+        if (!is_array($feature)) {
+            $feature = [
+                'id'    => $feature,
+            ];
+        }
         return Cabin::loadByFeatures(static::class, $feature, function($feature) use ($extra) {
             if (is_array($feature)) {
                 if ($extra['withTrashed'] ?? false) {
