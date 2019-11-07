@@ -38,6 +38,11 @@ namespace luc {
         return [$tail, $head];
     }
 
+    function imp(string $name, ...$arguments) {
+        $implicit = new Luclin2\Implicit();
+        return $implicit($name, $arguments);
+    }
+
     // 待独立后放开
     // const UNIT = ':unit';
 
