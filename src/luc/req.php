@@ -42,15 +42,29 @@ class req
         }
 
         $client     = new Client(static::$config);
-        try {
-            $response   = $client->request($method, $path, $extra);
-        } catch (RequestException $exc) {
-            if (static::$silent) {
-                $response = $exc->getResponse();
-            } else {
-                throw $exc;
+
+        if (isset($extra['no-timeout'])) {
+            do {
+                $hasExc = false;
+                try {
+                    $response   = $client->request($method, $path, $extra);
+                } catch (RequestException $exc) {
+                    $hasExc = true;
+                }
+            } while ($hasExc);
+
+        } else {
+            try {
+                $response   = $client->request($method, $path, $extra);
+            } catch (RequestException $exc) {
+                if (static::$silent) {
+                    $response = $exc->getResponse();
+                } else {
+                    throw $exc;
+                }
             }
         }
+
         if (!$response) {
             throw new \RuntimeException("Request timeout.");
         }
