@@ -44,6 +44,7 @@ class req
         $client     = new Client(static::$config);
 
         if (isset($extra['no-timeout'])) {
+            $count = 0;
             do {
                 if (isset($hasExc) && $hasExc) {
                     echo "\ntimeout, try again... [$path]\n";
@@ -56,8 +57,14 @@ class req
                 } catch (RequestException $exc) {
                     $hasExc = true;
                 }
+                $count++;
+                if ($count > 10) {
+                    break;
+                }
             } while ($hasExc);
-
+            if ($hasExc) {
+                throw new \RuntimeException("Request timeout.");
+            }
         } else {
             try {
                 $response   = $client->request($method, $path, $extra);
