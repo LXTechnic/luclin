@@ -46,7 +46,7 @@ class req
         if (isset($extra['no-timeout'])) {
             do {
                 if (isset($hasExc) && $hasExc) {
-                    echo "\ntimeout, try again...\n";
+                    echo "\ntimeout, try again... [$path]\n";
                     sleep(5);
                 }
 
