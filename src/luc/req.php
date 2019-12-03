@@ -45,6 +45,11 @@ class req
 
         if (isset($extra['no-timeout'])) {
             do {
+                if (isset($hasExc) && $hasExc) {
+                    echo "\ntimeout, try again...\n";
+                    sleep(5);
+                }
+
                 $hasExc = false;
                 try {
                     $response   = $client->request($method, $path, $extra);
