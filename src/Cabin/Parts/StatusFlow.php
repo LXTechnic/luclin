@@ -55,6 +55,10 @@ trait StatusFlow
      * @throws \UnexpectedValueException
      */
     protected function checkStatusFlow($nextStatus) {
+        if ($this->status == $nextStatus) {
+            return true;
+        }
+
         $statusFlow = $this->getStatusFlow();
         if (!array_key_exists($nextStatus, $statusFlow)) {
             $this->raiseStatusFlowNotExist($nextStatus);

@@ -27,6 +27,14 @@ class Same implements Contracts\Endpoint, Contracts\QueryApplier
                 continue;
             }
             isset($mapping[$field]) && $field = $mapping[$field];
+
+            if (isset($settings['casts'][$field])) {
+                switch ($settings['casts'][$field]) {
+                    case 'bool':
+                        $value = $value ? true : false;
+                        break;
+                }
+            }
             $query->where($field, $value);
         }
     }
