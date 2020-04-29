@@ -38,7 +38,7 @@ class Same implements Contracts\Endpoint, Contracts\QueryApplier
 
             if ($value === ':null') {
                 $query->whereNull($field);
-            } elseif ($value === ':any') {
+            } elseif ($value === ':some') {
                 $query->whereNotNull($field);
             } else {
                 $query->where($field, $value);
