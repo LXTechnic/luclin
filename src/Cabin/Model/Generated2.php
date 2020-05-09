@@ -22,6 +22,18 @@ abstract class Generated2 extends Model
         }
 
         parent::__construct($attributes);
+
+        // 自动执行 setUp
+        foreach ((new \ReflectionClass(static::class))->getMethods() as $method) {
+            if (!$method->isPublic() &&
+                !$method->isStatic() &&
+                strlen($method->getName()) > 5 &&
+                substr($method->getName(), 0, 5) == 'setUp')
+            {
+                $methodName = $method->getName();
+                $this->$methodName();
+            }
+        }
     }
 
     protected static function migrateUpPrimary(Blueprint $table): void
