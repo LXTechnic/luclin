@@ -127,6 +127,10 @@ function flow($body): Flow {
 
 function raise($error, array $extra = [], \Throwable $previous = null): Abort
 {
+    if (\luc\debug() && $error == 'luclin.param_error') {
+        throw new \Exception($error);
+    }
+
     $params = [];
     if (is_string($error)) {
         if (!($conf = config("aborts.$error")) && !is_array($conf)) {
